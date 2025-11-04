@@ -1,0 +1,94 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Rubik+Maps&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: "Poppins", sans-serif;
+  }
+
+body {
+    @apply bg-[#000000]; }
+    
+}
+.container{
+  @apply max-w-[1250px] mx-auto
+}
+label:after {
+  content: "";
+}
+
+input[type="radio"]:checked + label {
+  background-color: #000000;
+  color: #ffffff;
+  border-color: #32cd32;
+}
+input[type="radio"]:checked + label:after{
+ 
+  border:5px solid #32cd32;
+  background-color:black;
+}
+
+.mylink {
+  color: #32cd32;
+  text-decoration: underline;
+}
+
+.peer-checked:scale-110 {
+  transform: scale(1.1);
+}
+
+.myb {
+  color: white;
+  background-color: #32cd32;
+}
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+.vecimg {
+  animation: bounce 2.5s  infinite;
+}
+.backdrop-blur {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+.loader {
+  width: 40px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #32cd32;
+  box-shadow: 0 0 0 0 #32cd32;
+  animation: l2 1.5s infinite linear;
+  position: relative;
+}
+.loader:before,
+.loader:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 0 0 #32cd32;
+  animation: inherit;
+  animation-delay: -0.5s;
+}
+.loader:after {
+  animation-delay: -1s;
+}
+@keyframes l2 {
+  100% {
+    box-shadow: 0 0 0 40px #0000;
+  }
+}
