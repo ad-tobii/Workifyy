@@ -1,39 +1,39 @@
-import { useState, useEffect } from "react";
-import { Dialog } from "@headlessui/react";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import { Link, useLocation } from "react-router-dom";
+import { useState, useEffect } from 'react'
+import { Dialog } from '@headlessui/react'
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import { Link, useLocation } from 'react-router-dom'
 
 const defaultNavigation = [
-  { name: "Sign Up", to: "/auth/signupoptions" },
-  { name: "Log In", to: "/auth/signin" },
-  { name: "Explore", to: "" },
-];
+  { name: 'Sign Up', to: '/auth/signup' },
+  { name: 'Log In', to: '/auth/signin' },
+  { name: 'Explore', to: '' },
+]
 
 export default function Nav({ children, showNavItems = true, customNavigation }) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const location = useLocation();
-  const navigation = customNavigation || defaultNavigation;
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const location = useLocation()
+  const navigation = customNavigation || defaultNavigation
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 0);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+      setScrolled(window.scrollY > 0)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
-  const isSignupPage = location.pathname === "/signup";
+  const isSignupPage = location.pathname === '/signup'
 
   return (
     <div className="relative">
       <header
         className={`container fixed inset-x-0 top-0 z-30 border-b border-gray-500 p-3 ${
-          scrolled ? "backdrop-blur" : ""
+          scrolled ? 'backdrop-blur' : ''
         }`}
       >
         <nav className="container flex items-center justify-between pt-1" aria-label="Global">
-          <div className="flex ml-6 lg:flex-1">
+          <div className="ml-6 flex lg:flex-1">
             <Link to="/" className="-m-1.5 text-white">
               <span className="font-logoFonts text-3xl text-[#32CD32]">WORKIFYY</span>
             </Link>
@@ -67,12 +67,16 @@ export default function Nav({ children, showNavItems = true, customNavigation })
           )}
         </nav>
 
-        <Dialog open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} className="fixed inset-0 z-50 bg-white">
+        <Dialog
+          open={mobileMenuOpen}
+          onClose={() => setMobileMenuOpen(false)}
+          className="fixed inset-0 z-50 bg-white"
+        >
           <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300 ease-out" />
 
           <Dialog.Panel
             className={`fixed inset-y-0 right-0 w-full transform overflow-y-auto bg-black px-6 py-6 transition-transform duration-300 ease-out miniLaptop:max-w-sm miniLaptop:ring-1 miniLaptop:ring-gray-900/10 ${
-              mobileMenuOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
+              mobileMenuOpen ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
             }`}
           >
             <div className="flex items-center justify-between">
@@ -110,5 +114,5 @@ export default function Nav({ children, showNavItems = true, customNavigation })
 
       <div className="relative z-20">{children}</div>
     </div>
-  );
+  )
 }

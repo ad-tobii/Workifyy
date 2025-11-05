@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 const ValueSection2 = () => {
   return (
     <div className="mt-28 flex justify-center px-8">
@@ -10,8 +11,8 @@ const ValueSection2 = () => {
         <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-20 lg:space-y-0">
           <div className="flex flex-col space-y-8 lg:flex-1 lg:space-y-0">
             <p className="pb-5 text-center text-xl font-light text-[#d1d5db] lg:text-left">
-              Take your skills to the next level with Workifyy! We make it easy
-              for professionals like you to thrive.
+              Take your skills to the next level with Workifyy! We make it easy for professionals
+              like you to thrive.
             </p>
             <img
               src="./assets/value2.jpg"
@@ -20,15 +21,15 @@ const ValueSection2 = () => {
             />
             <div className="space-y-8 text-[#d1d5db]">
               <div className="flex items-center gap-x-4">
-                <div className="h-5 min-h-5 w-5 min-w-5 rounded-full bg-[#32cd32] text-center text-sm text-white ">
+                <div className="h-5 min-h-5 w-5 min-w-5 rounded-full bg-[#32cd32] text-center text-sm text-white">
                   1
                 </div>
 
                 <div>
                   <h2 className="text-xl font-bold">Get the Right Jobs</h2>
                   <p className="text-sm text-[#32cd32]">
-                    Receive job offers tailored to your expertise from clients
-                    ready to work with you.
+                    Receive job offers tailored to your expertise from clients ready to work with
+                    you.
                   </p>
                 </div>
               </div>
@@ -40,8 +41,7 @@ const ValueSection2 = () => {
                 <div>
                   <h2 className="text-xl font-bold"> Earn Securely</h2>
                   <p className="text-sm text-[#32cd32]">
-                    Rest easy knowing your payments are handled safely and
-                    without wahala.
+                    Rest easy knowing your payments are handled safely and without wahala.
                   </p>
                 </div>
               </div>
@@ -51,18 +51,20 @@ const ValueSection2 = () => {
                   3
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold ">Show Your Skills</h2>
+                  <h2 className="text-xl font-bold">Show Your Skills</h2>
                   <p className="text-sm text-[#32cd32]">
-                    Build a strong reputation and track your progress as you
-                    deliver top-notch work.
+                    Build a strong reputation and track your progress as you deliver top-notch work.
                   </p>
                 </div>
               </div>
             </div>
             <div className="text-center lg:text-left">
-              <button className="mt-12 rounded border-2 border-[#32cd32] p-2 font-medium text-[#32cd32] transition-colors hover:bg-[#32cd32] hover:text-white">
+              <Link
+                to="/auth/signup"
+                className="mt-12 rounded border-2 border-[#32cd32] p-2 font-medium text-[#32cd32] transition-colors hover:bg-[#32cd32] hover:text-white"
+              >
                 Get Started
-              </button>
+              </Link>
             </div>
           </div>
           <div className="hidden lg:block">
@@ -75,7 +77,7 @@ const ValueSection2 = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ValueSection2;
+export default ValueSection2

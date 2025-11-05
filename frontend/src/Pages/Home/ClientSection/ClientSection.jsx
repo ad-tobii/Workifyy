@@ -1,20 +1,16 @@
-import {
-  FaRegCircleCheck,
-  FaCircleDollarToSlot,
-  FaClock,
-} from "react-icons/fa6";
+import { FaRegCircleCheck, FaCircleDollarToSlot, FaClock } from 'react-icons/fa6'
 function ClientSection() {
   return (
     <section className="container">
-      <div className="relative mx-auto mt-32 w-[75rem] rounded-md bg-[url('/assets/ClientSection2.jpg')] bg-cover bg-center bg-no-repeat px-5 py-20 xsMobile:mx-auto xsMobile:w-[95%] miniMobile:w-[95%] mobile:w-[95%] miniTablet:w-[95%] tablet:w-[95%] miniLaptop:w-[95%] desktop:w-[95%] laptop:w-[95%]">
+      <div className="relative mx-auto mt-32 w-[75rem] rounded-md bg-[url('/assets/ClientSection2.jpg')] bg-cover bg-center bg-no-repeat px-5 py-20 xsMobile:mx-auto xsMobile:w-[95%] miniMobile:w-[95%] mobile:w-[95%] miniTablet:w-[95%] tablet:w-[95%] miniLaptop:w-[95%] laptop:w-[95%] desktop:w-[95%]">
         <div className="absolute inset-0 rounded-md bg-black bg-opacity-30"></div>
         <div className="relative">
           <h2 className="max-w-[45rem] pb-3 text-4xl font-bold leading-tight text-white xsMobile:text-[1.9rem] miniMobile:text-[2.4rem] miniTablet:text-[3rem] tablet:text-[3rem] miniLaptop:text-[3rem] laptop:text-[3.2rem]">
             Find Technicians Your Way
           </h2>
           <p className="font-sm max-w-[30rem] text-lg leading-relaxed tracking-normal text-white miniMobile:text-[1.3rem] miniTablet:text-[1.5rem] tablet:text-[1.7rem] miniLaptop:text-[1.7rem] laptop:text-[2rem]">
-            Work with the largest network of independent professionals and get
-            things done—from quick turnarounds to big transformations.
+            Work with the largest network of independent professionals and get things done—from
+            quick turnarounds to big transformations.
           </p>
           <section className="flex content-center items-center justify-center gap-8 self-center pr-2 pt-12 xsMobile:-mt-5 xsMobile:flex-col miniMobile:flex-col mobile:flex-col miniTablet:flex-col tablet:flex-col miniLaptop:flex-col laptop:flex-col desktop:gap-2">
             <div className="rounded-md bg-[#1b761b] text-white xsMobile:h-[6.2rem] xsMobile:w-[110%] xsMobile:text-[1.4rem] miniMobile:h-[6.4rem] miniMobile:w-[18rem] miniMobile:text-[1.45rem] mobile:h-[6.4rem] mobile:w-[20rem] mobile:text-[1.45rem] miniTablet:h-[8rem] miniTablet:w-[24rem] miniTablet:text-[1.7rem] tablet:h-[8rem] tablet:w-[28rem] tablet:text-[2rem] miniLaptop:h-[10rem] miniLaptop:w-[34rem] miniLaptop:text-[2.4rem] laptop:h-[11rem] laptop:w-[39rem] laptop:text-[2.6rem] desktop:h-[7rem] desktop:w-[17rem] desktop:text-[1.3rem] largeDesktop:h-[9rem] largeDesktop:w-[27rem] largeDesktop:text-[1.8rem]">
@@ -45,7 +41,7 @@ function ClientSection() {
         </div>
       </div>
     </section>
-  );
+  )
 }
 
-export default ClientSection;
+export default ClientSection

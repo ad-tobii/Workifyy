@@ -1,29 +1,29 @@
-import { useNavigate, Link } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { FaUser, FaHammer } from "react-icons/fa6";
-import Nav from "../../../Components/Nav";
+import { useNavigate, Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { FaUser, FaHammer } from 'react-icons/fa6'
+import Nav from '../../../Components/Nav'
 
 function Signup({ selectedRadio: initialSelectedRadio = null }) {
-  const navigate = useNavigate();
-  const [selectedRadio, setSelectedRadio] = useState(initialSelectedRadio);
+  const navigate = useNavigate()
+  const [selectedRadio, setSelectedRadio] = useState(initialSelectedRadio)
 
-  const handleRadioChange = (event) => {
-    setSelectedRadio(event.target.id);
-  };
+  const handleRadioChange = event => {
+    setSelectedRadio(event.target.id)
+  }
 
   const handleButtonClick = () => {
-    if (selectedRadio === "radio1") {
-      navigate("/auth/professional-signup", {
-        state: { role: "professional" },
-      });
-    } else if (selectedRadio === "radio2") {
-      navigate("/auth/ClientSignup", { state: { role: "client" } });
+    if (selectedRadio === 'radio1') {
+      navigate('/auth/ProfessionalSignup', {
+        state: { role: 'professional' },
+      })
+    } else if (selectedRadio === 'radio2') {
+      navigate('/auth/ClientSignup', { state: { role: 'client' } })
     }
-  };
+  }
 
   useEffect(() => {
-    document.title = "Signup | Workifyy";
-  }, []);
+    document.title = 'Signup | Workifyy'
+  }, [])
 
   return (
     <div>
@@ -54,11 +54,11 @@ function Signup({ selectedRadio: initialSelectedRadio = null }) {
         >
           <pre className="hidden xsMobile:ml-[5%] xsMobile:mt-4 xsMobile:inline-block xsMobile:text-[130%] miniMobile:ml-[5%] miniMobile:inline-block miniMobile:text-[135%] desktop:ml-[5%] desktop:mt-3 desktop:inline-block desktop:text-[185%] largeDesktop:ml-[5%] largeDesktop:mt-3 largeDesktop:inline-block largeDesktop:text-[190%]">
             <FaHammer className="mb-3" />
-            I’m a{"\n"}professional,{"\n"}looking for work.
+            I’m a{'\n'}professional,{'\n'}looking for work.
           </pre>
           <pre className="hidden mobile:ml-[5%] mobile:mt-2 mobile:inline-block mobile:text-[170%] miniTablet:ml-[5%] miniTablet:mt-2 miniTablet:inline-block miniTablet:text-[170%] tablet:ml-[5%] tablet:mt-4 tablet:inline-block tablet:text-[170%] miniLaptop:ml-[5%] miniLaptop:mt-4 miniLaptop:inline-block miniLaptop:text-[185%] laptop:ml-[5%] laptop:mt-6 laptop:inline-block laptop:text-[195%]">
             <FaHammer className="mb-3" />
-            I’m a professional,{"\n"}looking for work.
+            I’m a professional,{'\n'}looking for work.
           </pre>
         </label>
 
@@ -75,12 +75,12 @@ function Signup({ selectedRadio: initialSelectedRadio = null }) {
         >
           <pre className="hidden xsMobile:ml-[5%] xsMobile:mt-4 xsMobile:inline-block xsMobile:text-[130%] miniMobile:ml-[5%] miniMobile:inline-block miniMobile:text-[135%] desktop:ml-[5%] desktop:mt-3 desktop:inline-block desktop:text-[185%] largeDesktop:ml-[5%] largeDesktop:mt-3 largeDesktop:inline-block largeDesktop:text-[190%]">
             <FaUser className="mb-3" />
-            I’m a client {"\n"}Looking to{"\n"}hire.
+            I’m a client {'\n'}Looking to{'\n'}hire.
           </pre>
 
           <pre className="hidden mobile:ml-[5%] mobile:mt-2 mobile:inline-block mobile:text-[170%] miniTablet:ml-[5%] miniTablet:mt-2 miniTablet:inline-block miniTablet:text-[175%] tablet:ml-[5%] tablet:mt-4 tablet:inline-block tablet:text-[170%] miniLaptop:ml-[5%] miniLaptop:mt-4 miniLaptop:inline-block miniLaptop:text-[185%] laptop:ml-[5%] laptop:mt-6 laptop:inline-block laptop:text-[195%]">
             <FaUser className="mb-3" />
-            I'm a client{"\n"}looking to hire.
+            I'm a client{'\n'}looking to hire.
           </pre>
         </label>
       </div>
@@ -88,7 +88,7 @@ function Signup({ selectedRadio: initialSelectedRadio = null }) {
       <div className="tabs:mt-[5%] mt-12 flex justify-center">
         <button
           className={`tabs:w-[90%] tabs:rounded-lg rounded-3xl bg-[#32cd32] px-6 py-2 text-xl font-bold text-white mobile:mt-4 mobile:w-[19rem] mobile:text-xl miniTablet:mt-4 miniTablet:w-96 miniTablet:text-2xl ${
-            selectedRadio ? "bg-[#32cd32]" : "cursor-not-allowed opacity-50"
+            selectedRadio ? 'bg-[#32cd32]' : 'cursor-not-allowed opacity-50'
           }`}
           onClick={handleButtonClick}
           disabled={!selectedRadio}
@@ -99,14 +99,14 @@ function Signup({ selectedRadio: initialSelectedRadio = null }) {
 
       <div className="flex justify-center">
         <p className="pt-[1rem] text-white">
-          Already have an account?{" "}
+          Already have an account?{' '}
           <Link to="/auth/signin">
             <span className="font-bold text-[#32cd32]">Login</span>
           </Link>
         </p>
       </div>
     </div>
-  );
+  )
 }
 
-export default Signup;
+export default Signup

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 const ValueSection = () => {
   return (
     <div className="mt-28 flex justify-center px-6">
@@ -10,8 +11,8 @@ const ValueSection = () => {
         <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-20 lg:space-y-0">
           <div className="flex flex-col space-y-8 lg:flex-1 lg:space-y-0">
             <p className="pb-5 text-center text-xl font-light text-[#d1d5db] lg:text-left">
-              Empowering clients and professionals with seamless job connections
-              and efficient solutions.
+              Empowering clients and professionals with seamless job connections and efficient
+              solutions.
             </p>
             <img
               src="./assets/valuepic.jpg"
@@ -24,9 +25,7 @@ const ValueSection = () => {
                   1
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold">
-                    Find the Right Professional
-                  </h2>
+                  <h2 className="text-xl font-bold">Find the Right Professional</h2>
                   <p className="text-sm text-[#32cd32]">
                     Post a job and receive bids from qualified experts.
                   </p>
@@ -50,7 +49,7 @@ const ValueSection = () => {
                   3
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold ">Track Progress</h2>
+                  <h2 className="text-xl font-bold">Track Progress</h2>
                   <p className="text-sm text-[#32cd32]">
                     Monitor your ongoing projects easily in one place.
                   </p>
@@ -58,9 +57,12 @@ const ValueSection = () => {
               </div>
             </div>
             <div className="text-center lg:text-left">
-              <button className="mt-12 rounded border-2 border-[#32cd32] p-2 font-medium text-[#32cd32] transition-colors hover:bg-[#32cd32] hover:text-white">
+              <Link
+                to="/auth/signup"
+                className="mt-12 rounded border-2 border-[#32cd32] p-2 font-medium text-[#32cd32] transition-colors hover:bg-[#32cd32] hover:text-white"
+              >
                 Get Started
-              </button>
+              </Link>
             </div>
           </div>
           <div className="hidden lg:block">
@@ -73,7 +75,7 @@ const ValueSection = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ValueSection;
+export default ValueSection
