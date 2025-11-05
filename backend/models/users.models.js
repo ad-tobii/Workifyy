@@ -2,13 +2,17 @@ import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema(
   {
-    firstName: {
+    firstname: {
       type: String,
       required: [true, 'First name is required'],
     },
-    lastName: {
+    lastname: {
       type: String,
       required: [true, 'Last name is required'],
+    },
+    password: {
+      type: String,
+      required: [true, 'Password is required'],
     },
     email: {
       type: String,
@@ -26,6 +30,18 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    otp: {
+      type: String,
+      default: null,
+    },
+    otpExpiresAt: {
+      type: Date,
+      default: null,
+    },
+    lastOtpSentAt: { type: Date, default: null },
+    otpAttempts: { type: Number, default: 0 },
+    otpAttemptResetAt: { type: Date, default: null },
+    
   },
   { timestamps: true }
 );
