@@ -10,14 +10,16 @@ export const signup = async (req, res) => {
   try {
     const { firstname, lastname, password, email, role } = req.body;
     // collect and validate the request body
-    if (!firstname || !lastname || !password || !email || !role) {
+    
+    const requiredFields = ['firstname', 'lastname', 'password', 'email', 'role'];
+    const missingFields = requiredFields.filter((field) => !req.body[field]);
+    if (missingFields.length > 0) {
       return res.status(400).json({
-        message: 'All fields are required',
+        message: `All fields are required: ${missingFields.join(', ')}`,
         success: false,
         data: null,
       });
     }
-
     // check if the user already exists
     const user = await User.findOne({ email });
     if (user) {
@@ -69,9 +71,11 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     // collect and validate the request body
-    if (!email || !password) {
+    const requiredFields = ['email', 'password'];
+    const missingFields = requiredFields.filter((field) => !req.body[field]);
+    if (missingFields.length > 0) {
       return res.status(400).json({
-        message: 'All fields are required',
+        message: `All fields are required: ${missingFields.join(', ')}`,
         success: false,
         data: null,
       });

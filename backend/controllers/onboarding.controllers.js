@@ -1,7 +1,6 @@
 import ProfessionalProfile from '../models/professionalProfiles.models.js';
 import ClientProfile from '../models/clientProfiles.models.js';
 
-
 const createProfile = async (req, res) => {
   try {
     const user = req.user;
@@ -17,18 +16,30 @@ const createProfile = async (req, res) => {
 
     // Handle PROFESSIONAL profile creation
     if (user.role === 'professional') {
-      const { tagline, experience, expertise, state, languages, photo, bio } = req.body;
+      const { tagline, experience, expertise, state, languages, photo, bio } =
+        req.body;
 
-      const requiredFields = [tagline, experience, expertise, state, languages, photo, bio];
-      if (requiredFields.some(field => !field)) {
+      const requiredFields = [
+        'tagline',
+        'experience',
+        'expertise',
+        'state',
+        'languages',
+        'photo',
+        'bio',
+      ];
+      const missingFields = requiredFields.filter((field) => !req.body[field]);
+      if (missingFields.length > 0) {
         return res.status(400).json({
-          message: 'All fields are required',
+          message: `All fields are required: ${missingFields.join(', ')}`,
           success: false,
           data: null,
         });
       }
 
-      const existingProfile = await ProfessionalProfile.findOne({ user: user._id });
+      const existingProfile = await ProfessionalProfile.findOne({
+        user: user._id,
+      });
       if (existingProfile) {
         return res.status(400).json({
           message: 'Professional profile already exists',
@@ -61,16 +72,19 @@ const createProfile = async (req, res) => {
     else if (user.role === 'client') {
       const { photo, state, languages } = req.body;
 
-      const requiredFields = [photo, state, languages];
-      if (requiredFields.some(field => !field)) {
+      const requiredFields = ['photo', 'state', 'languages'];
+      const missingFields = requiredFields.filter((field) => !req.body[field]);
+      if (missingFields.length > 0) {
         return res.status(400).json({
-          message: 'All fields are required',
+          message: `All fields are required: ${missingFields.join(', ')}`,
           success: false,
           data: null,
         });
       }
 
-      const existingClientProfile = await ClientProfile.findOne({ user: user._id });
+      const existingClientProfile = await ClientProfile.findOne({
+        user: user._id,
+      });
       if (existingClientProfile) {
         return res.status(400).json({
           message: 'Client profile already exists',
@@ -103,7 +117,6 @@ const createProfile = async (req, res) => {
         data: null,
       });
     }
-
   } catch (error) {
     console.error('Error creating profile:', error);
     return res.status(500).json({
