@@ -1,4 +1,6 @@
-import Job from '../models/Jobs.models';
+import Job from '../models/jobs.models.js';
+import { createNotification } from './notification.controllers.js';
+import User from '../models/users.models.js'; 
 
 export const createJob = async (req, res, io) => {
   try {
@@ -22,6 +24,7 @@ export const createJob = async (req, res, io) => {
       });
     }
 
+    // Create the job
     const job = await Job.create({
       client: user._id,
       title,
@@ -30,7 +33,21 @@ export const createJob = async (req, res, io) => {
       scheduledAt,
     });
 
-    io.to(job.location).emit('newJob', job);
+    // 1️⃣ Emit real-time job to city room
+    io.to(location).emit('newJob', job);
+
+    // 2️⃣ Fetch all professionals in that city
+    const professionals = await User.find({ role: 'professional', city: location });
+
+    // 3️⃣ Create notifications for each professional
+    for (const prof of professionals) {
+      await createNotification({
+        userId: prof._id,
+        type: 'newJob',
+        message: `A new job has been posted in ${location}: "${title}"`,
+        meta: { jobId: job._id, location },
+      }, io);
+    }
 
     return res.status(201).json({
       message: 'Job successfully posted',
@@ -51,14 +68,12 @@ export const listJobs = async (req, res) => {
   try {
     const { location } = req.query;
 
-    // Build filter: only pending jobs
-    const filter = { status: 'pending' };
+    const filter = { status: 'open' };
     if (location) filter.location = location;
 
-    // Fetch jobs from DB
     const jobs = await Job.find(filter)
       .populate('client', 'name email')
-      .sort({ scheduledAt: 1 }); // soonest jobs first
+      .sort({ scheduledAt: 1 });
 
     return res.status(200).json({
       message: 'Open jobs fetched successfully',

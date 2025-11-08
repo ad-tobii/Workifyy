@@ -1,10 +1,13 @@
 import express from 'express';
-import { createBid } from '../controllers/bids.controller.js';
-import protectRoutes from '../middleware/auth.middleware.js';
+import protectRoutes from '../middleware/protectRoutes.middleware.js';
+import { createBid, handleBidAction } from '../controllers/bid.controllers.js';
 
 const router = express.Router();
 
-// Place a bid
+// Create a new bid
 router.post('/place-bid', protectRoutes, createBid);
+
+// Accept, reject, or counter a bid
+router.patch('/:bidId/action', protectRoutes, handleBidAction);
 
 export default router;

@@ -10,11 +10,14 @@ import authRoutes from './routes/auth.routes.js';
 import userRoutes from './routes/user.routes.js';
 import http from 'http';
 import { Server } from 'socket.io';
+import bidRoutes from './routes/bid.routes.js';
+import jobRoutes from './routes/job.routes.js';
+import notificationRoutes from './routes/notification.routes.js';
 dotenv.config();
 
 const app = express();
 
-app.use(cors());
+app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan('dev'));
@@ -23,13 +26,15 @@ connectDB();
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/user', userRoutes);
-
+app.use('/api/v1/bid', bidRoutes);
+app.use('/api/v1/job', jobRoutes);
+app.use('/api/v1/notification', notificationRoutes);
 const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: '*',
-    methods: ['GET', 'POST'],
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PATCH'],
   },
 });
 
@@ -60,6 +65,12 @@ io.on('connection', (socket) => {
   if (socket.data.role === 'client') {
     socket.join(`client:${socket.data.userId}`);
     console.log(`Client ${socket.data.userId} joined their personal room`);
+  }
+  if (socket.data.role === 'professional') {
+    socket.join(`professionals:${socket.data.userId}`);
+    console.log(
+      `professional:${socket.data.userId} joined their personal room`
+    );
   }
 
   console.log('⚡ Client connected:', socket.id);
