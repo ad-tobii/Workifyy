@@ -29,8 +29,8 @@ app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/bid', bidRoutes);
 app.use('/api/v1/job', jobRoutes);
 app.use('/api/v1/notification', notificationRoutes);
-app.get('*', (req, res) => {
-  res.send('✅ Workify backend is running successfully!');
+app.get((req, res) => {
+  res.send('✅ Workify backend is running successfully! : ⚠️ Route doesnt exist tho.');
 });
 
 const server = http.createServer(app);
