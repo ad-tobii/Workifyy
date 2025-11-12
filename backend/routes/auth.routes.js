@@ -21,6 +21,6 @@ router.post('/send-verification-email', sendVerificationEmail);
 // Verify email route
 router.post('/verify-email', verifyEmail);
 // Get logged in user
-router.post('/get-me', protectRoutes, getCurrentUser);
+router.get('/get-me', protectRoutes, getCurrentUser);
 
 export default router;
