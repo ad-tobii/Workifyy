@@ -1,5 +1,13 @@
 import express from 'express';
-import { signup, login, logout, sendVerificationEmail, verifyEmail } from '../controllers/auth.controllers.js';
+import {
+  signup,
+  login,
+  logout,
+  sendVerificationEmail,
+  verifyEmail,
+  getCurrentUser,
+} from '../controllers/auth.controllers.js';
+import protectRoutes from '../middleware/protectRoutes.middleware.js';
 const router = express.Router();
 
 // Signup route
@@ -12,5 +20,7 @@ router.post('/logout', logout);
 router.post('/send-verification-email', sendVerificationEmail);
 // Verify email route
 router.post('/verify-email', verifyEmail);
+// Get logged in user
+router.post('/get-me', protectRoutes, getCurrentUser);
 
 export default router;
