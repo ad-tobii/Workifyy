@@ -328,6 +328,24 @@ const tokenGenerator = (userId, role, res) => {
   return token;
 };
 
+export const getCurrentUser = (req, res) => {
+  const user = req.user; 
+
+  if (!user) {
+    return res.status(401).json({
+      message: "Not authenticated",
+      success: false,
+      data: null,
+    });
+  }
+
+  res.json({
+    message: "User fetched successfully",
+    success: true,
+    data: { user },
+  });
+};
+
 // To do list:
 // * Add forgot password functionality
 // * Add reset password functionality
