@@ -1,126 +1,74 @@
 import { create } from 'zustand'
-import api from '../api/axios.api'
+import api from '../api'
 
-const useUserStore = create(set => ({
-  user: null,
-  loading: false,
-  error: null,
+const useUserStore = create((set, get) => ({
+  user: null, // The currently logged-in user
 
-  login: async (email, password) => {
-    set({ loading: true, error: null })
-    try {
-      const res = await api.post('/auth/login', { email, password })
-
-      if (!res.data.success) {
-        set({ error: res.data.message, loading: false })
-        return
-      }
-      set({ user: res.data.data.user, loading: false })
-    } catch (error) {
-      set({
-        loading: false,
-        error: error?.response?.data?.message || error.message || 'Something went wrong.',
-      })
-    }
+  loading: {
+    login: false,
+    signup: false,
+    logout: false, // Loading state for different auth actions
+    requestVerificationEmail: false,
+    verifyAccount: false,
+    loadUser: false,
   },
 
-  signup: async (firstname, lastname, password, role, email) => {
-    try {
-      set({ loading: true, error: null })
+  error: null, // Error message from the last action
 
-      const res = await api.post('/auth/signup', { firstname, lastname, pasword, role, email })
+  successMessage: null, // Success message from the last action
 
-      if (!res.data.success) {
-        set({ loading: false, error: res.data.message })
-        return
-      }
+  setLoading: (key, value) =>
+    set(state => ({
+      // Helper function to update the loading state for a specific action
+      loading: { ...state.loading, [key]: value },
+    })),
 
-      set({ user: res.data.data.user, loading: false })
-    } catch (error) {
-      set({
-        loading: false,
-        error: error?.response?.data?.message || error.message || 'Something went wrong.',
-      })
+  // Core function to handle any authentication-related API call
+  handleAuthCall: async (action, params) => {
+    const { setLoading } = get() // Get the setLoading function from the store
+
+    const actionMap = {
+      login: '/login',
+      signup: '/signup',
+      logout: '/logout', // Map of actions to their corresponding API endpoints
+      requestVerificationEmail: '/send-verification-mail',
+      verifyAccount: '/verify-email',
+      loadUser: '/get-me',
     }
-  },
 
-  logout: async () => {
+    setLoading(action, true) // Set loading state for this action to true
+
+    set({ error: null, successMessage: null }) // Reset error and successMessage before making the request
+
     try {
-      set({ loading: true, error: null })
-      const res = await api.post('/auth/logout')
+      const method = action === 'loadUser' ? 'get' : 'post' // Determine HTTP method: GET for loadUser, POST for everything else
+
+      const res = await api[method](
+        `/auth${actionMap[action]}`,
+        method === 'post' ? params || {} : undefined
+      )
 
       if (!res.data.success) {
-        set({ loading: false, error: res.data.message })
-        return
-      }
-      set({ user: null, loading: false })
-    } catch (error) {
-      set({
-        error: error.response.data.message || error.message || 'Something went wrong',
-        loading: false,
-      })
-    }
-  },
-  requestVerificationEmail: async () => {
-    try {
-      set({ loading: true, error: null })
-      const res = await api.post('/auth/send-verification-email')
-
-      if (!res.data.success) {
-        set({ loading: false, error: res.data.message })
+        set({ error: res.data.message }) // If API response says failure, set error state
         return
       }
 
-      set({ loading: false, successMessage: 'Verification email sent!' })
-
-      setTimeout(() => set({ successMessage: null }), 5000)
+      set({ user: res.data.data?.user || null, successMessage: 'Request successful' }) // On success, store user data and a success message
     } catch (error) {
       set({
-        error: error.response.data.message || error.message || 'Something went wrong',
-        loading: false,
+        error: error.response?.data?.message || error.message || 'Something went wrong.',
       })
+    } finally {
+      setLoading(action, false) // Always reset loading state for this action
     }
   },
-  verifyAccount: async email => {
-    try {
-      set({ loading: true, error: null })
-      const res = await api.post('/auth/verify-email', { email })
 
-      if (!res.data.success) {
-        set({ loading: false, error: res.data.message })
-        return
-      }
-
-      set({ loading: false, successMessage: 'Account successfully verified!' })
-
-      setTimeout(() => set({ successMessage: null }), 5000)
-    } catch (error) {
-      set({
-        error: error.response.data.message || error.message || 'Something went wrong',
-        loading: false,
-      })
-    }
-  },
-  loadUser: async () => {
-    try {
-      set({ loading: true, error: null })
-      const res = await api.post('/auth/', { email })
-
-      if (!res.data.success) {
-        set({ loading: false, error: res.data.message })
-        return
-      }
-
-      set({ loading: false, successMessage: 'Account successfully verified!' })
-
-      setTimeout(() => set({ successMessage: null }), 5000)
-    } catch (error) {
-      set({
-        error: error.response.data.message || error.message || 'Something went wrong',
-        loading: false,
-      })
-    }
-  },
+  login: credentials => get().handleAuthCall('login', credentials),
+  signup: data => get().handleAuthCall('signup', data),
+  logout: () => get().handleAuthCall('logout'),
+  loadUser: () => get().handleAuthCall('loadUser'),
+  verifyAccount: otp => get().handleAuthCall('verifyAccount', otp),
+  requestVerificationEmail: email => get().handleAuthCall('requestVerificationEmail', email),
 }))
 
 export default useUserStore
