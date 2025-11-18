@@ -6,7 +6,7 @@ dotenv.config();
 const protectRoutes = async (req, res, next) => {
   try {
     const token = req.cookies.jwt;
-    console('this is token!!!!!:', token);
+    console.log('this is token!!!!!:', token);
     if (!token) {
       return res.status(401).json({
         message: 'Unauthorized: No token provided',

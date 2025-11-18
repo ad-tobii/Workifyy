@@ -18,12 +18,13 @@ router.post('/login', login);
 // Logout route
 router.post('/logout', logout);
 // Send verification email route
-router.post('/send-verification-email', protectRoutes, sendVerificationEmail);
+  router.post('/send-verification-mail', protectRoutes, sendVerificationEmail);
 // Verify email route
 router.post('/verify-email', protectRoutes, verifyEmail);
 // Get logged in user
 router.get('/get-me', protectRoutes, getCurrentUser);
 // Check if email in use
 router.get('/check-email', checkEmail);
+
 
 export default router;
