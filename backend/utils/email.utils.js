@@ -1,29 +1,27 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import dotenv from 'dotenv';
 dotenv.config();
 
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 const sendEmail = async (receiverEmail, subject, text) => {
   try {
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.zoho.com',
-      port: 587,
-      secure: true,
-      auth: {
-        user: process.env.ZMAIL_USER,
-        pass: process.env.ZMAIL_PASS,
-      },
-    });
-    const mailOptions = {
-      from: `"Workifyy" <${process.env.ZMAIL_USER}>`,
+    const { data, error } = await resend.emails.send({
+      from: 'Workifyy <noreply@workifyy.com>',
       to: receiverEmail,
       subject,
       text,
-    };
-    await transporter.sendMail(mailOptions);
-    console.log('✅ Email sent successfully to :' + receiverEmail);
+    });
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    console.log('✅ Email sent successfully to:', receiverEmail);
   } catch (error) {
-    console.log('❌ Email not sent to :' + receiverEmail);
-    console.log(error.message);
+    console.error('❌ Email failed for:', receiverEmail);
+    console.error('Error:', error.message);
+    throw error;
   }
 };
 
