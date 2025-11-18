@@ -6,6 +6,7 @@ import {
   sendVerificationEmail,
   verifyEmail,
   getCurrentUser,
+  checkEmail,
 } from '../controllers/auth.controllers.js';
 import protectRoutes from '../middleware/protectRoutes.middleware.js';
 const router = express.Router();
@@ -22,5 +23,7 @@ router.post('/send-verification-email', sendVerificationEmail);
 router.post('/verify-email', verifyEmail);
 // Get logged in user
 router.get('/get-me', protectRoutes, getCurrentUser);
+// Check if email in use
+router.get('/check-email', checkEmail);
 
 export default router;

@@ -10,8 +10,14 @@ export const signup = async (req, res) => {
   try {
     const { firstname, lastname, password, email, role } = req.body;
     // collect and validate the request body
-    
-    const requiredFields = ['firstname', 'lastname', 'password', 'email', 'role'];
+
+    const requiredFields = [
+      'firstname',
+      'lastname',
+      'password',
+      'email',
+      'role',
+    ];
     const missingFields = requiredFields.filter((field) => !req.body[field]);
     if (missingFields.length > 0) {
       return res.status(400).json({
@@ -55,7 +61,7 @@ export const signup = async (req, res) => {
     return res.status(201).json({
       message: 'User created successfully',
       success: true,
-      data: { user: res_user, token },
+      data: { user: res_user },
     });
   } catch (error) {
     console.log(error.message);
@@ -114,7 +120,7 @@ export const login = async (req, res) => {
     return res.status(200).json({
       message: 'Login successful',
       success: true,
-      data: { user: res_user, token },
+      data: { user: res_user },
     });
   } catch (error) {
     console.log(error.message);
@@ -316,6 +322,23 @@ export const verifyEmail = async (req, res) => {
   }
 };
 
+export const checkEmail = async (req, res) => {
+  try {
+    const { email } = req.query;
+
+    if (!email) {
+      return res.status(400).json({ error: 'Email is required' });
+    }
+
+    const user = await User.findOne({ email }).lean();
+
+    return res.json({ available: !user });
+  } catch (error) {
+    console.error('CheckEmail error:', error);
+    return res.status(500).json({ error: 'Server error' });
+  }
+};
+
 const tokenGenerator = (userId, role, res) => {
   const token = jwt.sign({ userId, role }, process.env.JWT_SECRET, {
     expiresIn: '7d',
@@ -329,18 +352,18 @@ const tokenGenerator = (userId, role, res) => {
 };
 
 export const getCurrentUser = (req, res) => {
-  const user = req.user; 
+  const user = req.user;
 
   if (!user) {
     return res.status(401).json({
-      message: "Not authenticated",
+      message: 'Not authenticated',
       success: false,
       data: null,
     });
   }
 
   res.json({
-    message: "User fetched successfully",
+    message: 'User fetched successfully',
     success: true,
     data: { user },
   });
