@@ -18,9 +18,9 @@ router.post('/login', login);
 // Logout route
 router.post('/logout', logout);
 // Send verification email route
-router.post('/send-verification-email', sendVerificationEmail);
+router.post('/send-verification-email', protectRoutes, sendVerificationEmail);
 // Verify email route
-router.post('/verify-email', verifyEmail);
+router.post('/verify-email', protectRoutes, verifyEmail);
 // Get logged in user
 router.get('/get-me', protectRoutes, getCurrentUser);
 // Check if email in use
