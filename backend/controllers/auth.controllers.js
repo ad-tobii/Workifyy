@@ -169,7 +169,13 @@ export const sendVerificationEmail = async (req, res) => {
         data: null,
       });
     }
-    console.log(user.firstname + 'requested a cookie!!🔥🔥');
+    if (user.isVerified) {
+      return res.status(404).json({
+        message: 'Email already verified',
+        success: false,
+        data: null,
+      });
+    }
     // Check cooldown (30 seconds)
     const COOLDOWN_MS = 30 * 1000;
     if (user.lastOtpSentAt) {
@@ -233,7 +239,6 @@ export const sendVerificationEmail = async (req, res) => {
 
 export const verifyEmail = async (req, res) => {
   try {
-   
     // Retrive token and otp
     const token = req.cookies.jwt;
     const { otp } = req.body;
