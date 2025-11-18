@@ -17,7 +17,7 @@ router.post('/signup', signup);
 router.post('/login', login);
 // Logout route
 router.post('/logout', logout);
-// Send verification email route
+// Send verification mail route
   router.post('/send-verification-mail', protectRoutes, sendVerificationEmail);
 // Verify email route
 router.post('/verify-email', protectRoutes, verifyEmail);
