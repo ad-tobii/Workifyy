@@ -233,6 +233,7 @@ export const sendVerificationEmail = async (req, res) => {
 
 export const verifyEmail = async (req, res) => {
   try {
+    console.log('Yh i was hit!!!!!!!!!!!!!');
     // Retrive token and otp
     const token = req.cookies.jwt;
     const { otp } = req.body;
