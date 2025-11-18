@@ -150,70 +150,81 @@ export const logout = async (req, res) => {
 
 export const sendVerificationEmail = async (req, res) => {
   try {
-    // Retrieve the token from the cookies
     const token = req.cookies.jwt;
     if (!token) {
-      return res.status(400).json({
-        message: 'Unauthorized',
+      return res.status(401).json({
+        message: 'Unauthorized - No token provided',
         success: false,
         data: null,
       });
     }
-    // Verify the token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.userId);
+
     if (!user) {
-      return res.status(400).json({
+      return res.status(404).json({
         message: 'User not found',
         success: false,
         data: null,
       });
     }
-    // Cooldown: 30 seconds
-    const COOLDOWN_MS = 30 * 1000;
 
-    if (user.lastOtpSentAt && Date.now() - user.lastOtpSentAt < COOLDOWN_MS) {
-      const secondsLeft = Math.ceil(
-        (COOLDOWN_MS - (Date.now() - user.lastOtpSentAt)) / 1000
-      );
-      return res.status(429).json({
-        message: `Please wait ${secondsLeft}s before requesting another OTP.`,
+    // Check cooldown (30 seconds)
+    const COOLDOWN_MS = 30 * 1000;
+    if (user.lastOtpSentAt) {
+      const timeSinceLastOtp = Date.now() - user.lastOtpSentAt;
+      if (timeSinceLastOtp < COOLDOWN_MS) {
+        const secondsLeft = Math.ceil((COOLDOWN_MS - timeSinceLastOtp) / 1000);
+        return res.status(429).json({
+          message: `Please wait ${secondsLeft}s before requesting another OTP`,
+          success: false,
+          data: { retryAfter: secondsLeft },
+        });
+      }
+    }
+
+    // Generate and hash OTP
+    const otp = crypto.randomInt(100000, 999999).toString();
+    const hashedOtp = crypto.createHash('sha256').update(otp).digest('hex');
+
+    // Update user with new OTP
+    user.otp = hashedOtp;
+    user.otpExpiresAt = Date.now() + 5 * 60 * 1000; // 5 minutes
+    user.lastOtpSentAt = Date.now();
+    await user.save();
+
+    // Send verification email
+    const emailText = `Hello and welcome to Workifyy! Your verification OTP is ${otp}. This OTP will expire in 5 minutes.`;
+    await sendEmail(user.email, 'Workifyy - Verify your email', emailText);
+
+    return res.status(200).json({
+      message: 'Verification email sent successfully',
+      success: true,
+      data: { expiresIn: 300 }, // seconds
+    });
+  } catch (error) {
+    console.error('Error sending verification email:', error);
+
+    // Handle specific JWT errors
+    if (error.name === 'JsonWebTokenError') {
+      return res.status(401).json({
+        message: 'Invalid token',
         success: false,
         data: null,
       });
     }
 
-    // Generate Verification Otp
-    const otp = crypto.randomInt(100000, 999999).toString();
-    const hashedOtp = crypto
-      .createHash('sha256')
-      .update(otp.toString())
-      .digest('hex');
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({
+        message: 'Token expired',
+        success: false,
+        data: null,
+      });
+    }
 
-    // Save the hashed otp to the database
-    user.otp = hashedOtp;
-    user.otpExpiresAt = Date.now() + 5 * 60 * 1000;
-    user.lastOtpSentAt = Date.now();
-    await user.save();
-
-    // Mail options for verification email
-    const text = `Hello and welcome to Workifyy! Your verification OTP is ${otp}. Please use this OTP to verify your email. This OTP will expire in 5 minutes.`;
-    const subject = 'Workifyy - Verify your email';
-
-    // Send the verification email
-
-    await sendEmail(user.email, subject, text);
-
-    return res.status(200).json({
-      message: 'Verification email sent successfully',
-      success: true,
-      data: null,
-    });
-  } catch (error) {
-    console.log(error.message);
     return res.status(500).json({
-      message: 'Internal server error',
+      message: 'Failed to send verification email',
       success: false,
       data: null,
     });
