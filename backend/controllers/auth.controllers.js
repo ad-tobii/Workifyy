@@ -169,7 +169,7 @@ export const sendVerificationEmail = async (req, res) => {
         data: null,
       });
     }
-
+    console.log(user.firstname + 'requested a cookie!!🔥🔥');
     // Check cooldown (30 seconds)
     const COOLDOWN_MS = 30 * 1000;
     if (user.lastOtpSentAt) {

@@ -26,6 +26,7 @@ const protectRoutes = async (req, res, next) => {
       });
     }
     req.user = user;
+    console.log(user.firstname+"Was let through !!!🔥")
     next();
   } catch (error) {
     console.log(error.message);
