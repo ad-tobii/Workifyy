@@ -6,7 +6,7 @@ const sendEmail = async (receiverEmail, subject, text) => {
   try {
     const transporter = nodemailer.createTransport({
       host: 'smtp.zoho.com',
-      port: 465,
+      port: 587,
       secure: true,
       auth: {
         user: process.env.ZMAIL_USER,
