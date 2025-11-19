@@ -3,9 +3,9 @@ import { useState, useEffect } from 'react'
 import { FaUser, FaHammer } from 'react-icons/fa6'
 import Nav from '../../../Components/Nav'
 
-function Signup({ selectedRadio: initialSelectedRadio = null }) {
+function Signup() {
   const navigate = useNavigate()
-  const [selectedRadio, setSelectedRadio] = useState(initialSelectedRadio)
+  const [selectedRadio, setSelectedRadio] = useState(null)
 
   const handleRadioChange = event => {
     setSelectedRadio(event.target.id)
@@ -13,11 +13,9 @@ function Signup({ selectedRadio: initialSelectedRadio = null }) {
 
   const handleButtonClick = () => {
     if (selectedRadio === 'radio1') {
-      navigate('/auth/ProfessionalSignup', {
-        state: { role: 'professional' },
-      })
+      navigate('/auth/ProfessionalSignup')
     } else if (selectedRadio === 'radio2') {
-      navigate('/auth/ClientSignup', { state: { role: 'client' } })
+      navigate('/auth/ClientSignup')
     }
   }
 

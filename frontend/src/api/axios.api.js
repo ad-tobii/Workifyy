@@ -1,7 +1,8 @@
 import axios from 'axios'
+const url = import.meta.env.VITE_API_URL
 
 const api = axios.create({
-  baseUrl: process.env.REACT_APP_API_URL,
+  baseURL: url,
   withCredentials: true,
 })
 

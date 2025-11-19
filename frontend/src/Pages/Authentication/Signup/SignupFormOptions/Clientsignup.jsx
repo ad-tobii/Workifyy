@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
-import Form from '../../../../Components/Form'
-import FormNav from '../../../../Components/FormNav'
+import Signup from '../Signup'
+import SignupNav from '../SignupNav'
 
-function Clientsignup() {
+function ClientSignup() {
   useEffect(() => {
     document.title = 'Sign In | Workifyy'
   }, [])
@@ -16,10 +16,10 @@ function Clientsignup() {
 
   return (
     <div>
-      <FormNav Formnavigation={ClientFormNav} />
-      <Form role="client"/>
+      {/* <SignupNav Formnavigation={ClientFormNav} /> */}
+      <Signup role="client" />
     </div>
   )
 }
 
-export default Clientsignup
+export default ClientSignup

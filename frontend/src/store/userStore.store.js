@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import api from '../api'
+import api from '../api/axios.api'
 
 const useUserStore = create((set, get) => ({
   user: null, // The currently logged-in user
@@ -50,14 +50,17 @@ const useUserStore = create((set, get) => ({
 
       if (!res.data.success) {
         set({ error: res.data.message }) // If API response says failure, set error state
-        return
+        return { success: false, error: res.data.message }
       }
 
       set({ user: res.data.data?.user || null, successMessage: 'Request successful' }) // On success, store user data and a success message
+      return { success: true, user: res.data.data?.user || {}, data: res.data.data }
     } catch (error) {
+      const errorMsg = error.response?.data?.message || error.message || 'Something went wrong.'
       set({
-        error: error.response?.data?.message || error.message || 'Something went wrong.',
+        error: errorMsg,
       })
+      return { success: false, error: errorMsg }
     } finally {
       setLoading(action, false) // Always reset loading state for this action
     }
@@ -68,7 +71,7 @@ const useUserStore = create((set, get) => ({
   logout: () => get().handleAuthCall('logout'),
   loadUser: () => get().handleAuthCall('loadUser'),
   verifyAccount: otp => get().handleAuthCall('verifyAccount', otp),
-  requestVerificationEmail: email => get().handleAuthCall('requestVerificationEmail', email),
+  requestVerificationEmail: () => get().handleAuthCall('requestVerificationEmail'),
 }))
 
 export default useUserStore

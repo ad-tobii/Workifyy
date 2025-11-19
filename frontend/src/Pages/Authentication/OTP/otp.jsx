@@ -1,70 +1,58 @@
-import React, { useState, useRef } from 'react'
+import { useState } from 'react'
+import OTPInput from './OtpInput.jsx'
+import useUserStore from '../../../store/userStore.store.js'
 
-const OtpForm = () => {
-  const [otp, setOtp] = useState(['', '', '', '', ''])
-  const inputRefs = useRef(Array.from({ length: 5 }, () => React.createRef()))
+export default function Otp() {
+  const [showOTP, setShowOTP] = useState(false)
 
-  const handleChange = (e, index) => {
-    const value = e.target.value
-    if (!/^\d*$/.test(value)) return
+  const requestVerificationEmail = useUserStore(state => state.requestVerificationEmail)
+  const loading = useUserStore(state => state.loading)
+  const error = useUserStore(state => state.error)
+  const successMessage = useUserStore(state => state.successMessage)
 
-    setOtp(prevOtp => {
-      const newOtp = [...prevOtp]
-      newOtp[index] = value
-      return newOtp
-    })
-
-    if (value && index < otp.length - 1) {
-      inputRefs.current[index + 1]?.current?.focus()
+  const handleRequestCode = async () => {
+    const result = await requestVerificationEmail()
+    console.log(result)
+    if (result.success) {
+      setShowOTP(true)
     }
   }
 
-  const handleKeyDown = (e, index) => {
-    if (e.key === 'Backspace' && !otp[index] && index > 0) {
-      inputRefs.current[index - 1]?.current?.focus()
-    }
-  }
-
-  const handleVerifyOtp = () => {
-    const otpString = otp.join('')
-    if (otpString.length !== 5) {
-      alert('Please enter the complete OTP.')
-      return
-    }
-    console.log('OTP entered:', otpString)
-    alert(`OTP submitted: ${otpString}`)
+  if (showOTP) {
+    return <OTPInput length={6} />
   }
 
   return (
-    <div className="mt-12 flex flex-col items-center">
-      <h1 className="text-2xl font-semibold">OTP Verification</h1>
-      <p className="mt-4">Enter the OTP sent to your email</p>
+    <div className="flex min-h-screen items-center justify-center bg-black">
+      <div className="w-full max-w-md rounded-lg p-8">
+        <h1 className="mb-6 text-center text-3xl font-bold text-white">Verification</h1>
 
-      <div className="mt-6 flex space-x-2">
-        {otp.map((digit, index) => (
-          <input
-            key={index}
-            ref={inputRefs.current[index]}
-            className="h-14 w-12 rounded-lg border border-green-500 text-center text-2xl outline-none"
-            type="text"
-            maxLength={1}
-            value={digit}
-            onChange={e => handleChange(e, index)}
-            onKeyDown={e => handleKeyDown(e, index)}
-            aria-label={`OTP digit ${index + 1}`}
-          />
-        ))}
+        <div className="space-y-4">
+          {error && (
+            <div className="rounded border border-red-500 bg-red-900/30 p-3 text-sm text-red-400">
+              {error}
+            </div>
+          )}
+
+          {successMessage && showOTP === false && (
+            <div className="rounded border border-lime-500 bg-green-900/30 p-3 text-sm text-lime-400">
+              {successMessage}
+            </div>
+          )}
+
+          <button
+            onClick={handleRequestCode}
+            disabled={loading.requestVerificationEmail}
+            className="w-full rounded-lg bg-lime-500 px-6 py-3 font-semibold text-black transition-all duration-200 hover:bg-lime-400 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-lime-500"
+          >
+            {loading.requestVerificationEmail ? 'Sending...' : 'Request Verification Code'}
+          </button>
+        </div>
+
+        <p className="mt-4 text-center text-sm text-gray-500">
+          A verification code will be generated and sent to your browser
+        </p>
       </div>
-
-      <button
-        className="mt-6 rounded bg-green-500 px-6 py-2 font-bold text-white"
-        onClick={handleVerifyOtp}
-        disabled={otp.includes('')}
-      >
-        Verify
-      </button>
     </div>
   )
 }
-
-export default OtpForm
