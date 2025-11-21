@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, forwardRef } from 'react'
+import { useState, useEffect, forwardRef } from 'react'
 
 const EyeIcon = ({ size = 20 }) => (
   <svg
@@ -30,7 +30,7 @@ const EyeOffIcon = ({ size = 20 }) => (
   </svg>
 )
 
-const CheckIcon = ({ size = 14 }) => (
+const CheckIcon = ({ size = 14, className = '' }) => (
   <svg
     width={size}
     height={size}
@@ -38,6 +38,7 @@ const CheckIcon = ({ size = 14 }) => (
     fill="none"
     stroke="currentColor"
     strokeWidth="3"
+    className={className}
   >
     <polyline points="20 6 9 17 4 12"></polyline>
   </svg>
@@ -121,63 +122,53 @@ const PasswordInput = forwardRef(({ strength, error, onChange, ...registerProps 
         </button>
       </div>
 
-      {/* Password Requirements */}
-      {value && (
-        <div className="animate-in fade-in mt-2 space-y-1 rounded-lg bg-zinc-900 p-2.5 duration-300">
-          <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">
-            Requirements
-          </p>
+      <div className="space-y-1 rounded-lg bg-zinc-900 p-2.5">
+        <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">Requirements</p>
 
-          {requirementsList.map(({ key, label }) => (
+        {requirementsList.map(({ key, label }) => (
+          <div key={key} className="flex items-center gap-2 transition-all duration-300 ease-out">
             <div
-              key={key}
-              className={`flex items-center gap-2 transition-all duration-300 ease-out ${
-                requirements[key] ? 'opacity-60' : 'opacity-100'
+              className={`border-1.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full transition-all duration-300 ${
+                requirements[key]
+                  ? 'border-[#32cd32] bg-[#32cd32]'
+                  : 'border-gray-600 bg-transparent'
               }`}
             >
+              <CheckIcon size={12} className={requirements[key] ? 'text-white' : 'text-gray-600'} />
+            </div>
+
+            <span
+              className={`text-xs transition-all duration-300 ${
+                requirements[key] ? 'text-gray-400 line-through' : 'text-gray-500'
+              }`}
+            >
+              {label}
+            </span>
+          </div>
+        ))}
+
+        {/* Strength Indicator */}
+        <div className="mt-2 pt-1.5">
+          <div className="flex items-center gap-2">
+            <div className="h-1 flex-1 rounded-full bg-zinc-700">
               <div
-                className={`border-1.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full transition-all duration-300 ${
-                  requirements[key]
-                    ? 'border-[#32cd32] bg-[#32cd32]'
-                    : 'border-zinc-600 bg-transparent'
+                className={`h-1 rounded-full transition-all duration-300 ${
+                  strength === 'weak'
+                    ? 'w-1/4 bg-red-500'
+                    : strength === 'fair'
+                      ? 'w-1/2 bg-yellow-500'
+                      : strength === 'strong'
+                        ? 'w-full bg-[#32cd32]'
+                        : 'w-0 bg-transparent'
                 }`}
-              >
-                {requirements[key] && <CheckIcon size={12} />}
-              </div>
-
-              <span
-                className={`text-xs transition-all duration-300 ${
-                  requirements[key] ? 'text-gray-400 line-through' : 'text-gray-300'
-                }`}
-              >
-                {label}
-              </span>
+              />
             </div>
-          ))}
-
-          {/* Strength Indicator */}
-          <div className="mt-2 pt-1.5">
-            <div className="flex items-center gap-2">
-              <div className="h-1 flex-1 rounded-full bg-zinc-700">
-                <div
-                  className={`h-1 rounded-full transition-all duration-300 ${
-                    strength === 'weak'
-                      ? 'w-1/4 bg-red-500'
-                      : strength === 'fair'
-                        ? 'w-1/2 bg-yellow-500'
-                        : strength === 'strong'
-                          ? 'w-full bg-[#32cd32]'
-                          : 'w-0 bg-transparent'
-                  }`}
-                />
-              </div>
-              <span className="text-xs font-semibold capitalize text-gray-400">
-                {strength || 'Weak'}
-              </span>
-            </div>
+            <span className="text-xs font-semibold capitalize text-gray-400">
+              {strength || 'Weak'}
+            </span>
           </div>
         </div>
-      )}
+      </div>
 
       {/* Error Message */}
       {error && (

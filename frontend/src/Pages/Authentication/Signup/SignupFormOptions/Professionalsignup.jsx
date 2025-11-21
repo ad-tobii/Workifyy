@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import Signup from '../Signup'
+import SignupPage from '../SignupPage'
 import SignupNav from '../SignupNav'
 
 function Professionalsignup() {
@@ -17,7 +17,7 @@ function Professionalsignup() {
   return (
     <div>
       {/* <SignupNav Formnavigation={ProfessionalFormNav} /> */}
-      <Signup role="Professional" />
+      <SignupPage role="Professional" />
     </div>
   )
 }
