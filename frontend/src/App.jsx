@@ -7,8 +7,7 @@ import './styles/index.css'
 import Home from './Pages/Home/Home'
 import SignupOptions from './Pages/Authentication/SignupOptions/Signup'
 import Signin from './Pages/Authentication/Signin/signin_user'
-
-import OTP from './Pages/Authentication/OTP/otp'
+import Otp from './Pages/Authentication/OTP/Otp'
 import ForgotPassword from './Pages/Authentication/ForgotPassword'
 import ResetPassword from './Pages/Authentication/ResetPassword'
 import ClientSignup from './Pages/Authentication/Signup/SignupFormOptions/Clientsignup'
@@ -37,7 +36,7 @@ const App = () => {
             <Route path="signup" element={<SignupOptions />} />
             <Route path="ClientSignup" element={<ClientSignup />} />
             <Route path="ProfessionalSignup" element={<ProfessionalSignup />} />
-            <Route path="otp" element={<OTP />} />
+            <Route path="otp" element={<Otp />} />
             <Route path="forgot-password" element={<ForgotPassword />} />
             <Route path="reset-password/:token" element={<ResetPassword />} />
           </Route>

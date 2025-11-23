@@ -5,8 +5,9 @@ import { motion } from 'framer-motion'
 import useUserStore from '../../../store/userStore.store'
 import { useNavigate } from 'react-router-dom'
 import { Clock, CheckCircle } from 'lucide-react'
+import toast, { Toaster } from 'react-hot-toast'
 
-export default function OTPInput({ length = 6 }) {
+export default function OTPInput({ length = 6, email}) {
   const [otp, setOtp] = useState(new Array(length).fill(''))
   const [timeLeft, setTimeLeft] = useState(30)
   const [canResend, setCanResend] = useState(false)
@@ -17,11 +18,22 @@ export default function OTPInput({ length = 6 }) {
   const error = useUserStore(state => state.error)
   const successMessage = useUserStore(state => state.successMessage)
   const user = useUserStore(state => state.user)
+  const requestVerificationEmail = useUserStore(state => state.requestVerificationEmail)
 
   const navigate = useNavigate()
 
+  const startTimer = () => {
+    setCanResend(false)
+    setTimeLeft(30)
+  }
+
   useEffect(() => {
     inputRefs.current[0]?.focus()
+  }, [])
+
+  // Timer logic
+  useEffect(() => {
+    if (canResend) return
 
     const timer = setInterval(() => {
       setTimeLeft(prev => {
@@ -35,7 +47,7 @@ export default function OTPInput({ length = 6 }) {
     }, 1000)
 
     return () => clearInterval(timer)
-  }, [])
+  }, [canResend])
 
   const formatTime = seconds => {
     const mins = Math.floor(seconds / 60)
@@ -60,9 +72,7 @@ export default function OTPInput({ length = 6 }) {
       const newOtp = [...otp]
       newOtp[index] = ''
       setOtp(newOtp)
-      if (index > 0) {
-        inputRefs.current[index - 1]?.focus()
-      }
+      if (index > 0) inputRefs.current[index - 1]?.focus()
     } else if (e.key === 'ArrowLeft' && index > 0) {
       inputRefs.current[index - 1]?.focus()
     } else if (e.key === 'ArrowRight' && index < length - 1) {
@@ -79,7 +89,18 @@ export default function OTPInput({ length = 6 }) {
     }
   }
 
+  const handleResend = async () => {
+    const result = await requestVerificationEmail()
+    if (result.success) {
+      toast.success('Verification code resent!')
+      startTimer()
+    } else {
+      toast.error(result.message || 'Failed to resend code.')
+    }
+  }
+
   const isFilled = otp.every(d => d)
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -95,9 +116,12 @@ export default function OTPInput({ length = 6 }) {
 
   return (
     <div className="flex min-h-screen w-full flex-col items-center justify-center">
+      <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
+
       <div className="mb-0 flex justify-center">
         <img src="/assets/workifyy-logo.png" className="mb-10 w-56 " />
       </div>
+
       <div className="flex items-center justify-center bg-black p-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -120,7 +144,7 @@ export default function OTPInput({ length = 6 }) {
               transition={{ delay: 0.3 }}
               className="text-gray-400"
             >
-              Check your browser for the code sent to
+              {`Check your browser for the code sent to ${email}`}
             </motion.p>
           </div>
 
@@ -208,11 +232,7 @@ export default function OTPInput({ length = 6 }) {
                 </motion.div>
               ) : (
                 <button
-                  onClick={() => {
-                    // Call resend function here
-                    setTimeLeft(30)
-                    setCanResend(false)
-                  }}
+                  onClick={handleResend}
                   className="text-sm text-green-500 transition-colors duration-200 hover:text-green-400"
                 >
                   Didn't receive code? <span className="font-semibold">Resend</span>

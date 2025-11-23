@@ -13,11 +13,30 @@ export default function Otp() {
   const loading = useUserStore(state => state.loading)
   const error = useUserStore(state => state.error)
   const successMessage = useUserStore(state => state.successMessage)
+  const [email, setEmail] = useState(null)
+  function maskEmail(email) {
+    const [local, domain] = email.split('@')
+    if (!local || !domain) return email // fallback if not valid
+
+    // Keep first 2 and last character of local part, mask the rest
+    const visibleStart = 2
+    const visibleEnd = 1
+    const maskedLocal =
+      local.length <= visibleStart + visibleEnd
+        ? '*'.repeat(local.length)
+        : local.slice(0, visibleStart) +
+          '*'.repeat(local.length - visibleStart - visibleEnd) +
+          local.slice(-visibleEnd)
+
+    return `${maskedLocal}@${domain}`
+  }
 
   const handleRequestCode = async () => {
     const result = await requestVerificationEmail()
-    console.log(result)
+ 
+
     if (result.success) {
+      setEmail(maskEmail(result?.data?.email || 'No email!!'))
       setShowOTP(true)
     }
   }
@@ -32,7 +51,7 @@ export default function Otp() {
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
   }
 
-  if (showOTP) return <OTPInput length={6} />
+  if (showOTP) return <OTPInput length={6} email={email} />
 
   return (
     <div className="min-h-screen w-full bg-black">
