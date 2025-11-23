@@ -207,7 +207,7 @@ export const sendVerificationEmail = async (req, res) => {
     return res.status(200).json({
       message: 'Verification email sent successfully',
       success: true,
-      data: { expiresIn: 300 }, // seconds
+      data: { expiresIn: 300, email: user.email }, // seconds
     });
   } catch (error) {
     console.error('Error sending verification email:', error);
