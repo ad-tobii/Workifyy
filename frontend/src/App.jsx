@@ -13,10 +13,11 @@ import ResetPassword from './Pages/Authentication/ResetPassword'
 import ClientSignup from './Pages/Authentication/Signup/SignupFormOptions/Clientsignup'
 import ProfessionalSignup from './Pages/Authentication/Signup/SignupFormOptions/Professionalsignup'
 import ClientDashboard from './Pages/ClientDashoard/ClientDashboard'
-import Onboarding from './Pages/Authentication/ProfessionalOnboarding/onboarding'
+import WelcomePage from './Pages/Authentication/WelcomePage'
 import JobPostingFLow from './Pages/ClientDashoard/JobPostingFlow/JobPostingFlow'
 import ProfessionalDashboard from './Pages/ProfessionalDashboard/ProfessionalDashboard'
 import ClientWallet from './Pages/ClientDashoard/Wallet'
+import Onboarding from './Pages/Authentication/Onboarding/Onboarding'
 import ClientProfile from './Pages/ClientDashoard/Profile'
 import JobManagement from './Pages/ClientDashoard/Jobmanagement'
 import ProfessionalWallet from './Pages/ProfessionalDashboard/Wallet/Wallet'
@@ -40,7 +41,13 @@ const App = () => {
             <Route path="forgot-password" element={<ForgotPassword />} />
             <Route path="reset-password/:token" element={<ResetPassword />} />
           </Route>
-          <Route path="/Onboarding" element={<Onboarding />} />
+
+          <Route path="/onboarding">
+            {' '}
+            <Route path="setup" element={<Onboarding />} />
+            <Route path="welcome" element={<WelcomePage />} />
+          </Route>
+
           <Route path="/Dashboard">
             <Route path="clientDashboard">
               <Route path="" element={<ClientDashboard />} />

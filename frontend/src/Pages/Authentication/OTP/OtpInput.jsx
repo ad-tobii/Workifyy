@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import { Clock, CheckCircle } from 'lucide-react'
 import toast, { Toaster } from 'react-hot-toast'
 
-export default function OTPInput({ length = 6, email}) {
+export default function OTPInput({ length = 6, email }) {
   const [otp, setOtp] = useState(new Array(length).fill(''))
   const [timeLeft, setTimeLeft] = useState(30)
   const [canResend, setCanResend] = useState(false)
@@ -115,14 +115,14 @@ export default function OTPInput({ length = 6, email}) {
   }
 
   return (
-    <div className="flex min-h-screen w-full flex-col items-center justify-center">
+    <div className="flex min-h-screen w-full flex-col items-center justify-center bg-[#0f0f10]">
       <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
 
       <div className="mb-0 flex justify-center">
-        <img src="/assets/workifyy-logo.png" className="mb-10 w-56 " />
+        <img src="/assets/workifyy-logo.png" className="mb-10 w-56" />
       </div>
 
-      <div className="flex items-center justify-center bg-black p-4">
+      <div className="flex items-center justify-center p-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -165,7 +165,7 @@ export default function OTPInput({ length = 6, email}) {
                   value={digit}
                   onChange={e => handleChange(e.target.value, index)}
                   onKeyDown={e => handleKeyDown(e, index)}
-                  className="h-14 w-12 rounded-lg border-2 border-green-500/40 bg-slate-900/50 text-center text-2xl font-bold text-green-500 backdrop-blur-sm transition-all duration-200 hover:border-green-500/60 focus:border-green-500 focus:bg-slate-900/80 focus:shadow-lg focus:shadow-green-500/50 focus:outline-none"
+                  className="h-14 w-12 rounded-lg border-2 border-[#32cd32] bg-slate-900/50 text-center text-2xl font-bold text-green-500 backdrop-blur-sm transition-all duration-200 hover:border-green-800 focus:border-green-600 focus:bg-slate-900/80 focus:shadow-lg focus:shadow-green-800/50 focus:outline-none"
                   placeholder="•"
                   disabled={loading.verifyAccount}
                 />
@@ -205,7 +205,7 @@ export default function OTPInput({ length = 6, email}) {
             <button
               onClick={handleVerify}
               disabled={!isFilled || loading.verifyAccount}
-              className="w-full rounded-lg bg-green-500 px-6 py-3 font-semibold text-black transition-all duration-300 hover:bg-green-400 hover:shadow-lg hover:shadow-green-500/50 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-green-500 disabled:hover:shadow-none"
+              className="w-full rounded-lg bg-[#32cd32] px-6 py-3 font-semibold text-black transition-all duration-300 hover:bg-green-400 hover:shadow-lg hover:shadow-green-500/50 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-green-500 disabled:hover:shadow-none"
             >
               {loading.verifyAccount ? (
                 <motion.span

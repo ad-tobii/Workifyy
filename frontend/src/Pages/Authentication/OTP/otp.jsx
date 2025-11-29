@@ -54,7 +54,7 @@ export default function Otp() {
   if (showOTP) return <OTPInput length={6} email={email} />
 
   return (
-    <div className="min-h-screen w-full bg-black">
+    <div className="min-h-screen w-full bg-[#0f0f10]">
       {/* Desktop: Split Screen */}
       <div className="hidden lg:flex lg:min-h-screen">
         {/* Left Glass Panel */}
