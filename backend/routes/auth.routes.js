@@ -10,7 +10,7 @@ import {
 } from '../controllers/auth.controllers.js';
 import createProfile from '../controllers/onboarding.controllers.js';
 import protectRoutes from '../middleware/protectRoutes.middleware.js';
-import parser from '../utils/multer.js';
+import parser from '../utils/multer.utils.js';
 const router = express.Router();
 
 // Signup route

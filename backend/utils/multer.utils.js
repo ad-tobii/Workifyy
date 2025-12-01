@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 
 const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
   params: {
     folder: 'profiles',
     allowedFormats: ['jpg', 'jpeg', 'png'],
