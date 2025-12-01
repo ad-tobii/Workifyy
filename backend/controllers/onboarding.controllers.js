@@ -16,12 +16,13 @@ const createProfile = async (req, res) => {
 
     // Handle PROFESSIONAL profile creation
     if (user.role === 'professional') {
-      const { tagline, experience, expertise, languages, photo, bio } =
+      const { tagline, experience,location, expertise, languages, photo, bio } =
         req.body;
 
       const requiredFields = [
         'tagline',
         'experience',
+        'location',
         'expertise',
         'languages',
         'photo',

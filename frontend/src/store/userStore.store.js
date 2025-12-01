@@ -11,6 +11,7 @@ const useUserStore = create((set, get) => ({
     requestVerificationEmail: false,
     verifyAccount: false,
     loadUser: false,
+    onboarding: false,
   },
 
   error: null, // Error message from the last action
@@ -34,6 +35,7 @@ const useUserStore = create((set, get) => ({
       requestVerificationEmail: '/send-verification-mail',
       verifyAccount: '/verify-email',
       loadUser: '/get-me',
+      onboardUser: '/create-profile',
     }
 
     setLoading(action, true) // Set loading state for this action to true
@@ -72,6 +74,7 @@ const useUserStore = create((set, get) => ({
   loadUser: () => get().handleAuthCall('loadUser'),
   verifyAccount: otp => get().handleAuthCall('verifyAccount', otp),
   requestVerificationEmail: () => get().handleAuthCall('requestVerificationEmail'),
+  onboardUser: userData => get().handleAuthCall('onboardUser', userData),
 }))
 
 export default useUserStore

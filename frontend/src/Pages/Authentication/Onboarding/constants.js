@@ -2,11 +2,11 @@ import { User, Briefcase, Wrench, MapPin, Languages, FileText } from 'lucide-rea
 
 // Initial state structure
 export const initialFormData = {
-  profilePictureFile: null,
+  photo: null,
   profilePicturePreview: null,
-  tagLine: '',
-  experienceYears: 0,
-  skills: [],
+  tagline: '',
+  experience: 0,
+  expertise: [],
   location: null,
   languages: [],
   bio: '',

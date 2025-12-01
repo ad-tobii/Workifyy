@@ -1,7 +1,9 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 
 const WelcomePage = () => {
+  const navigate = useNavigate()
   return (
     <div className="flex min-h-screen flex-col md:flex-row">
       <div className="flex flex-1 flex-col bg-[#0f0f10] md:relative md:w-1/2 md:flex-row md:items-center md:justify-center md:py-16">
@@ -34,7 +36,10 @@ const WelcomePage = () => {
         </div>
 
         <div className="mb-6 mt-8 flex justify-end px-6 md:mt-12 md:px-16 lg:px-20">
-          <button className="flex h-12 w-40 items-center justify-center space-x-2 rounded-3xl bg-black text-base text-white sm:w-44 sm:text-lg md:h-14 md:w-48 md:text-xl">
+          <button
+            onClick={() => navigate('/onboarding/setup')}
+            className="flex h-12 w-40 items-center justify-center space-x-2 rounded-3xl bg-black text-base text-white sm:w-44 sm:text-lg md:h-14 md:w-48 md:text-xl"
+          >
             <span>Get Started</span>
             <ArrowRight size={20} />
           </button>

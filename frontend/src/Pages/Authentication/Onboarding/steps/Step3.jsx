@@ -1,13 +1,13 @@
 import React, { useCallback } from 'react'
 
 const Step3 = ({ formData, updateFormData }) => {
-  const selected = formData.skills || []
+  const selected = formData.expertise || []
   const toggleSkill = useCallback(
     skill => {
       const newSkills = selected.includes(skill)
         ? selected.filter(s => s !== skill)
         : [...selected, skill]
-      updateFormData('skills', newSkills)
+      updateFormData('expertise', newSkills)
     },
     [selected, updateFormData]
   )

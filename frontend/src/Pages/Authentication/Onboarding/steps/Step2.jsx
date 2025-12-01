@@ -1,7 +1,7 @@
 import React from 'react'
 
 const Step2 = ({ formData, updateFormData }) => {
-  const value = formData.experienceYears
+  const value = formData.experience
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mx-8 mt-16 flex flex-col items-center sm:mt-32 lg:mx-0 lg:mt-0 lg:items-start">
@@ -17,7 +17,7 @@ const Step2 = ({ formData, updateFormData }) => {
           max={30}
           step={1}
           value={value}
-          onChange={e => updateFormData('experienceYears', Number(e.target.value))}
+          onChange={e => updateFormData('experience', Number(e.target.value))}
           className="mb-16 h-2 w-full max-w-sm cursor-pointer rounded-lg bg-zinc-800 accent-[#32cd32] transition-all hover:brightness-110"
         />
       </div>

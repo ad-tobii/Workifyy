@@ -6,7 +6,7 @@ const Step1 = ({ formData, updateFormData }) => {
     e => {
       const file = e.target.files[0]
       if (!file) return
-      updateFormData('profilePictureFile', file)
+      updateFormData('photo', file)
       updateFormData('profilePicturePreview', URL.createObjectURL(file))
     },
     [updateFormData]
@@ -50,16 +50,16 @@ const Step1 = ({ formData, updateFormData }) => {
       <div className="mx-auto mt-12 flex w-full max-w-sm flex-col px-4 lg:mx-0 lg:max-w-md lg:px-0">
         <h3 className="mb-2 text-center text-3xl text-zinc-400 lg:text-left">Tag Line</h3>
         <label
-          htmlFor="tagLine"
+          htmlFor="tagline"
           className="mb-6 mt-4 text-center text-sm text-zinc-400 lg:text-left"
         >
           Create a one-liner to introduce you to your clients.
         </label>
         <textarea
-          id="tagLine"
+          id="tagline"
           placeholder="Type your answer here"
-          value={formData.tagLine}
-          onChange={e => updateFormData('tagLine', e.target.value)}
+          value={formData.tagline}
+          onChange={e => updateFormData('tagline', e.target.value)}
           className="h-20 resize-none rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 text-white placeholder-zinc-600 transition focus:border-[#32cd32] focus:outline-none"
         />
       </div>
