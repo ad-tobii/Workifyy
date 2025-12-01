@@ -18,8 +18,21 @@ const createProfile = async (req, res) => {
     if (user.role === 'professional') {
       const { tagline, experience, location, expertise, languages, bio } =
         req.body;
-      console.log('This is the req.body.location: ', req.body.location);
-      const { latitude, longitude } = req.body.location;
+
+      let parsedLocation;
+      try {
+        parsedLocation =
+          typeof location === 'string' ? JSON.parse(location) : location;
+      } catch (error) {
+        return res.status(400).json({
+          message: 'Invalid location format',
+          success: false,
+          data: null,
+        });
+      }
+
+      console.log('This is the parsedLocation: ', parsedLocation);
+      const { latitude, longitude } = parsedLocation;
       if (!latitude || !longitude) {
         return res.status(400).json({
           message: 'Location is required',
@@ -27,6 +40,7 @@ const createProfile = async (req, res) => {
           data: null,
         });
       }
+
       const userLocation = {
         type: 'Point',
         coordinates: [longitude, latitude],
