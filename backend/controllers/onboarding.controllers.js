@@ -18,6 +18,7 @@ const createProfile = async (req, res) => {
     if (user.role === 'professional') {
       const { tagline, experience, location, expertise, languages, bio } =
         req.body;
+      console.log('This is the req.body.location: ', req.body.location);
       const { latitude, longitude } = req.body.location;
       if (!latitude || !longitude) {
         return res.status(400).json({
