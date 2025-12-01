@@ -8,7 +8,7 @@ import {
   getCurrentUser,
   checkEmail,
 } from '../controllers/auth.controllers.js';
-import { createProfile } from '../controllers/onboarding.controllers.js';
+import createProfile from '../controllers/onboarding.controllers.js';
 import protectRoutes from '../middleware/protectRoutes.middleware.js';
 const router = express.Router();
 
