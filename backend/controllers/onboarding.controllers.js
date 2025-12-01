@@ -19,15 +19,19 @@ const createProfile = async (req, res) => {
       const { tagline, experience, location, expertise, languages, bio } =
         req.body;
       const photo = req?.file?.path || null;
-      console.log('This is the req.file: ', req.file);
-      console.log('This is the photo: ', photo);
+      if (!photo) {
+        return res.status(400).json({
+          message: 'Photo is required',
+          success: false,
+          data: null,
+        });
+      }
       const requiredFields = [
         'tagline',
         'experience',
         'location',
         'expertise',
         'languages',
-        'photo',
         'bio',
       ];
       const missingFields = requiredFields.filter((field) => !req.body[field]);
