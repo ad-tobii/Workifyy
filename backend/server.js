@@ -7,7 +7,7 @@ import cookie from 'cookie';
 import jwt from 'jsonwebtoken';
 import morgan from 'morgan';
 import authRoutes from './routes/auth.routes.js';
-import userRoutes from './routes/user.routes.js';
+
 import http from 'http';
 import { Server } from 'socket.io';
 import bidRoutes from './routes/bid.routes.js';
