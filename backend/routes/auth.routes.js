@@ -10,6 +10,7 @@ import {
 } from '../controllers/auth.controllers.js';
 import createProfile from '../controllers/onboarding.controllers.js';
 import protectRoutes from '../middleware/protectRoutes.middleware.js';
+import parser from '../utils/multer.js';
 const router = express.Router();
 
 // Signup route
@@ -25,7 +26,12 @@ router.post('/verify-email', protectRoutes, verifyEmail);
 // Get logged in user
 router.get('/get-me', protectRoutes, getCurrentUser);
 //Onboard New User
-router.post('/create-profile', protectRoutes, createProfile);
+router.post(
+  '/create-profile',
+  protectRoutes,
+  parser.single('photo'),
+  createProfile
+);
 // Check if email in use
 router.get('/check-email', checkEmail);
 
