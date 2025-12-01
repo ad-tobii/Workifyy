@@ -16,26 +16,29 @@ const createProfile = async (req, res) => {
 
     // Handle PROFESSIONAL profile creation
     if (user.role === 'professional') {
-      const { tagline, experience, location, expertise, languages, bio } =
-        req.body;
+      const {
+        tagline,
+        experience,
+        longitude,
+        latitude,
+        expertise,
+        languages,
+        bio,
+      } = req.body;
 
-      let parsedLocation;
-      try {
-        parsedLocation =
-          typeof location === 'string' ? JSON.parse(location) : location;
-      } catch (error) {
+      const requiredFields = [
+        'tagline',
+        'experience',
+        'longitude',
+        'latitude',
+        'expertise',
+        'languages',
+        'bio',
+      ];
+      const missingFields = requiredFields.filter((field) => !req.body[field]);
+      if (missingFields.length > 0) {
         return res.status(400).json({
-          message: 'Invalid location format',
-          success: false,
-          data: null,
-        });
-      }
-
-      console.log('This is the parsedLocation: ', parsedLocation);
-      const { latitude, longitude } = parsedLocation;
-      if (!latitude || !longitude) {
-        return res.status(400).json({
-          message: 'Location is required',
+          message: `All fields are required: ${missingFields.join(', ')}`,
           success: false,
           data: null,
         });
@@ -49,22 +52,6 @@ const createProfile = async (req, res) => {
       if (!photo) {
         return res.status(400).json({
           message: 'Photo is required',
-          success: false,
-          data: null,
-        });
-      }
-      const requiredFields = [
-        'tagline',
-        'experience',
-
-        'expertise',
-        'languages',
-        'bio',
-      ];
-      const missingFields = requiredFields.filter((field) => !req.body[field]);
-      if (missingFields.length > 0) {
-        return res.status(400).json({
-          message: `All fields are required: ${missingFields.join(', ')}`,
           success: false,
           data: null,
         });
