@@ -18,6 +18,18 @@ const createProfile = async (req, res) => {
     if (user.role === 'professional') {
       const { tagline, experience, location, expertise, languages, bio } =
         req.body;
+      const { latitude, longitude } = req.body.location;
+      if (!latitude || !longitude) {
+        return res.status(400).json({
+          message: 'Location is required',
+          success: false,
+          data: null,
+        });
+      }
+      const userLocation = {
+        type: 'Point',
+        coordinates: [longitude, latitude],
+      };
       const photo = req?.file?.path || null;
       if (!photo) {
         return res.status(400).json({
@@ -29,7 +41,7 @@ const createProfile = async (req, res) => {
       const requiredFields = [
         'tagline',
         'experience',
-        'location',
+
         'expertise',
         'languages',
         'bio',
@@ -59,7 +71,7 @@ const createProfile = async (req, res) => {
         tagline,
         experience,
         expertise,
-        location,
+        location: userLocation,
         languages,
         photo,
         bio,
