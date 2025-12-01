@@ -20,14 +20,15 @@ const professionalProfileSchema = new mongoose.Schema(
       required: true,
     },
     location: {
-      geo: {
-        type: {
-          type: String,
-          enum: ['Point'],
-        },
-        coordinates: {
-          type: [Number],
-        },
+      type: {
+        type: String, // must be "Point"
+        enum: ['Point'],
+        required: true,
+        default: 'Point', // optional
+      },
+      coordinates: {
+        type: [Number], // [longitude, latitude]
+        required: true,
       },
     },
     photo: {
