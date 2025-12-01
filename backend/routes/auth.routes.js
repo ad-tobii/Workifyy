@@ -8,6 +8,7 @@ import {
   getCurrentUser,
   checkEmail,
 } from '../controllers/auth.controllers.js';
+import { createProfile } from '../controllers/onboarding.controllers.js';
 import protectRoutes from '../middleware/protectRoutes.middleware.js';
 const router = express.Router();
 
@@ -18,13 +19,14 @@ router.post('/login', login);
 // Logout route
 router.post('/logout', logout);
 // Send verification mail route
-  router.post('/send-verification-mail', protectRoutes, sendVerificationEmail);
+router.post('/send-verification-mail', protectRoutes, sendVerificationEmail);
 // Verify email route
 router.post('/verify-email', protectRoutes, verifyEmail);
 // Get logged in user
 router.get('/get-me', protectRoutes, getCurrentUser);
+//Onboard New User
+router.post('/create-profile', protectRoutes, createProfile);
 // Check if email in use
 router.get('/check-email', checkEmail);
-
 
 export default router;

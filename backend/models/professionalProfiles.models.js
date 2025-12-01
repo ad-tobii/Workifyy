@@ -20,10 +20,6 @@ const professionalProfileSchema = new mongoose.Schema(
       required: true,
     },
     location: {
-      state: {
-        type: String,
-        required: true,
-      },
       geo: {
         type: {
           type: String,
