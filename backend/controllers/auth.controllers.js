@@ -8,8 +8,9 @@ dotenv.config();
 
 export const signup = async (req, res) => {
   try {
-    const { firstname, lastname, password, email, role } = req.body;
     // collect and validate the request body
+
+    const { firstname, lastname, password, email, role } = req.body;
 
     const requiredFields = [
       'firstname',
@@ -26,6 +27,7 @@ export const signup = async (req, res) => {
         data: null,
       });
     }
+
     // check if the user already exists
     const user = await User.findOne({ email });
     if (user) {
@@ -46,10 +48,14 @@ export const signup = async (req, res) => {
       email,
       role,
     });
+
     // save the user to the database
     const savedUser = await newUser.save();
+
     // generate a token
     const token = tokenGenerator(savedUser._id, savedUser.role, res);
+
+    // create a response object
     const res_user = {
       _id: savedUser._id,
       firstname: savedUser.firstname,
@@ -58,12 +64,15 @@ export const signup = async (req, res) => {
       role: savedUser.role,
       isVerified: savedUser.isVerified,
     };
+
+    // send response
     return res.status(201).json({
       message: 'User created successfully',
       success: true,
       data: { user: res_user },
     });
   } catch (error) {
+    // log the error
     console.log(error.message);
     return res.status(500).json({
       message: 'Internal server error',
@@ -75,9 +84,11 @@ export const signup = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
     // collect and validate the request body
+    const { email, password } = req.body;
+
     const requiredFields = ['email', 'password'];
+
     const missingFields = requiredFields.filter((field) => !req.body[field]);
     if (missingFields.length > 0) {
       return res.status(400).json({
@@ -86,6 +97,7 @@ export const login = async (req, res) => {
         data: null,
       });
     }
+
     // check if the user exists
     const user = await User.findOne({ email });
     if (!user) {
@@ -95,6 +107,7 @@ export const login = async (req, res) => {
         data: null,
       });
     }
+
     // check if the password is correct
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
@@ -104,6 +117,8 @@ export const login = async (req, res) => {
         data: null,
       });
     }
+
+    // create a response object
     const res_user = {
       _id: user._id,
       firstname: user.firstname,
@@ -112,14 +127,18 @@ export const login = async (req, res) => {
       role: user.role,
       isVerified: user.isVerified,
     };
+
     // generate a token
     const token = tokenGenerator(user._id, user.role, res);
+
+    // send response
     return res.status(200).json({
       message: 'Login successful',
       success: true,
       data: { user: res_user },
     });
   } catch (error) {
+    // log the error
     console.log(error.message);
     return res.status(500).json({
       message: 'Internal server error',
@@ -131,7 +150,9 @@ export const login = async (req, res) => {
 
 export const logout = async (req, res) => {
   try {
+    // clear the cookie
     res.clearCookie('jwt');
+
     // send response
     return res.status(200).json({
       message: 'Logout successful',
@@ -139,6 +160,7 @@ export const logout = async (req, res) => {
       data: null,
     });
   } catch (error) {
+    // log the error
     console.log(error.message);
     return res.status(500).json({
       message: 'Internal server error',
@@ -150,18 +172,10 @@ export const logout = async (req, res) => {
 
 export const sendVerificationEmail = async (req, res) => {
   try {
-    const token = req.cookies.jwt;
-    if (!token) {
-      return res.status(401).json({
-        message: 'Unauthorized - No token provided',
-        success: false,
-        data: null,
-      });
-    }
+    // Retrive user
+    const user = req.user;
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.userId);
-
+    // Check if the user exists
     if (!user) {
       return res.status(404).json({
         message: 'User not found',
@@ -169,6 +183,7 @@ export const sendVerificationEmail = async (req, res) => {
         data: null,
       });
     }
+    // Check if the user is already verified
     if (user.isVerified) {
       return res.status(404).json({
         message: 'Email already verified',
@@ -176,8 +191,10 @@ export const sendVerificationEmail = async (req, res) => {
         data: null,
       });
     }
+
     // Check cooldown (30 seconds)
     const COOLDOWN_MS = 30 * 1000;
+    // Check if the user has sent an OTP recently
     if (user.lastOtpSentAt) {
       const timeSinceLastOtp = Date.now() - user.lastOtpSentAt;
       if (timeSinceLastOtp < COOLDOWN_MS) {
@@ -204,70 +221,30 @@ export const sendVerificationEmail = async (req, res) => {
     const emailText = `Hello and welcome to Workifyy! Your verification OTP is ${otp}. This OTP will expire in 5 minutes.`;
     await sendEmail(user.email, 'Workifyy - Verify your email', emailText);
 
+    // Send response
     return res.status(200).json({
       message: 'Verification email sent successfully',
       success: true,
       data: { expiresIn: 300, email: user.email }, // seconds
     });
   } catch (error) {
+    // Log the error
     console.error('Error sending verification email:', error);
-
-    // Handle specific JWT errors
-    if (error.name === 'JsonWebTokenError') {
-      return res.status(401).json({
-        message: 'Invalid token',
-        success: false,
-        data: null,
-      });
-    }
-
-    if (error.name === 'TokenExpiredError') {
-      return res.status(401).json({
-        message: 'Token expired',
-        success: false,
-        data: null,
-      });
-    }
 
     return res.status(500).json({
       message: 'Failed to send verification email',
       success: false,
       data: null,
-    });
+    }); 
   }
 };
 
 export const verifyEmail = async (req, res) => {
   try {
-    // Retrive token and otp
-    const token = req.cookies.jwt;
-    const { otp } = req.body;
-    // Hash the otp
-    const hashedOtp = crypto
-      .createHash('sha256')
-      .update(otp.toString())
-      .digest('hex');
+    // Retrive user
+    const user = req.user;
 
-    // Validate the token
-    if (!token) {
-      return res.status(400).json({
-        message: 'Unauthorized',
-        success: false,
-        data: null,
-      });
-    }
-    // Verify the token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    // Find and validate the user
-    const user = await User.findById(decoded.userId);
-    if (!user) {
-      return res.status(400).json({
-        message: 'User not found',
-        success: false,
-        data: null,
-      });
-    }
+    // Check if the user is already verified
     if (user.isVerified) {
       return res.status(400).json({
         message: 'Email already verified',
@@ -275,6 +252,25 @@ export const verifyEmail = async (req, res) => {
         data: null,
       });
     }
+
+    // Retrieve otp
+    const { otp } = req.body;
+
+    // Check if the otp is provided
+    if (!otp) {
+      return res.status(400).json({
+        message: 'OTP is required',
+        success: false,
+        data: null,
+      });
+    }
+
+    // Hash the otp
+    const hashedOtp = crypto
+      .createHash('sha256')
+      .update(otp.toString())
+      .digest('hex');
+
     // Reset attempt counter every 24 hours
     if (!user.otpAttemptResetAt || Date.now() > user.otpAttemptResetAt) {
       user.otpAttempts = 0;
@@ -302,6 +298,7 @@ export const verifyEmail = async (req, res) => {
         data: null,
       });
     }
+
     // Validate the otp
     if (user.otp !== hashedOtp) {
       // Increment the otp attempt counter
@@ -327,6 +324,7 @@ export const verifyEmail = async (req, res) => {
       data: null,
     });
   } catch (error) {
+    // Log the error
     console.log(error.message);
     return res.status(500).json({
       message: 'Internal server error',
@@ -335,6 +333,7 @@ export const verifyEmail = async (req, res) => {
     });
   }
 };
+
 
 export const checkEmail = async (req, res) => {
   try {
