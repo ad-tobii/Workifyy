@@ -85,7 +85,9 @@ export default function OTPInput({ length = 6, email }) {
       const result = await verifyAccount({ otp: otp.join('') })
       console.log(result)
       if (result.success) {
-        navigate(user.role === 'professional' ? '/Onboarding' : '/dashboard/clientdashboard')
+        navigate(
+          user.role === 'professional' ? '/Onboarding/welcome' : '/dashboard/clientdashboard'
+        )
       }
     }
   }

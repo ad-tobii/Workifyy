@@ -73,11 +73,15 @@ const useUserStore = create((set, get) => ({
         }
 
         // set the user and success message
+        const newUser = res.data.data?.user
+        if (newUser) {
+          set({ user: newUser })
+        }
         set({
-          user: res.data.data?.user || null,
           successMessage: 'Profile created successfully',
         })
-        return { success: true, user: res.data.data?.user || {}, data: res.data.data }
+
+        return { success: true, user: res.data.data?.user || get().user, data: res.data.data }
       }
 
       // Regular handling for other actions
@@ -94,11 +98,14 @@ const useUserStore = create((set, get) => ({
       }
 
       // set the user and success message
+      const newUser = res.data.data?.user
+      if (newUser) {
+        set({ user: newUser })
+      }
       set({
-        user: res.data.data?.user || null,
         successMessage: 'Request successful',
       })
-      return { success: true, user: res.data.data?.user || {}, data: res.data.data }
+      return { success: true, user: res.data.data?.user || get().user, data: res.data.data }
     } catch (error) {
       const errorMsg = error.response?.data?.message || error.message || 'Something went wrong.'
       set({ error: errorMsg })
