@@ -2,69 +2,109 @@ import { create } from 'zustand'
 import api from '../api/axios.api'
 
 const useUserStore = create((set, get) => ({
-  user: null, // The currently logged-in user
-
+  // state variables
+  user: null,
   loading: {
     login: false,
     signup: false,
-    logout: false, // Loading state for different auth actions
+    logout: false,
     requestVerificationEmail: false,
     verifyAccount: false,
     loadUser: false,
-    onboarding: false,
+    onboardUser: false,
   },
-
-  error: null, // Error message from the last action
-
-  successMessage: null, // Success message from the last action
+  error: null,
+  successMessage: null,
 
   setLoading: (key, value) =>
     set(state => ({
-      // Helper function to update the loading state for a specific action
       loading: { ...state.loading, [key]: value },
     })),
 
-  // Core function to handle any authentication-related API call
+  // Core function to handle authentication-related API calls
   handleAuthCall: async (action, params) => {
-    const { setLoading } = get() // Get the setLoading function from the store
+    // get the setLoading function from the get() function
+    const { setLoading } = get()
 
+    // action map for the API calls
     const actionMap = {
       login: '/login',
       signup: '/signup',
-      logout: '/logout', // Map of actions to their corresponding API endpoints
+      logout: '/logout',
       requestVerificationEmail: '/send-verification-mail',
       verifyAccount: '/verify-email',
       loadUser: '/get-me',
       onboardUser: '/create-profile',
     }
 
-    setLoading(action, true) // Set loading state for this action to true
-
-    set({ error: null, successMessage: null }) // Reset error and successMessage before making the request
+    // set the relevant loading state to true
+    setLoading(action, true)
+    set({ error: null, successMessage: null })
 
     try {
-      const method = action === 'loadUser' ? 'get' : 'post' // Determine HTTP method: GET for loadUser, POST for everything else
+      // determine the method based on the action
+      const method = action === 'loadUser' ? 'get' : 'post'
 
+      // Special handling for onboardUser with file upload
+      if (action === 'onboardUser') {
+        const formData = new FormData()
+
+        // Append all fields to FormData
+        Object.keys(params).forEach(key => {
+          if (params[key] !== null && params[key] !== undefined) {
+            formData.append(key, params[key])
+          }
+        })
+
+        console.log('Sending FormData for onboarding:')
+        for (let [key, value] of formData.entries()) {
+          console.log(key, value instanceof File ? `File: ${value.name}` : value)
+        }
+
+        const res = await api.post(`/auth${actionMap[action]}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+
+        if (!res.data.success) {
+          set({ error: res.data.message })
+          return { success: false, error: res.data.message }
+        }
+
+        // set the user and success message
+        set({
+          user: res.data.data?.user || null,
+          successMessage: 'Profile created successfully',
+        })
+        return { success: true, user: res.data.data?.user || {}, data: res.data.data }
+      }
+
+      // Regular handling for other actions
+      // make the API call
       const res = await api[method](
         `/auth${actionMap[action]}`,
         method === 'post' ? params || {} : undefined
       )
 
       if (!res.data.success) {
-        set({ error: res.data.message }) // If API response says failure, set error state
+        // set the error message
+        set({ error: res.data.message })
         return { success: false, error: res.data.message }
       }
 
-      set({ user: res.data.data?.user || null, successMessage: 'Request successful' }) // On success, store user data and a success message
+      // set the user and success message
+      set({
+        user: res.data.data?.user || null,
+        successMessage: 'Request successful',
+      })
       return { success: true, user: res.data.data?.user || {}, data: res.data.data }
     } catch (error) {
       const errorMsg = error.response?.data?.message || error.message || 'Something went wrong.'
-      set({
-        error: errorMsg,
-      })
+      set({ error: errorMsg })
       return { success: false, error: errorMsg }
     } finally {
-      setLoading(action, false) // Always reset loading state for this action
+      setLoading(action, false)
     }
   },
 

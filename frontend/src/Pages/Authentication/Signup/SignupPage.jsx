@@ -1,13 +1,13 @@
 'use client'
 import SignupForm from './SignupForm'
 import SignupImage from './SignupImage'
-export default function SignupPage() {
+export default function SignupPage({ role }) {
   return (
     <div className="flex min-h-screen justify-center bg-[#0f0f10] py-4 pb-12 xl:items-center">
       {/* Left Section - Form */}
       <div className="scrollbar-hide flex w-full justify-center overflow-y-auto px-4 py-8 sm:px-8 lg:max-h-[48rem] lg:w-1/2 lg:overflow-visible">
         <div className="w-full max-w-md">
-          <SignupForm role="client" />
+          <SignupForm role={role} />
         </div>
       </div>
 

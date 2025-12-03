@@ -1,15 +1,19 @@
 'use client'
 
 import { useState, useCallback, useMemo, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import PasswordInput from './PasswordInput'
 import api from '../../../api/axios.api'
 import { FcGoogle } from 'react-icons/fc'
 import useUserStore from '../../../store/userStore.store'
+import toast from 'react-hot-toast'
 
 export default function SignupForm({ role }) {
+  const navigate = useNavigate()
   const signup = useUserStore(state => state.signup)
   const loading = useUserStore(state => state.loading.signup)
+
   const {
     register,
     handleSubmit,
@@ -30,11 +34,13 @@ export default function SignupForm({ role }) {
         const res = await api.get(`/auth/check-email?email=${emailValue}`)
         const data = res.data
         console.log(res.data)
+        // if the email is available, set the isUsedMail to false and clear the email error
         if (data.available) {
           setIsUsedMail(false)
           clearErrors('email')
         } else {
           setIsUsedMail(true)
+          // if the email is not available, set the isUsedMail to true and set the email error
           setError('email', { message: 'Email already in use' })
         }
       } catch (error) {
@@ -94,31 +100,29 @@ export default function SignupForm({ role }) {
 
   const onSubmit = async formData => {
     clearErrors()
+    try {
+      // Create the payload to send to the API
+      const payload = { ...formData, role }
 
-    // validate email before trying to sign up
-    if (isUsedMail) {
-      return setError('email', { message: 'Email already in use' })
+      // Make the API call
+      const result = await signup(payload)
+
+      // Handle API errors returned in the result
+      if (result?.error) {
+        toast.error(result.error)
+        return setError('submit', { message: result.error })
+      }
+
+      // Success
+      toast.success('Signup successful')
+      navigate('/auth/otp')
+    } catch (error) {
+      // Handle network or unexpected errors
+
+      const message = error?.message || 'Something went wrong'
+      toast.error(message)
+      setError('submit', { message })
     }
-
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
-    if (!emailPattern.test(formData.email)) {
-      return setError('email', { message: 'Enter a valid email address' })
-    }
-
-    // validate password strength
-    if (strength !== 'strong') {
-      return setError('password', { message: 'Password too weak' })
-    }
-
-    const payload = { ...formData, role }
-
-    const result = await signup(payload)
-
-    if (result?.error) {
-      return setError('submit', { message: result.error })
-    }
-
-    console.log('Signup successful')
   }
 
   return (

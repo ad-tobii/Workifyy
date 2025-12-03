@@ -7,7 +7,8 @@ export const initialFormData = {
   tagline: '',
   experience: 0,
   expertise: [],
-  location: null,
+  longitude: null,
+  latitude: null,
   languages: [],
   bio: '',
 }
