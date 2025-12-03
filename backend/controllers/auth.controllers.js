@@ -242,9 +242,8 @@ export const sendVerificationEmail = async (req, res) => {
 export const verifyEmail = async (req, res) => {
   try {
     // Retrive user
-    const { userId } = req.user;
+    const userId = req.user._id;
     const user = await User.findById(userId);
-
     console.log('this user is trying to verify their email', user);
 
     // Check if the user is already verified
