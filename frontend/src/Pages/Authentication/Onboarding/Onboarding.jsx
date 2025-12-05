@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import Sidebar from './Sidebar'
 import { initialFormData, stepsConfig } from './constants'
@@ -10,6 +10,7 @@ import Step5 from './steps/Step5'
 import Step6 from './steps/Step6'
 import useUserStore from '../../../store/userStore.store'
 import toast, { Toaster } from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom'
 
 const Onboarding = () => {
   const [step, setStep] = useState(1)
@@ -18,6 +19,10 @@ const Onboarding = () => {
 
   const loading = useUserStore(state => state.loading.onboardUser)
   const onboardUser = useUserStore(state => state.onboardUser)
+  const user = useUserStore(state => state.user)
+  const loadUser = useUserStore(state => state.loadUser)
+  const loadingUser = useUserStore(state => state.loading.loadUser)
+  const navigate = useNavigate()
 
   const updateFormData = useCallback((field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }))
@@ -25,6 +30,27 @@ const Onboarding = () => {
 
   const handleNext = () => setStep(s => Math.min(s + 1, totalSteps))
   const handleBack = () => setStep(s => Math.max(s - 1, 1))
+  const [fetchingUser, setFetchingUser] = useState(true)
+  useEffect(() => {
+    const fetch = async () => {
+      await loadUser()
+      setFetchingUser(false)
+    }
+    fetch()
+  }, [loadUser])
+
+  useEffect(() => {
+    if (fetchingUser) return // wait until user is fetched
+
+    if (!user) {
+      navigate('/auth/signin')
+      return
+    }
+
+    if (user.isOnboarded) {
+      navigate('/Dashboard/professionalDashboard')
+    }
+  }, [user, fetchingUser, navigate])
 
   const handleSubmit = async () => {
     const toastId = toast.loading('Submitting onboarding...')
@@ -33,8 +59,7 @@ const Onboarding = () => {
 
       if (success) {
         toast.success('Onboarding completed successfully!', { id: toastId })
-        // Optional: Redirect user after onboarding
-        // navigate('/dashboard')
+        navigate('/Dashboard/professionalDashboard')
       } else {
         toast.error(error || 'Something went wrong during onboarding.', { id: toastId })
       }
@@ -46,13 +71,20 @@ const Onboarding = () => {
   const renderStep = () => {
     const props = { formData, updateFormData }
     switch (step) {
-      case 1: return <Step1 {...props} />
-      case 2: return <Step2 {...props} />
-      case 3: return <Step3 {...props} />
-      case 4: return <Step4 {...props} />
-      case 5: return <Step5 {...props} />
-      case 6: return <Step6 {...props} />
-      default: return <Step1 {...props} />
+      case 1:
+        return <Step1 {...props} />
+      case 2:
+        return <Step2 {...props} />
+      case 3:
+        return <Step3 {...props} />
+      case 4:
+        return <Step4 {...props} />
+      case 5:
+        return <Step5 {...props} />
+      case 6:
+        return <Step6 {...props} />
+      default:
+        return <Step1 {...props} />
     }
   }
 
@@ -60,6 +92,12 @@ const Onboarding = () => {
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#0f0f10] font-sans text-white">
+      {fetchingUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+          <div className="h-16 w-16 animate-spin rounded-full border-4 border-b-green-500 border-l-transparent border-r-transparent border-t-green-500"></div>
+        </div>
+      )}
+
       {/* Toaster container */}
       <Toaster position="top-right" reverseOrder={false} />
 

@@ -57,7 +57,7 @@ const App = () => {
               <Route path="jobmanagement" element={<JobManagement />} />
               <Route path="Jobpost" element={<JobPostingFLow />} />
             </Route>
-            <Route path="ProfessionalDashboard">
+            <Route path="professionalDashboard">
               <Route path="" element={<ProfessionalDashboard />} />
               <Route path="profile" element={<ProfessionalProfile />} />
               <Route path="profile/edit" element={<EditProfessionalProfile />} />

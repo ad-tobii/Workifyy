@@ -2,11 +2,14 @@ import { Mail, Lock } from 'lucide-react'
 import { ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline'
 import useUserStore from '../../../store/userStore.store'
 import { useForm } from 'react-hook-form'
+import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
 
 export default function Signin() {
   const login = useUserStore(state => state.login)
   const loading = useUserStore(state => state.loading.login)
-
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
@@ -27,17 +30,28 @@ export default function Signin() {
       })
     }
 
-    // LOGIN REQUEST
-    const res = await login({
-      email: data.email,
-      password: data.password,
-    })
-
-    if (res?.error) {
-      setError('password', {
-        type: 'manual',
-        message: res.error || 'Invalid credentials',
-      })
+    try {
+      const { success, error, user } = await login(data)
+      if (success) {
+        if (user.isVerified) {
+          if (user.isOnboarded) {
+            navigate(
+              `/Dashboard/${user.role === 'professional' ? 'professionalDashboard' : 'clientDashboard'}`
+            )
+          } else {
+            navigate('/Onboarding/welcome')
+          }
+        } else {
+          navigate('/Auth/otp')
+        }
+      } else {
+        setError('password', {
+          type: 'manual',
+          message: error,
+        })
+      }
+    } catch (error) {
+      toast.error(error.message)
     }
   }
 
@@ -136,9 +150,12 @@ export default function Signin() {
           {/* SIGNUP */}
           <p className="mt-6 text-center text-gray-400">
             Don't have an Account?{' '}
-            <a className="cursor-pointer font-medium text-[#32cd32] hover:underline">
+            <Link
+              to="/auth/signup"
+              className="cursor-pointer font-medium text-[#32cd32] hover:underline"
+            >
               Create an account
-            </a>
+            </Link>
           </p>
         </div>
       </div>

@@ -12,7 +12,6 @@ import toast from 'react-hot-toast'
 export default function SignupForm({ role }) {
   const navigate = useNavigate()
   const signup = useUserStore(state => state.signup)
-  const loading = useUserStore(state => state.loading.signup)
 
   const {
     register,
