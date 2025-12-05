@@ -293,13 +293,7 @@ export const verifyEmail = async (req, res) => {
     // Validate the otp expiration
     if (!user.otpExpiresAt || user.otpExpiresAt < Date.now()) {
       // Reset the otp
-      console.log('yep this condition is being fired!!!!!!!🔥🔥');
-      console.log('this is the otp expiration', user.otpExpiresAt);
-      console.log('this is the current date', Date.now());
-      console.log(
-        'this is the otp expiration time',
-        user.otpExpiresAt - Date.now()
-      );
+    
       user.otp = null;
       user.otpExpiresAt = null;
       await user.save();

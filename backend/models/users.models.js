@@ -30,6 +30,10 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    isOnboarded: {
+      type: Boolean,
+      default: false,
+    },
     otp: {
       type: String,
       default: null,
@@ -41,7 +45,6 @@ const userSchema = new mongoose.Schema(
     lastOtpSentAt: { type: Date, default: null },
     otpAttempts: { type: Number, default: 0 },
     otpAttemptResetAt: { type: Date, default: null },
-    
   },
   { timestamps: true }
 );

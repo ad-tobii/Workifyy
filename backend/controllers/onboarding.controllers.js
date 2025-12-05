@@ -77,9 +77,12 @@ const createProfile = async (req, res) => {
         languages,
         photo,
         bio,
+
       });
 
       const savedProfessionalProfile = await newProfessionalProfile.save();
+      user.isOnboarded = true;
+      await user.save();
 
       return res.status(201).json({
         message: 'Professional profile created successfully',
@@ -121,7 +124,8 @@ const createProfile = async (req, res) => {
       });
 
       const savedClientProfile = await newClientProfile.save();
-
+      user.isOnboarded = true;
+      await user.save();  
       return res.status(201).json({
         message: 'Client profile created successfully',
         success: true,
