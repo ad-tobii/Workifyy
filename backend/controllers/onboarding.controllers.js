@@ -92,17 +92,24 @@ const createProfile = async (req, res) => {
 
     // Handle CLIENT profile creation
     else if (user.role === 'client') {
-      const { photo, longitude, latitude, languages } = req.body;
+      const { longitude, latitude, languages } = req.body;
 
-      const requiredFields = ['photo', 'longitude', 'latitude', 'languages'];
+      const photo = req?.file?.path || null;
+      if (!photo) {
+        return res.status(400).json({
+          message: 'Photo is required',
+          success: false,
+          data: null,
+        });
+      }
+      const requiredFields = ['longitude', 'latitude', 'languages'];
       const missingFields = requiredFields.filter((field) => !req.body[field]);
-      console.log("this is what i got", req.body);
+      console.log('this is what i got', req.body);
       if (missingFields.length > 0) {
         return res.status(400).json({
           message: `All fields are required: ${missingFields.join(', ')}`,
           success: false,
           data: null,
-    
         });
       }
 
