@@ -77,7 +77,6 @@ const createProfile = async (req, res) => {
         languages,
         photo,
         bio,
-
       });
 
       const savedProfessionalProfile = await newProfessionalProfile.save();
@@ -93,9 +92,9 @@ const createProfile = async (req, res) => {
 
     // Handle CLIENT profile creation
     else if (user.role === 'client') {
-      const { photo, state, languages } = req.body;
+      const { photo, longitude, latitude, languages } = req.body;
 
-      const requiredFields = ['photo', 'state', 'languages'];
+      const requiredFields = ['photo', 'longitude', 'latitude', 'languages'];
       const missingFields = requiredFields.filter((field) => !req.body[field]);
       if (missingFields.length > 0) {
         return res.status(400).json({
@@ -104,6 +103,11 @@ const createProfile = async (req, res) => {
           data: null,
         });
       }
+
+      const userLocation = {
+        type: 'Point',
+        coordinates: [longitude, latitude],
+      };
 
       const existingClientProfile = await ClientProfile.findOne({
         user: user._id,
@@ -119,13 +123,14 @@ const createProfile = async (req, res) => {
       const newClientProfile = new ClientProfile({
         user: user._id,
         photo,
-        location: { state },
+        location: userLocation,
         languages,
       });
 
       const savedClientProfile = await newClientProfile.save();
       user.isOnboarded = true;
-      await user.save();  
+      await user.save();
+
       return res.status(201).json({
         message: 'Client profile created successfully',
         success: true,
