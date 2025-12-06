@@ -17,7 +17,7 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+app.use(cors({ origin: ['http://localhost:5173', 'https://workifyy-beta.vercel.app'], credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan('dev'));
@@ -30,19 +30,17 @@ app.use('/api/v1/bid', bidRoutes);
 app.use('/api/v1/job', jobRoutes);
 app.use('/api/v1/notification', notificationRoutes);
 app.use((req, res) => {
-  res
-    .status(404)
-    .json({
-      message:
-        '✅ Workify backend is running successfully! : ⚠️ Route doesnt exist tho.',
-    });
+  res.status(404).json({
+    message:
+      '✅ Workify backend is running successfully! : ⚠️ Route doesnt exist tho.',
+  });
 });
 
 const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:5173',
+    origin: ['http://localhost:5173', 'https://workifyy-beta.vercel.app'],
     methods: ['GET', 'POST', 'PATCH'],
   },
 });

@@ -104,7 +104,7 @@ const createProfile = async (req, res) => {
       }
       const requiredFields = ['longitude', 'latitude', 'languages'];
       const missingFields = requiredFields.filter((field) => !req.body[field]);
-      console.log('this is what i got', req.body);
+
       if (missingFields.length > 0) {
         return res.status(400).json({
           message: `All fields are required: ${missingFields.join(', ')}`,
