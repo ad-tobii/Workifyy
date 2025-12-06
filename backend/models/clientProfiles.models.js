@@ -12,10 +12,6 @@ const clientProfileSchema = new mongoose.Schema(
       required: true,
     },
     location: {
-      state: {
-        type: String,
-        required: true,
-      },
       geo: {
         type: {
           type: String,
@@ -30,7 +26,6 @@ const clientProfileSchema = new mongoose.Schema(
       type: [String],
       required: true,
     },
-   
   },
   { timestamps: true }
 );
