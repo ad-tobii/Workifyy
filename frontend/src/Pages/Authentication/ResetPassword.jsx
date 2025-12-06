@@ -1,30 +1,33 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { Link, useParams } from 'react-router-dom';
-import Nav from '../../Components/Nav';
+import React from 'react'
+import { useForm } from 'react-hook-form'
+import { Link, useParams } from 'react-router-dom'
+import Nav from '../../Components/Nav'
 
 const ResetPassword = () => {
-  const { token } = useParams();
-  const { register, handleSubmit, watch, formState: { errors } } = useForm();
-  const newPassword = watch('password');
+  const { token } = useParams()
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm()
+  const newPassword = watch('password')
 
-  const onSubmit = (data) => {
-    console.log('Password reset submitted:', data);
-    alert(`Password would be reset for token: ${token}\nNew Password: ${data.password}`);
-  };
+  const onSubmit = data => {
+    console.log('Password reset submitted:', data)
+    alert(`Password would be reset for token: ${token}\nNew Password: ${data.password}`)
+  }
 
   return (
     <>
       <Nav />
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 px-4 sm:px-6 lg:px-8">
-        <div className="w-full max-w-md p-8 space-y-8 bg-white shadow-lg rounded-xl">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-md space-y-8 rounded-xl bg-white p-8 shadow-lg">
           <div>
-            <h2 className="mt-6 text-3xl font-extrabold text-center text-gray-900">
+            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
               Reset Your Password
             </h2>
-            <p className="mt-2 text-sm text-center text-gray-600">
-              Choose a new strong password.
-            </p>
+            <p className="mt-2 text-center text-sm text-gray-600">Choose a new strong password.</p>
           </div>
 
           <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
@@ -41,9 +44,9 @@ const ResetPassword = () => {
                   required: 'New password is required',
                   minLength: { value: 8, message: 'Password must be at least 8 characters' },
                 })}
-                className={`appearance-none rounded-md relative block w-full px-3 py-3 border ${
+                className={`relative block w-full appearance-none rounded-md border px-3 py-3 ${
                   errors.password ? 'border-red-500' : 'border-gray-300'
-                } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
+                } text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm`}
                 placeholder="New Password"
               />
               {errors.password && (
@@ -62,11 +65,11 @@ const ResetPassword = () => {
                 required
                 {...register('passwordConfirm', {
                   required: 'Please confirm your new password',
-                  validate: (value) => value === newPassword || 'Passwords do not match',
+                  validate: value => value === newPassword || 'Passwords do not match',
                 })}
-                className={`appearance-none rounded-md relative block w-full px-3 py-3 border ${
+                className={`relative block w-full appearance-none rounded-md border px-3 py-3 ${
                   errors.passwordConfirm ? 'border-red-500' : 'border-gray-300'
-                } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
+                } text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm`}
                 placeholder="Confirm New Password"
               />
               {errors.passwordConfirm && (
@@ -78,14 +81,14 @@ const ResetPassword = () => {
               <button
                 type="submit"
                 disabled={!token}
-                className="group relative flex justify-center w-full px-4 py-3 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+                className="group relative flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-3 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
               >
                 Reset Password
               </button>
             </div>
           </form>
 
-          <div className="text-sm text-center">
+          <div className="text-center text-sm">
             <Link to="/auth/signin" className="font-medium text-indigo-600 hover:text-indigo-500">
               Back to Sign in
             </Link>
@@ -93,7 +96,7 @@ const ResetPassword = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default ResetPassword;
+export default ResetPassword

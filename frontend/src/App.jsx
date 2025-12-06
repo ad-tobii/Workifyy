@@ -24,7 +24,7 @@ import ProfessionalWallet from './Pages/ProfessionalDashboard/Wallet/Wallet'
 import ProfessionalProfile from './Pages/ProfessionalDashboard/Profile/Profile'
 import EditClientProfile from './Pages/ClientDashoard/Profile/EditProfile'
 import EditProfessionalProfile from './Pages/ProfessionalDashboard/Profile/EditProfile'
-
+import ClientOnboarding from './Pages/Authentication/ClientOnboarding/ClientOnboarding'
 const App = () => {
   return (
     <>
@@ -43,7 +43,7 @@ const App = () => {
           </Route>
 
           <Route path="/onboarding">
-            {' '}
+            <Route path="client" element={<ClientOnboarding />} />
             <Route path="setup" element={<Onboarding />} />
             <Route path="welcome" element={<WelcomePage />} />
           </Route>

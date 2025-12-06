@@ -132,7 +132,9 @@ export default function SignupForm({ role }) {
       </div>
       <div>
         <h1 className="mb-2 text-4xl font-bold text-white">Sign up</h1>
-        <p className="text-gray-400">Sign up to hire professionals.</p>
+        <p className="text-gray-400">
+          {role === 'professional' ? 'Sign up to find work.' : 'Sign up to hire professionals.'}
+        </p>
       </div>
 
       {/* Form */}
