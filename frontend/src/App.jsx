@@ -21,10 +21,7 @@ import ClientWallet from './Pages/ClientDashoard/Wallet'
 import Onboarding from './Pages/Authentication/Onboarding/Onboarding'
 import ClientProfile from './Pages/ClientDashoard/Profile'
 import JobManagement from './Pages/ClientDashoard/Jobmanagement'
-import ProfessionalWallet from './Pages/ProfessionalDashboard/Wallet/Wallet'
-import ProfessionalProfile from './Pages/ProfessionalDashboard/Profile/Profile'
 import EditClientProfile from './Pages/ClientDashoard/Profile/EditProfile'
-import EditProfessionalProfile from './Pages/ProfessionalDashboard/Profile/EditProfile'
 import ClientOnboarding from './Pages/Authentication/ClientOnboarding/ClientOnboarding'
 const App = () => {
   return (
@@ -60,9 +57,7 @@ const App = () => {
             </Route>
             <Route path="professionalDashboard">
               <Route path="" element={<ProfessionalDashboard />} />
-              <Route path="profile" element={<ProfessionalProfile />} />
-              <Route path="profile/edit" element={<EditProfessionalProfile />} />
-              <Route path="wallet" element={<ProfessionalWallet />} />
+
             </Route>
           </Route>
         </Routes>
