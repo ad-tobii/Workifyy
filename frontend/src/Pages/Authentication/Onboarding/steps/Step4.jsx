@@ -34,7 +34,7 @@ const Step4 = ({ formData, updateFormData }) => {
       {
         // Options
         enableHighAccuracy: true,
-        timeout: 5000,
+        timeout: 15000,
         maximumAge: 0,
       }
     )
