@@ -1,5 +1,6 @@
 import { BellIcon, CreditCardIcon, QuestionMarkCircleIcon } from '@heroicons/react/24/outline'
 import { MapPinIcon } from '@heroicons/react/24/solid'
+
 const TopBar = () => {
   return (
     <div className="h-20 w-full sm:h-16">
