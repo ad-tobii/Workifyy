@@ -19,7 +19,7 @@ const TopBar = () => {
 
 const LargeTopBar = () => {
   return (
-    <div className="flex w-full justify-between px-6 py-4">
+    <div className="fixed flex w-full justify-between bg-[#0f0f10] px-6 py-4">
       {/* Logo */}
       <div className="">
         <img src="/assets/workifyy-logo.png" alt="logo" className="w-44" />
@@ -61,7 +61,7 @@ const LargeTopBar = () => {
 
 const MobileTopBar = () => {
   return (
-    <div className="flex w-full justify-between px-6 py-4">
+    <div className="fixed flex w-full justify-between bg-[#0f0f10] px-6 py-4">
       {/* Right side */}
       <div className="flex space-x-2">
         <img
