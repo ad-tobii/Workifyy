@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import Sidebar from './Sidebar'
 import { initialFormData, stepsConfig } from './constants'
@@ -9,19 +9,17 @@ import Step4 from './steps/Step4'
 import Step5 from './steps/Step5'
 import Step6 from './steps/Step6'
 import useUserStore from '../../../store/userStore.store'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast' // only import toast, not Toaster
 import { useNavigate } from 'react-router-dom'
 
 const Onboarding = () => {
   const [step, setStep] = useState(1)
   const [formData, setFormData] = useState(initialFormData)
   const totalSteps = stepsConfig.length
-
   const loading = useUserStore(state => state.loading.onboardUser)
   const onboardUser = useUserStore(state => state.onboardUser)
   const user = useUserStore(state => state.user)
-  const loadUser = useUserStore(state => state.loadUser)
-  const loadingUser = useUserStore(state => state.loading.loadUser)
+
   const navigate = useNavigate()
 
   const updateFormData = useCallback((field, value) => {
@@ -30,27 +28,12 @@ const Onboarding = () => {
 
   const handleNext = () => setStep(s => Math.min(s + 1, totalSteps))
   const handleBack = () => setStep(s => Math.max(s - 1, 1))
-  const [fetchingUser, setFetchingUser] = useState(true)
-  useEffect(() => {
-    const fetch = async () => {
-      await loadUser()
-      setFetchingUser(false)
-    }
-    fetch()
-  }, [loadUser])
 
   useEffect(() => {
-    if (fetchingUser) return // wait until user is fetched
-
-    if (!user) {
-      navigate('/auth/signin')
-      return
-    }
-
     if (user.isOnboarded) {
       navigate('/Dashboard/professionalDashboard')
     }
-  }, [user, fetchingUser, navigate])
+  }, [user, navigate])
 
   const handleSubmit = async () => {
     const toastId = toast.loading('Submitting onboarding...')
@@ -92,15 +75,6 @@ const Onboarding = () => {
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#0f0f10] font-sans text-white">
-      {fetchingUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-          <div className="h-16 w-16 animate-spin rounded-full border-4 border-b-green-500 border-l-transparent border-r-transparent border-t-green-500"></div>
-        </div>
-      )}
-
-      {/* Toaster container */}
-      <Toaster position="top-right" reverseOrder={false} />
-
       {/* LEFT SIDEBAR */}
       <Sidebar currentStep={step} steps={stepsConfig} />
 

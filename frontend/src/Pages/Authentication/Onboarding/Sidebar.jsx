@@ -6,7 +6,7 @@ const Sidebar = ({ currentStep, steps }) => {
     <div className="hidden h-full w-80 flex-col border-r border-zinc-800 bg-[#0f0f10] p-8 lg:flex">
       {/* Brand / Logo Area - Starts at top padding */}
       <div className="mb-12 flex items-center gap-2">
-        <img src="/assets/workifyy-logo.png" className='w-40'/>
+        <img src="/assets/workifyy-logo.png" className="w-40" />
       </div>
 
       {/* Vertical Stepper */}

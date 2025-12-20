@@ -1,5 +1,3 @@
-'use client'
-
 import { useState, useEffect } from 'react'
 import useUserStore from '../../../store/userStore.store'
 import Sidebar from './components/Sidebar'
@@ -13,8 +11,6 @@ import toast from 'react-hot-toast'
 export default function ClientOnboarding() {
   const navigate = useNavigate()
 
-  const [fetchingUser, setFetchingUser] = useState(true)
-
   const [currentStep, setCurrentStep] = useState(1)
   const [formData, setFormData] = useState({
     photo: null,
@@ -23,31 +19,15 @@ export default function ClientOnboarding() {
     longitude: null,
   })
 
-  const loadUser = useUserStore(state => state.loadUser)
   const onboardUser = useUserStore(state => state.onboardUser)
   const loading = useUserStore(state => state.loading.onboardUser)
   const user = useUserStore(state => state.user)
 
   useEffect(() => {
-    const fetch = async () => {
-      await loadUser()
-      setFetchingUser(false)
-    }
-    fetch()
-  }, [loadUser])
-
-  useEffect(() => {
-    if (fetchingUser) return // wait until user is fetched
-
-    if (!user) {
-      navigate('/auth/signin')
-      return
-    }
-
     if (user.isOnboarded) {
       navigate('/Dashboard/clientDashboard')
     }
-  }, [user, fetchingUser, navigate])
+  }, [user, navigate])
 
   const steps = [
     { id: 1, label: 'Step 1', description: 'Profile Picture', icon: '👤' },
@@ -55,21 +35,23 @@ export default function ClientOnboarding() {
     { id: 3, label: 'Step 3', description: 'Location', icon: '📍' },
   ]
 
+  // Functional form for safer state updates
   const handleNext = async () => {
     if (currentStep === 3) {
       const result = await onboardUser(formData)
       if (result.success) {
         toast.success(result.successMessage)
         navigate('/Dashboard/clientDashboard')
-      } else toast.error(result.error)
+      } else {
+        toast.error(result.error)
+      }
+      return
     }
-    setCurrentStep(currentStep + 1)
+    setCurrentStep(s => Math.min(s + 1, steps.length))
   }
 
   const handleBack = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1)
-    }
+    setCurrentStep(s => Math.max(s - 1, 1))
   }
 
   return (
@@ -83,7 +65,7 @@ export default function ClientOnboarding() {
       <div className="flex flex-1 flex-col">
         {/* Mobile Header */}
         <div className="lg:hidden">
-          <MobileHeader currentStep={currentStep} totalSteps={3} onBack={handleBack} />
+          <MobileHeader currentStep={currentStep} totalSteps={steps.length} onBack={handleBack} />
         </div>
 
         {/* Content Area */}
@@ -94,7 +76,7 @@ export default function ClientOnboarding() {
               {currentStep === 2 && <Step2 formData={formData} setFormData={setFormData} />}
               {currentStep === 3 && <Step3 formData={formData} setFormData={setFormData} />}
 
-              {/* Next Button - Only show on desktop, mobile has it in header */}
+              {/* Next Button - Desktop */}
               <div className="mt-12 hidden lg:block">
                 <button
                   onClick={handleNext}

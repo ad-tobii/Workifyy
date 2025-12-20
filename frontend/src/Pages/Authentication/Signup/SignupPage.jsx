@@ -1,4 +1,3 @@
-'use client'
 import SignupForm from './SignupForm'
 import SignupImage from './SignupImage'
 export default function SignupPage({ role }) {

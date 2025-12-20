@@ -2,9 +2,11 @@ import { Mail, Lock } from 'lucide-react'
 import { ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline'
 import useUserStore from '../../../store/userStore.store'
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+
 import toast from 'react-hot-toast'
+
+// TO DO : edit so login redirects to dashboard if already loggedIn
 
 export default function Signin() {
   const login = useUserStore(state => state.login)

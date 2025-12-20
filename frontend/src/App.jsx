@@ -3,64 +3,122 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import './styles/index.css'
 
-// Pages imported normally
+// Pages
 import Home from './Pages/Home/Home'
+import NotFound from './Pages/Authentication/ClientOnboarding/components/NotFound'
 import SignupOptions from './Pages/Authentication/SignupOptions/Signup'
 import Signin from './Pages/Authentication/Signin/signin_user'
 import Otp from './Pages/Authentication/OTP/Otp'
-
-import ForgotPassword from './Pages/Authentication/ForgotPassword'
-import ResetPassword from './Pages/Authentication/ResetPassword'
 import ClientSignup from './Pages/Authentication/Signup/SignupFormOptions/Clientsignup'
 import ProfessionalSignup from './Pages/Authentication/Signup/SignupFormOptions/Professionalsignup'
-import ClientDashboard from './Pages/ClientDashoard/ClientDashboard'
 import WelcomePage from './Pages/Authentication/Onboarding/WelcomePage'
-import JobPostingFLow from './Pages/ClientDashoard/JobPostingFlow/JobPostingFlow'
 import ProfessionalDashboard from './Pages/ProfessionalDashboard/ProfessionalDashboard'
-import ClientWallet from './Pages/ClientDashoard/Wallet'
 import Onboarding from './Pages/Authentication/Onboarding/Onboarding'
-import ClientProfile from './Pages/ClientDashoard/Profile'
-import JobManagement from './Pages/ClientDashoard/Jobmanagement'
-import EditClientProfile from './Pages/ClientDashoard/Profile/EditProfile'
 import ClientOnboarding from './Pages/Authentication/ClientOnboarding/ClientOnboarding'
+
+// Route Wrappers
+import GuestRoute from './Components/GuestRoute'
+import SessionGate from './Components/SessionGate'
+import ProtectRoute from './Components/ProtectRoute'
+
 const App = () => {
   return (
     <>
       <Toaster position="top-right" />
       <Router>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/auth">
-            <Route path="signin" element={<Signin />} />
-            <Route path="signup" element={<SignupOptions />} />
-            <Route path="ClientSignup" element={<ClientSignup />} />
-            <Route path="ProfessionalSignup" element={<ProfessionalSignup />} />
-            <Route path="otp" element={<Otp />} />
-            <Route path="forgot-password" element={<ForgotPassword />} />
-            <Route path="reset-password/:token" element={<ResetPassword />} />
-          </Route>
+        <SessionGate>
+          <Routes>
+            {/* Public Home */}
+            <Route path="/" element={<Home />} />
 
-          <Route path="/onboarding">
-            <Route path="client" element={<ClientOnboarding />} />
-            <Route path="setup" element={<Onboarding />} />
-            <Route path="welcome" element={<WelcomePage />} />
-          </Route>
-
-          <Route path="/Dashboard">
-            <Route path="clientDashboard">
-              <Route path="" element={<ClientDashboard />} />
-              <Route path="profile" element={<ClientProfile />} />
-              <Route path="profile/edit" element={<EditClientProfile />} />
-              <Route path="wallet" element={<ClientWallet />} />
-              <Route path="jobmanagement" element={<JobManagement />} />
-              <Route path="Jobpost" element={<JobPostingFLow />} />
+            {/* Auth Routes (Guest Only) */}
+            <Route path="/auth">
+              <Route
+                path="signin"
+                element={
+                  <GuestRoute>
+                    <Signin />
+                  </GuestRoute>
+                }
+              />
+              <Route
+                path="signup"
+                element={
+                  <GuestRoute>
+                    <SignupOptions />
+                  </GuestRoute>
+                }
+              />
+              <Route
+                path="ClientSignup"
+                element={
+                  <GuestRoute>
+                    <ClientSignup />
+                  </GuestRoute>
+                }
+              />
+              <Route
+                path="ProfessionalSignup"
+                element={
+                  <GuestRoute>
+                    <ProfessionalSignup />
+                  </GuestRoute>
+                }
+              />
+              <Route
+                path="otp"
+                element={
+                  <ProtectRoute>
+                    <Otp />
+                  </ProtectRoute>
+                }
+              />
             </Route>
-            <Route path="professionalDashboard">
-              <Route path="" element={<ProfessionalDashboard />} />
 
+            {/* Onboarding */}
+            <Route path="/onboarding">
+              <Route
+                path="client"
+                element={
+                  <ProtectRoute>
+                    <ClientOnboarding />
+                  </ProtectRoute>
+                }
+              />
+              <Route
+                path="setup"
+                element={
+                  <ProtectRoute>
+                    <Onboarding />
+                  </ProtectRoute>
+                }
+              />
+              <Route
+                path="welcome"
+                element={
+                  <ProtectRoute>
+                    <WelcomePage />
+                  </ProtectRoute>
+                }
+              />
             </Route>
-          </Route>
-        </Routes>
+
+            {/* Dashboards */}
+            <Route path="/Dashboard">
+              <Route path="professionalDashboard">
+                <Route
+                  path=""
+                  element={
+                    <ProtectRoute>
+                      <ProfessionalDashboard />
+                    </ProtectRoute>
+                  }
+                />
+              </Route>
+            </Route>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </SessionGate>
       </Router>
     </>
   )

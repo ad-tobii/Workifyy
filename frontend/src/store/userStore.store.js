@@ -2,15 +2,14 @@ import { create } from 'zustand'
 import api from '../api/axios.api'
 
 const useUserStore = create((set, get) => ({
-  // state variables
   user: null,
+  sessionChecked: false,
   loading: {
     login: false,
     signup: false,
     logout: false,
     requestVerificationEmail: false,
     verifyAccount: false,
-    loadUser: false,
     onboardUser: false,
   },
   error: null,
@@ -23,7 +22,6 @@ const useUserStore = create((set, get) => ({
 
   // Core function to handle authentication-related API calls
   handleAuthCall: async (action, params) => {
-    // get the setLoading function from the get() function
     const { setLoading } = get()
 
     // action map for the API calls
@@ -33,7 +31,6 @@ const useUserStore = create((set, get) => ({
       logout: '/logout',
       requestVerificationEmail: '/send-verification-mail',
       verifyAccount: '/verify-email',
-      loadUser: '/get-me',
       onboardUser: '/create-profile',
     }
 
@@ -42,8 +39,7 @@ const useUserStore = create((set, get) => ({
     set({ error: null, successMessage: null })
 
     try {
-      // determine the method based on the action
-      const method = action === 'loadUser' ? 'get' : 'post'
+      const method = 'post'
 
       // Special handling for onboardUser with file upload
       if (action === 'onboardUser') {
@@ -71,7 +67,6 @@ const useUserStore = create((set, get) => ({
           set({ error: res.data.message })
           return { success: false, error: res.data.message }
         }
-
         // set the user and success message
         const newUser = res.data.data?.user
         if (newUser) {
@@ -115,10 +110,28 @@ const useUserStore = create((set, get) => ({
     }
   },
 
+  initSession: async () => {
+    set({ sessionChecked: false })
+
+    try {
+      const res = await api.get('/auth/get-me')
+
+      if (res.data?.success && res.data.data?.user) {
+        set({ user: res.data.data.user })
+      } else {
+        set({ user: null })
+      }
+    } catch {
+      set({ user: null })
+    } finally {
+      set({ sessionChecked: true })
+    }
+  },
+
   login: credentials => get().handleAuthCall('login', credentials),
   signup: data => get().handleAuthCall('signup', data),
   logout: () => get().handleAuthCall('logout'),
-  loadUser: () => get().handleAuthCall('loadUser'),
+  // loadUser: () => get().handleAuthCall('loadUser'),
   verifyAccount: otp => get().handleAuthCall('verifyAccount', otp),
   requestVerificationEmail: () => get().handleAuthCall('requestVerificationEmail'),
   onboardUser: userData => get().handleAuthCall('onboardUser', userData),
