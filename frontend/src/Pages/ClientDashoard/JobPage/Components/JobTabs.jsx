@@ -1,15 +1,9 @@
-import {
-  MagnifyingGlassIcon,
-  BriefcaseIcon,
-  ReceiptPercentIcon,
-  BookmarkIcon,
-} from '@heroicons/react/24/outline'
+import { PlusCircleIcon, BriefcaseIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline'
 
 const tabs = [
-  { name: 'Find Jobs', icon: MagnifyingGlassIcon },
+  { name: 'Post Jobs', icon: PlusCircleIcon },
   { name: 'Ongoing Jobs', icon: BriefcaseIcon },
-  { name: 'Bids', icon: ReceiptPercentIcon },
-  { name: 'Saved Jobs', icon: BookmarkIcon },
+  { name: 'Bids', icon: CurrencyDollarIcon },
 ]
 
 const JobTabs = ({ activeTab, setActiveTab }) => {
@@ -22,7 +16,9 @@ const JobTabs = ({ activeTab, setActiveTab }) => {
             <div
               key={idx}
               onClick={() => setActiveTab(tab.name)}
-              className={`flex h-16 w-16 cursor-pointer items-center justify-center rounded-xl transition-all duration-200 ${isActive ? 'bg-white/10 text-[#32cd32]' : 'hover:bg-white/10 hover:text-[#32cd32]'} `}
+              className={`flex h-16 w-16 cursor-pointer items-center justify-center rounded-xl transition-all duration-200 ${
+                isActive ? 'bg-white/10 text-[#32cd32]' : 'hover:bg-white/10 hover:text-[#32cd32]'
+              } `}
             >
               <tab.icon className="h-8 w-8" />
             </div>

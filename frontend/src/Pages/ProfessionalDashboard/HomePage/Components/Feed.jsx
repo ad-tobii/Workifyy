@@ -7,7 +7,7 @@ const Feed = () => {
       <h3 className="mb-3 text-sm font-semibold text-white/80">Ongoing Job</h3>
 
       {/* Ongoing Job Card */}
-      <div className="flex flex-col justify-between rounded-2xl border border-white/10 bg-[#242427]/80 px-4 py-4 text-white shadow-lg backdrop-blur-md">
+      <div className="flex flex-col justify-between rounded-2xl border border-white/10 bg-[#242427]/80 px-4 py-4 text-white shadow-lg">
         {/* Top */}
         <div className="flex items-center justify-between">
           <div>
