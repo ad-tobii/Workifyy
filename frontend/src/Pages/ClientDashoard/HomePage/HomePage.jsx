@@ -1,7 +1,7 @@
 import Feed from './Components/Feed'
 import BalanceCard from './Components/BalanceCard'
 import QuickActions from './Components/QuickActions'
-import PostJobCta from './Components/PostJobCTA'
+import PostJobCta from './Components/PostJobCta'
 const HomePage = () => {
   return (
     <div className="mt-4 flex flex-col items-center space-y-6 pb-48">
