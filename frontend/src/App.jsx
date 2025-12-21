@@ -15,7 +15,7 @@ import WelcomePage from './Pages/Authentication/Onboarding/WelcomePage'
 import ProfessionalDashboard from './Pages/ProfessionalDashboard/ProfessionalDashboard'
 import Onboarding from './Pages/Authentication/Onboarding/Onboarding'
 import ClientOnboarding from './Pages/Authentication/ClientOnboarding/ClientOnboarding'
-
+import ClientDashboard from './Pages/ClientDashoard/ClientDashboard'
 // Route Wrappers
 import GuestRoute from './Components/GuestRoute'
 import SessionGate from './Components/SessionGate'
@@ -116,6 +116,18 @@ const App = () => {
                 />
               </Route>
             </Route>
+            <Route path="/Dashboard">
+              <Route path="clientdashboard">
+                <Route
+                  path=""
+                  element={
+                    <ProtectRoute>
+                      <ClientDashboard />
+                    </ProtectRoute>
+                  }
+                />
+              </Route>
+            </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
         </SessionGate>
@@ -125,3 +137,6 @@ const App = () => {
 }
 
 export default App
+
+// TO DO LIST
+// role guard for the dashboards
