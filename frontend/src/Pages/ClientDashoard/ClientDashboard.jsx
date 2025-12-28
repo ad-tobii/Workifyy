@@ -7,7 +7,7 @@ const ClientDashboard = () => {
   const [activeTab, setActiveTab] = useState('home')
   return (
     <div className="min-h-screen bg-[#0f0f10]">
-      <TopBar />
+      <TopBar setActiveTab={setActiveTab} />
       <div>
         {activeTab === 'home' && <HomePage />}
         {activeTab === 'jobs' && <JobPage />}

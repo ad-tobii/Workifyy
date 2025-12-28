@@ -1,34 +1,21 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { PhotoIcon } from '@heroicons/react/24/outline'
 
 const Step4 = ({ setStep }) => {
-  const [budget, setBudget] = useState('')
-
-  const handleChange = e => {
-    let value = e.target.value.replace(/\D/g, '')
-    value = new Intl.NumberFormat('en-NG').format(value)
-    setBudget(value)
-  }
-
   return (
-    <div className="mx-auto max-w-md">
-      <h2 className="mb-2 text-2xl font-semibold text-white">How much are you thinking?</h2>
-      <p className="mb-6 text-gray-400">You can always negotiate later</p>
+    <div>
+      <h2 className="mb-2 text-2xl font-semibold">Show us what’s going on</h2>
+      <p className="mb-6 text-gray-400">Pictures help workers understand the job faster</p>
 
-      <div className="relative">
-        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl text-gray-400">₦</span>
-        <input
-          type="text"
-          value={budget}
-          onChange={handleChange}
-          placeholder="Enter your budget"
-          className="w-full rounded-2xl border border-gray-700 bg-[#1a1a1a] py-3 pl-10 pr-4 text-center text-3xl font-extrabold tracking-widest text-[#32cd32] placeholder:align-middle placeholder:text-[1.2rem] placeholder:text-gray-400 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[#32cd32]"
-        />
+      <div className="cursor-pointer rounded-2xl border-2 border-dashed border-gray-700 p-10 text-center transition hover:border-[#32cd32] hover:bg-gray-50">
+        <PhotoIcon className="mx-auto mb-4 h-12 w-12 text-gray-400" />
+        <p className="font-medium text-gray-400">Click to upload photos</p>
       </div>
 
       <div className="mt-6 flex justify-end">
         <button
           onClick={() => setStep(5)}
-          className="rounded-2xl bg-[#32cd32] px-6 py-3 font-medium text-black shadow-md transition hover:bg-[#28a428] hover:shadow-lg"
+          className="rounded-xl bg-[#32cd32] px-6 py-3 font-medium text-black transition hover:bg-[#28a428]"
         >
           Next
         </button>

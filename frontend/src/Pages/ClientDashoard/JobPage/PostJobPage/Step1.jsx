@@ -24,7 +24,6 @@ const Step1 = ({ setStep }) => {
     <>
       <div>
         <h2 className="mb-4 text-2xl font-semibold">What kind of job is it?</h2>
-       
 
         <div className="mb-8 flex flex-wrap gap-3">
           {categories.map(cat => (
