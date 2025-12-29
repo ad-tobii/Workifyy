@@ -11,14 +11,16 @@ const jobSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    category: { type: String, required: true },
+    budget: {
+      type: Number,
+      required: true,
+    },
     description: {
       type: String,
       required: true,
     },
-    location: {
-      type: String,
-      required: true,
-    },
+    hexId: { type: String, required: true },
     images: {
       type: [String],
       default: [],
@@ -35,6 +37,9 @@ const jobSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+jobSchema.index({ hexId: 1 }); 
+jobSchema.index({ status: 1 });
 
 const Job = mongoose.model('Job', jobSchema);
 export default Job;

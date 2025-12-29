@@ -1,9 +1,11 @@
 import Job from '../models/jobs.models.js';
 import { createNotification } from './notification.controllers.js';
-import User from '../models/users.models.js'; 
+import User from '../models/users.models.js';
+import { latLngToHex, getJobCoverage } from '../utils/spatial.utils.js';
 
 export const createJob = async (req, res, io) => {
   try {
+    // Ensure user is a client
     const user = req.user;
     if (!user || user.role !== 'client') {
       return res.status(401).json({
@@ -13,8 +15,27 @@ export const createJob = async (req, res, io) => {
       });
     }
 
-    const { title, description, location, scheduledAt } = req.body;
-    const requiredFields = ['title', 'description', 'location', 'scheduledAt'];
+    //  Ensure required fields are present
+    const {
+      title,
+      description,
+      category,
+      longitude,
+      latitude,
+      budget,
+      scheduledAt,
+    } = req.body;
+
+    const requiredFields = [
+      'title',
+      'category',
+      'budget',
+      'longitude',
+      'latitude',
+      'description',
+      'scheduledAt',
+    ];
+
     const missingFields = requiredFields.filter((field) => !req.body[field]);
     if (missingFields.length > 0) {
       return res.status(400).json({
@@ -24,30 +45,27 @@ export const createJob = async (req, res, io) => {
       });
     }
 
+    // collecting job images
+    const images = req.files ? req.files.map((file) => file.path) : [];
+
+    // determine the hex id
+    const hexId = latLngToHex(latitude, longitude);
+    const jobCoverage = getJobCoverage(hexId);
+
     // Create the job
     const job = await Job.create({
       client: user._id,
       title,
       description,
-      location,
+      budget,
+      category,
+      hexId,
       scheduledAt,
+      images,
     });
 
-    // 1️⃣ Emit real-time job to city room
-    io.to(location).emit('newJob', job);
-
-    // 2️⃣ Fetch all professionals in that city
-    const professionals = await User.find({ role: 'professional', city: location });
-
-    // 3️⃣ Create notifications for each professional
-    for (const prof of professionals) {
-      await createNotification({
-        userId: prof._id,
-        type: 'newJob',
-        message: `A new job has been posted in ${location}: "${title}"`,
-        meta: { jobId: job._id, location },
-      }, io);
-    }
+    // Emit real-time job to coverage room
+    io.to(jobCoverage).emit('newJob', job);
 
     return res.status(201).json({
       message: 'Job successfully posted',
@@ -66,15 +84,23 @@ export const createJob = async (req, res, io) => {
 
 export const listJobs = async (req, res) => {
   try {
-    const { location } = req.query;
+    // Retrieve Longitude and latitude from request
+    const { latitude, longitude } = req.query;
 
-    const filter = { status: 'open' };
-    if (location) filter.location = location;
+    // Determine Hex_id and coverage
+    const hexId = latLngToHex(latitude, longitude);
+    const searchArea = getJobCoverage(hexId);
 
+    // filter for only open jobs within the search area
+    const filter = { status: 'open', hexId: { $in: searchArea } };
+
+    // retrieve matching jobs from db
     const jobs = await Job.find(filter)
-      .populate('client', 'name email')
-      .sort({ scheduledAt: 1 });
+      .select('title budget category hexId description createdAt')
+      .populate('client', 'name')
+      .sort({ createdAt: -1 });
 
+    // send response
     return res.status(200).json({
       message: 'Open jobs fetched successfully',
       success: true,
