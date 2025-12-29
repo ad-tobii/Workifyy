@@ -1,8 +1,8 @@
 import { Server } from 'socket.io';
 import cookie from 'cookie';
 import jwt from 'jsonwebtoken';
-import redis from './redisClient.js';
-import { latLngToHex } from './spatialUtils.js';
+import redis from './redis.utils.js';
+import { latLngToHex } from './spatial.utils.js';
 
 export const initializeSocket = (server) => {
   const io = new Server(server, {
