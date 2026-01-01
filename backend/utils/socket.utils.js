@@ -21,7 +21,7 @@ export const initializeSocket = (server) => {
 
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      socket.data.userId = decoded.id;
+      socket.data.userId = decoded.userId;
       socket.data.role = decoded.role;
       next();
     } catch (err) {
