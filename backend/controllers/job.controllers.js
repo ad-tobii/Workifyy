@@ -3,8 +3,9 @@ import { createNotification } from './notification.controllers.js';
 import User from '../models/users.models.js';
 import { latLngToHex, getJobCoverage } from '../utils/spatial.utils.js';
 
-export const createJob = async (req, res, io) => {
+export const createJob = async (req, res) => {
   try {
+    const io = req.io;
     // Ensure user is a client
     const user = req.user;
     if (!user || user.role !== 'client') {
@@ -24,7 +25,7 @@ export const createJob = async (req, res, io) => {
       latitude,
       budget,
       scheduledAt,
-    } = req.body;
+    } = req.body || {};
 
     const requiredFields = [
       'title',
