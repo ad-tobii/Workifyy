@@ -17,22 +17,14 @@ export const createJob = async (req, res) => {
     }
 
     //  Ensure required fields are present
-    const {
-      title,
-      description,
-      category,
-      longitude,
-      latitude,
-      budget,
-      scheduledAt,
-    } = req.body || {};
+    const { title, description, category, address, budget, scheduledAt } =
+      req.body || {};
 
     const requiredFields = [
       'title',
       'category',
       'budget',
-      'longitude',
-      'latitude',
+      'address',
       'description',
       'scheduledAt',
     ];
@@ -61,6 +53,7 @@ export const createJob = async (req, res) => {
       budget,
       category,
       hexId,
+      address,
       scheduledAt,
       images,
     });
