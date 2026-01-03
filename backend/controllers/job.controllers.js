@@ -17,12 +17,14 @@ export const createJob = async (req, res) => {
     }
 
     //  Ensure required fields are present
-    const { title, description, category, address, budget, scheduledAt } =
+    const { title, description, category, address, budget, scheduledAt, longitude, latitude } =
       req.body || {};
 
     const requiredFields = [
       'title',
       'category',
+      'longitude',
+      'latitude',
       'budget',
       'address',
       'description',
