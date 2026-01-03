@@ -1,45 +1,28 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState } from 'react'
 import { MapPin } from 'lucide-react'
+import getBrowserLocation from '../../../../utils/geoLocation.utils'
 
-const Step4 = ({ formData, updateFormData }) => {
-  const { latitude, longitude } = formData
+const Step4 = ({ updateFormData }) => {
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
 
-  const handleGetLocation = useCallback(() => {
+  const handleGetLocation = async () => {
     setError(null)
     setLoading(true)
 
-    if (!navigator.geolocation) {
-      setError('Geolocation is not supported by your browser.')
+    try {
+      const location = await getBrowserLocation()
+      updateFormData('latitude', location?.latitude)
+      updateFormData('longitude', location?.longitude)
       setLoading(false)
-      return
+    } catch (error) {
+      console.error('Error getting location:', error)
+      setError('Unable to retrieve location. Please check your permissions.')
+      updateFormData('latitude', null)
+      updateFormData('longitude', null)
+      setLoading(false)
     }
-
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        // Success callback - receives position object
-        updateFormData('latitude', position.coords.latitude)
-        updateFormData('longitude', position.coords.longitude)
-        setLoading(false)
-      },
-      error => {
-        // Error callback - receives error object
-        console.error('Geolocation error:', error)
-        setError('Unable to retrieve location. Please check your permissions.')
-        updateFormData('latitude', null)
-        updateFormData('longitude', null)
-        setLoading(false)
-      },
-      {
-        // Options
-        enableHighAccuracy: true,
-        timeout: 15000,
-        maximumAge: 0,
-      }
-    )
-  }, [updateFormData])
-
+  }
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 mt-10 flex flex-col items-center duration-500 lg:mt-0 lg:items-start">
       <div className="mb-6 flex h-32 w-32 items-center justify-center rounded-full bg-zinc-800 lg:h-24 lg:w-24">

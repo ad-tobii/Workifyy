@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const Step2 = ({ setStep }) => {
+const Step2 = ({ setStep, setFormData, formData }) => {
   const [title, setTitle] = useState('')
   const [charLeft, setCharLeft] = useState(120)
   const handleChange = e => {
@@ -13,7 +13,6 @@ const Step2 = ({ setStep }) => {
       setTitle(value)
     }
   }
-  const handleChars = () => {}
   return (
     <div>
       <span className="mb-4 text-2xl font-semibold">Job Title — Keep it short and specific.</span>
@@ -29,7 +28,10 @@ const Step2 = ({ setStep }) => {
       <div className="mt-6 flex justify-end space-y-12">
         <span className="">Characters left : {charLeft}</span>
         <button
-          onClick={() => setStep(3)}
+          onClick={() => {
+            setStep(3)
+            setFormData({ ...formData, title: title })
+          }}
           className="rounded-xl bg-[#32cd32] px-6 py-3 font-medium text-black"
         >
           Next

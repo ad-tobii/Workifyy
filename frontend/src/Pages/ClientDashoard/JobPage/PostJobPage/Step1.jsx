@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Step1 = ({ setStep }) => {
+const Step1 = ({ setStep, setFormData, formData }) => {
   const categories = [
     'Electrical',
     'Plumbing',
@@ -44,7 +44,10 @@ const Step1 = ({ setStep }) => {
         <div className="flex justify-end">
           <button
             disabled={!selectedCategory}
-            onClick={() => setStep(2)}
+            onClick={() => {
+              setStep(2)
+              setFormData({ ...formData, category: selectedCategory })
+            }}
             className={`rounded-xl px-6 py-3 font-medium ${
               selectedCategory
                 ? 'bg-[#32cd32] text-black'

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const Step5 = ({ setStep }) => {
+const Step5 = ({ setStep, setFormData, formData }) => {
   const [budget, setBudget] = useState('')
 
   const handleChange = e => {
@@ -27,7 +27,11 @@ const Step5 = ({ setStep }) => {
 
       <div className="mt-6 flex justify-end">
         <button
-          onClick={() => setStep(6)}
+          onClick={() => {
+            setStep(6)
+            const cleanBudget = budget.replace(/,/g, '')
+            setFormData({ ...formData, budget: parseInt(cleanBudget) })
+          }}
           className="rounded-2xl bg-[#32cd32] px-6 py-3 font-medium text-black shadow-md transition hover:bg-[#28a428] hover:shadow-lg"
         >
           Next
