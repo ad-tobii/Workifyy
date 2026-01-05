@@ -2,18 +2,18 @@ import TopBar from './TopBar'
 import BottomBar from './BottomBar'
 import HomePage from './HomePage/HomePage'
 import JobPage from './JobPage/JobPage'
-import { useState } from 'react'
+import useClientStore from '../../store/clientStore.store'
 const ClientDashboard = () => {
-  const [activeTab, setActiveTab] = useState('home')
+  const mainTab = useClientStore(state => state.mainTab)
   return (
     <div className="min-h-screen bg-[#0f0f10]">
-      <TopBar setActiveTab={setActiveTab} />
+      <TopBar />
       <div>
-        {activeTab === 'home' && <HomePage />}
-        {activeTab === 'jobs' && <JobPage />}
+        {mainTab === 'home' && <HomePage />}
+        {mainTab === 'jobs' && <JobPage />}
       </div>
 
-      <BottomBar setActiveTab={setActiveTab} />
+      <BottomBar />
     </div>
   )
 }

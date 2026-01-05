@@ -3,10 +3,13 @@ import {
   BriefcaseIcon,
   CreditCardIcon,
   QuestionMarkCircleIcon,
+  HomeIcon,
 } from '@heroicons/react/24/outline'
 import { MapPinIcon } from '@heroicons/react/24/solid'
 
-const TopBar = ({ setActiveTab }) => {
+import useClientStore from '../../store/clientStore.store'
+
+const TopBar = () => {
   return (
     <div className="h-20 w-full sm:h-16">
       {/* TopBar on Mobile screens */}
@@ -16,16 +19,14 @@ const TopBar = ({ setActiveTab }) => {
 
       {/* TopBar on large screens */}
       <div className="hidden sm:flex">
-        <LargeTopBar setActiveTab={setActiveTab} />
+        <LargeTopBar />
       </div>
     </div>
   )
 }
 
-const LargeTopBar = ({ setActiveTab }) => {
-  const handleJobTab = () => {
-    setActiveTab('jobs')
-  }
+const LargeTopBar = () => {
+  const setMainTab = useClientStore(state => state.setMainTab)
   return (
     <div className="fixed flex w-full justify-between bg-[#0f0f10] px-6 py-4">
       {/* Logo */}
@@ -35,6 +36,11 @@ const LargeTopBar = ({ setActiveTab }) => {
 
       {/* Desktop Nav Right Side */}
       <div className="flex items-center space-x-10 text-white">
+        {/* Help Icon */}
+        <button onClick={() => setMainTab('home')}>
+          <HomeIcon className="h-6 w-6 transition-colors duration-200 hover:text-[#32cd32]" />
+        </button>
+
         {/* Help Icon */}
         <button>
           <QuestionMarkCircleIcon className="h-6 w-6 transition-colors duration-200 hover:text-[#32cd32]" />
@@ -46,7 +52,7 @@ const LargeTopBar = ({ setActiveTab }) => {
         </button>
 
         {/* Jobs Icon */}
-        <button onClick={handleJobTab}>
+        <button onClick={() => setMainTab('jobs')}>
           <BriefcaseIcon className="h-6 w-6 transition-colors duration-200 hover:text-[#32cd32]" />
         </button>
 

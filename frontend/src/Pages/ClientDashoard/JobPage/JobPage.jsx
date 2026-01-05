@@ -1,14 +1,14 @@
 import JobTabs from './Components/JobTabs'
-import { useState } from 'react'
 import PostJobPage from './PostJobPage/PostJob'
+import useClientStore from '../../../store/clientStore.store'
 
 const JobPage = () => {
-  const [activeTab, setActiveTab] = useState('')
+  const jobTab = useClientStore(state => state.jobTab)
   return (
     <div className="mt-4 flex flex-col items-center space-y-6 pb-48 text-white">
-      <JobTabs setActiveTab={setActiveTab} activeTab={activeTab} />
+      <JobTabs />
 
-      {activeTab === 'Post Jobs' && <PostJobPage />}
+      {jobTab === 'Post Jobs' && <PostJobPage />}
     </div>
   )
 }

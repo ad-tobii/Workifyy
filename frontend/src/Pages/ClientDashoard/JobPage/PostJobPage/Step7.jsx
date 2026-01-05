@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { Calendar, Clock, CheckCircle2 } from 'lucide-react'
 import useJobStore from '../../../../store/jobStore.store'
+import useClientStore from '../../../../store/clientStore.store'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 
 const Step7 = ({ setFormData, formData }) => {
+  const setMainTab = useClientStore(state => state.setMainTab)
   const navigate = useNavigate()
   const [when, setWhen] = useState('today')
   const [date, setDate] = useState('')
@@ -37,7 +39,7 @@ const Step7 = ({ setFormData, formData }) => {
 
       // Simple check: if we got a result, move them out
       if (result) {
-        navigate('/Dashboard/clientDashboard')
+        setMainTab('home')
       }
     } catch (error) {
       toast.error(error.response?.data?.message || 'Something went wrong')
