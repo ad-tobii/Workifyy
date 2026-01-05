@@ -18,7 +18,6 @@ const Onboarding = () => {
   const totalSteps = stepsConfig.length
   const loading = useUserStore(state => state.loading.onboardUser)
   const onboardUser = useUserStore(state => state.onboardUser)
-  const user = useUserStore(state => state.user)
 
   const navigate = useNavigate()
 
@@ -29,11 +28,7 @@ const Onboarding = () => {
   const handleNext = () => setStep(s => Math.min(s + 1, totalSteps))
   const handleBack = () => setStep(s => Math.max(s - 1, 1))
 
-  useEffect(() => {
-    if (user.isOnboarded) {
-      navigate('/Dashboard/professionalDashboard')
-    }
-  }, [user, navigate])
+ 
 
   const handleSubmit = async () => {
     const toastId = toast.loading('Submitting onboarding...')

@@ -78,17 +78,17 @@ const App = () => {
             {/* Onboarding */}
             <Route path="/onboarding">
               <Route
-                path="client"
+                path="clientOnboarding"
                 element={
-                  <ProtectRoute>
+                  <ProtectRoute role="client" checkOnboarded={false}>
                     <ClientOnboarding />
                   </ProtectRoute>
                 }
               />
               <Route
-                path="setup"
+                path="professionalOnboarding"
                 element={
-                  <ProtectRoute>
+                  <ProtectRoute role="professional" checkOnboarded={false}>
                     <Onboarding />
                   </ProtectRoute>
                 }
@@ -96,7 +96,7 @@ const App = () => {
               <Route
                 path="welcome"
                 element={
-                  <ProtectRoute>
+                  <ProtectRoute checkOnboarded={false}>
                     <WelcomePage />
                   </ProtectRoute>
                 }
@@ -109,7 +109,7 @@ const App = () => {
                 <Route
                   path=""
                   element={
-                    <ProtectRoute role="professional">
+                    <ProtectRoute role="professional" checkOnboarded={true}>
                       <ProfessionalDashboard />
                     </ProtectRoute>
                   }
@@ -121,7 +121,7 @@ const App = () => {
                 <Route
                   path=""
                   element={
-                    <ProtectRoute role="client">
+                    <ProtectRoute role="client" checkOnboarded={true}>
                       <ClientDashboard />
                     </ProtectRoute>
                   }

@@ -21,13 +21,6 @@ export default function ClientOnboarding() {
 
   const onboardUser = useUserStore(state => state.onboardUser)
   const loading = useUserStore(state => state.loading.onboardUser)
-  const user = useUserStore(state => state.user)
-
-  useEffect(() => {
-    if (user.isOnboarded) {
-      navigate('/Dashboard/clientDashboard')
-    }
-  }, [user, navigate])
 
   const steps = [
     { id: 1, label: 'Step 1', description: 'Profile Picture', icon: '👤' },

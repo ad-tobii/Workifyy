@@ -1,8 +1,10 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
+import useUserStore from '../../../store/userStore.store'
 
 const WelcomePage = () => {
+  const user = useUserStore(state => state.user)
   const navigate = useNavigate()
   return (
     <div className="flex min-h-screen flex-col md:flex-row">
@@ -37,7 +39,7 @@ const WelcomePage = () => {
 
         <div className="mb-6 mt-8 flex justify-end px-6 md:mt-12 md:px-16 lg:px-20">
           <button
-            onClick={() => navigate('/onboarding/setup')}
+            onClick={() => navigate(`/onboarding/${user.role}Onboarding`)}
             className="flex h-12 w-40 items-center justify-center space-x-2 rounded-3xl bg-black text-base text-white sm:w-44 sm:text-lg md:h-14 md:w-48 md:text-xl"
           >
             <span>Get Started</span>
