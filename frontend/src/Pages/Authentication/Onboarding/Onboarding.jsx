@@ -28,8 +28,6 @@ const Onboarding = () => {
   const handleNext = () => setStep(s => Math.min(s + 1, totalSteps))
   const handleBack = () => setStep(s => Math.max(s - 1, 1))
 
- 
-
   const handleSubmit = async () => {
     const toastId = toast.loading('Submitting onboarding...')
     try {

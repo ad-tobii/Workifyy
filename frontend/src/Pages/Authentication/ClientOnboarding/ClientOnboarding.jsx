@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import useUserStore from '../../../store/userStore.store'
 import Sidebar from './components/Sidebar'
 import MobileHeader from './components/MobileHeader'

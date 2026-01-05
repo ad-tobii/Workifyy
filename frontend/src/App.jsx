@@ -5,7 +5,7 @@ import './styles/index.css'
 
 // Pages
 import Home from './Pages/Home/Home'
-import NotFound from './Pages/Authentication/ClientOnboarding/components/NotFound'
+import NotFound from './Components/NotFound'
 import SignupOptions from './Pages/Authentication/SignupOptions/Signup'
 import Signin from './Pages/Authentication/Signin/signin_user'
 import Otp from './Pages/Authentication/OTP/Otp'
