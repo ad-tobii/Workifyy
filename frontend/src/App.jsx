@@ -109,7 +109,7 @@ const App = () => {
                 <Route
                   path=""
                   element={
-                    <ProtectRoute>
+                    <ProtectRoute role="professional">
                       <ProfessionalDashboard />
                     </ProtectRoute>
                   }
@@ -121,7 +121,7 @@ const App = () => {
                 <Route
                   path=""
                   element={
-                    <ProtectRoute>
+                    <ProtectRoute role="client">
                       <ClientDashboard />
                     </ProtectRoute>
                   }
