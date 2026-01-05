@@ -86,7 +86,7 @@ const createProfile = async (req, res) => {
       return res.status(201).json({
         message: 'Professional profile created successfully',
         success: true,
-        data: savedProfessionalProfile,
+        data: { user: user, profile: savedProfessionalProfile },
       });
     }
 
@@ -143,7 +143,7 @@ const createProfile = async (req, res) => {
       return res.status(201).json({
         message: 'Client profile created successfully',
         success: true,
-        data: savedClientProfile,
+        data: { user: user, profile: savedClientProfile },
       });
     }
 
