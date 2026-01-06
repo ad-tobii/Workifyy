@@ -5,8 +5,9 @@ import connectDB from './utils/db.utils.js';
 import cookieParser from 'cookie-parser';
 import { initializeSocket } from './utils/socket.utils.js';
 import morgan from 'morgan';
-import authRoutes from './routes/auth.routes.js';
 import http from 'http';
+import authRoutes from './routes/auth.routes.js';
+import dashboardRoutes from './routes/dashboard.routes.js';
 import bidRoutes from './routes/bid.routes.js';
 import jobRoutes from './routes/job.routes.js';
 import notificationRoutes from './routes/notification.routes.js';
@@ -34,6 +35,7 @@ app.use((req, res, next) => {
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/bid', bidRoutes);
 app.use('/api/v1/job', jobRoutes);
+app.use('/api/v1/dashboard', dashboardRoutes);
 app.use('/api/v1/notification', notificationRoutes);
 app.use((req, res) => {
   res.status(404).json({
