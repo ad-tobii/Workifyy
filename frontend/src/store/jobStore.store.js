@@ -36,7 +36,6 @@ const useJobStore = create((set, get) => ({
         loading: false,
       }))
 
-      
       return res.data // Return to the component for success handling (e.g., redirect)
     } catch (error) {
       // 3. Always reset loading on error and save the error message
