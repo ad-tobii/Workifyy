@@ -5,8 +5,9 @@ export const getDashboardData = async (req, res) => {
   try {
     if (user.role === 'client') {
       const jobs = await Job.find({ client: user._id })
-        .populate('client', 'name')
+        .populate('client', 'firstname lastname -_id')
         .sort({ createdAt: -1 });
+
       console.log('This are the jobs', jobs);
       return res.status(200).json({
         message: 'Jobs fetched successfully',
