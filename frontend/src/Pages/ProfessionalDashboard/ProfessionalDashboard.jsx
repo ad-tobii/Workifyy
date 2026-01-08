@@ -2,18 +2,27 @@ import TopBar from './TopBar'
 import BottomBar from './BottomBar'
 import HomePage from './HomePage/HomePage'
 import JobPage from './JobPage/JobPage'
-import { useState } from 'react'
+import { useEffect } from 'react'
+
+import useProStore from '../../store/proStore.store'
+import useDashboardStore from '../../store/dashboardStore.store'
 const ProfessionalDashboard = () => {
-  const [activeTab, setActiveTab] = useState('home')
+  const mainTab = useProStore(state => state.mainTab)
+  const getProDashboardData = useDashboardStore(state => state.getProDashboardData)
+
+  useEffect(() => {
+    getProDashboardData()
+  }, [getProDashboardData])
+
   return (
     <div className="min-h-screen bg-[#0f0f10]">
       <TopBar />
       <div>
-        {activeTab === 'home' && <HomePage />}
-        {activeTab === 'jobs' && <JobPage />}
+        {mainTab === 'home' && <HomePage />}
+        {mainTab === 'jobs' && <JobPage />}
       </div>
 
-      <BottomBar setActiveTab={setActiveTab} />
+      <BottomBar />
     </div>
   )
 }

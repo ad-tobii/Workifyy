@@ -128,8 +128,6 @@ const useUserStore = create((set, get) => ({
     }
   },
 
-
-
   login: credentials => get().handleAuthCall('login', credentials),
   signup: data => get().handleAuthCall('signup', data),
   logout: () => get().handleAuthCall('logout'),

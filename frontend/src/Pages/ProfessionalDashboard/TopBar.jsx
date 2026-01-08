@@ -1,7 +1,15 @@
-import { BellIcon, CreditCardIcon, QuestionMarkCircleIcon } from '@heroicons/react/24/outline'
+import {
+  BellIcon,
+  CreditCardIcon,
+  HomeIcon,
+  BriefcaseIcon,
+  QuestionMarkCircleIcon,
+} from '@heroicons/react/24/outline'
 import { MapPinIcon } from '@heroicons/react/24/solid'
+import useProStore from '../../store/proStore.store'
 
 const TopBar = () => {
+  const setMainTab = useProStore(state => state.setMainTab)
   return (
     <div className="h-20 w-full sm:h-16">
       {/* TopBar on Mobile screens */}
@@ -11,13 +19,13 @@ const TopBar = () => {
 
       {/* TopBar on large screens */}
       <div className="hidden sm:flex">
-        <LargeTopBar />
+        <LargeTopBar setMainTab={setMainTab} />
       </div>
     </div>
   )
 }
 
-const LargeTopBar = () => {
+const LargeTopBar = ({ setMainTab }) => {
   return (
     <div className="fixed flex w-full justify-between bg-[#0f0f10] px-6 py-4">
       {/* Logo */}
@@ -28,22 +36,30 @@ const LargeTopBar = () => {
       {/* Desktop Nav Right Side */}
       <div className="flex items-center space-x-10 text-white">
         {/* Help Icon */}
-        <div>
+        <button onClick={() => setMainTab('home')}>
+          <HomeIcon className="h-6 w-6 transition-colors duration-200 hover:text-[#32cd32]" />
+        </button>
+        {/* Help Icon */}
+        <button onClick={() => setMainTab('help')}>
           <QuestionMarkCircleIcon className="h-6 w-6 transition-colors duration-200 hover:text-[#32cd32]" />
-        </div>
+        </button>
 
         {/* Wallet Icon */}
-        <div>
+        <button onClick={() => setMainTab('wallet')}>
           <CreditCardIcon className="h-6 w-6 transition-colors duration-200 hover:text-[#32cd32]" />
-        </div>
+        </button>
+         {/* Jobs Icon */}
+         <button onClick={() => setMainTab('jobs')}>
+          <BriefcaseIcon className="h-6 w-6 transition-colors duration-200 hover:text-[#32cd32]" />
+        </button>
 
         {/* Notification Icon */}
-        <div className="group relative">
+        <button onClick={() => setMainTab('notifications')} className="group relative">
           <BellIcon className="h-6 w-6 transition-colors duration-200 group-hover:text-[#32cd32]" />
           <p className="absolute right-0 top-0 h-4 w-4 rounded-full bg-[#32cd32] text-center text-xs font-semibold">
             3
           </p>
-        </div>
+        </button>
 
         {/* Profile Icon */}
         <div className="group relative">

@@ -139,4 +139,5 @@ const App = () => {
 export default App
 
 // TO DO LIST
-// role guard for the dashboards
+// remove  all guards for the landing page
+// form protection and validation app wide

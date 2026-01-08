@@ -9,6 +9,7 @@ export const initializeSocket = (server) => {
     cors: {
       origin: ['http://localhost:5173', 'https://workifyy-beta.vercel.app'],
       methods: ['GET', 'POST', 'PATCH'],
+      credentials: true,
     },
   });
 

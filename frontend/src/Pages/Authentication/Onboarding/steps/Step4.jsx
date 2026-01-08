@@ -37,27 +37,13 @@ const Step4 = ({ updateFormData }) => {
 
       <button
         onClick={handleGetLocation}
-        disabled={loading || (!!latitude && !!longitude)}
+        disabled={loading}
         className={`mb-4 rounded-lg px-6 py-3 text-lg font-semibold text-white transition ${
-          latitude && longitude
-            ? 'cursor-default bg-green-600'
-            : loading
-              ? 'cursor-wait bg-zinc-600'
-              : 'bg-[#32cd32] hover:bg-green-500'
+          loading ? 'cursor-wait bg-zinc-600' : 'bg-[#32cd32] hover:bg-green-500'
         }`}
       >
-        {loading
-          ? 'Getting Location...'
-          : latitude && longitude
-            ? 'Location Captured ✓'
-            : 'Share My Location'}
+        {loading ? 'Getting Location...' : 'Share My Location'}
       </button>
-
-      {latitude && longitude && (
-        <p className="text-center text-sm text-zinc-400 lg:text-left">
-          Lat: {latitude.toFixed(4)}, Lng: {longitude.toFixed(4)}
-        </p>
-      )}
 
       {error && <p className="text-center text-sm text-red-500 lg:text-left">{error}</p>}
     </div>
