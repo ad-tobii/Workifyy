@@ -93,7 +93,7 @@ export const listJobs = async (req, res) => {
     // retrieve matching jobs from db
     const jobs = await Job.find(filter)
       .select('title budget category hexId description createdAt')
-      .populate('client', 'name')
+      .populate('client', 'firstname lastname -_id')
       .sort({ createdAt: -1 });
 
     // send response
