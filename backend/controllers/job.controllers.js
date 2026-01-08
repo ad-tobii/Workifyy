@@ -17,8 +17,16 @@ export const createJob = async (req, res) => {
     }
 
     //  Ensure required fields are present
-    const { title, description, category, address, budget, scheduledAt, longitude, latitude } =
-      req.body || {};
+    const {
+      title,
+      description,
+      category,
+      address,
+      budget,
+      scheduledAt,
+      longitude,
+      latitude,
+    } = req.body || {};
 
     const requiredFields = [
       'title',
@@ -92,7 +100,9 @@ export const listJobs = async (req, res) => {
 
     // retrieve matching jobs from db
     const jobs = await Job.find(filter)
-      .select('title budget category hexId description createdAt')
+      .select(
+        'title budget category hexId status description createdAt scheduledAt address'
+      )
       .populate('client', 'firstname lastname -_id')
       .sort({ createdAt: -1 });
 
@@ -111,5 +121,3 @@ export const listJobs = async (req, res) => {
     });
   }
 };
-
-
