@@ -141,3 +141,10 @@ export default App
 // TO DO LIST
 // remove  all guards for the landing page
 // form protection and validation app wide
+// remove get me from log in and sign up
+// To Do : implement loader for all screens.
+// Find a better way to handle the geolocation, it keeps timing out n stuff.
+// Job card : make it into it's own component
+// Format numbers across the entire app to have commas
+// pagination or view all jobs.
+// Changing location should trigger new job fetch and delete old ones

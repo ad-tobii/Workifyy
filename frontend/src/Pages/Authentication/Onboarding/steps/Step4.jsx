@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { MapPin } from 'lucide-react'
-import getBrowserLocation from '../../../../utils/geoLocation.utils'
+import { getBrowserLocation } from '../../../../utils/geoLocation.utils'
 
 const Step4 = ({ updateFormData }) => {
   const [error, setError] = useState(null)

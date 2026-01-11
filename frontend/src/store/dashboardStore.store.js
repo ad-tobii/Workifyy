@@ -1,8 +1,7 @@
 import { create } from 'zustand'
 import api from '../api/axios.api'
 import useJobStore from './jobStore.store'
-import getBrowserLocation from '../utils/geoLocation.utils'
-import { socket } from '../utils/socket.utils'
+import { getBrowserLocation } from '../utils/geoLocation.utils'
 
 const useDashboardStore = create((set, get) => ({
   loading: false,
@@ -28,23 +27,12 @@ const useDashboardStore = create((set, get) => ({
     try {
       console.log('Aiit starting now')
       const { longitude, latitude } = await getBrowserLocation()
-
-      // get jobs
       const result = await api.get(`/job/get-jobs?longitude=${longitude}&latitude=${latitude}`)
+
       if (result.data.success) {
-        // set Jobs
         useJobStore.setState({ jobs: result.data.data })
-
-        // connect to socket
-
-        socket.connect()
-        // Emit update location
-        socket.on('connect', () => {
-          console.log('successfully connected to socket')
-          socket.emit('update-location', { longitude, latitude })
-        })
-
         set({ loading: false, error: null })
+        return true // Now this ONLY happens after connection
       } else {
         set({ loading: false, error: result.data.message || 'Server error' })
       }

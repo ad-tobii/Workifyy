@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import api from '../api/axios.api'
-import getBrowserLocation from '../utils/geoLocation.utils'
+import { getBrowserLocation } from '../utils/geoLocation.utils'
+import { socket } from '../utils/socket.utils'
 
 const useJobStore = create((set, get) => ({
   // --- STATE ---

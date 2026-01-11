@@ -1,7 +1,9 @@
-const getBrowserLocation = () => {
+import { socket } from './socket.utils'
+
+export const getBrowserLocation = () => {
   return new Promise((resolve, reject) => {
     if (!navigator.geolocation) {
-      reject(new Error('Geolocation is not supported by your browser.'))
+      return reject(new Error('Geolocation is not supported by your browser.'))
     }
     navigator.geolocation.getCurrentPosition(
       position => {
@@ -13,9 +15,31 @@ const getBrowserLocation = () => {
       error => {
         reject(new Error(`Failed to get location. Error: ${error.message}`))
       },
-      { enableHighAccuracy: true, timeout: 5000 }
+      { enableHighAccuracy: true, timeout: 8000 }
     )
   })
 }
 
-export default getBrowserLocation
+// 1. check if supported
+
+export const watchLocation = () => {
+  console.log("yh i'm here alright")
+  if (!('geolocation' in navigator)) {
+    throw new Error('Geolocation is not supported by your browser.')
+  }
+  const watchId = navigator.geolocation.watchPosition(
+    position => {
+      if (socket.connected) {
+        console.log("yh he's moved")
+        socket.emit('update-location', {
+          longitude: position.coords.longitude,
+          latitude: position.coords.latitude,
+        })
+      }
+    },
+    error => console.log(`Failed to get location. Error: ${error.message}`),
+    { enableHighAccuracy: true, timeout: 8000, distanceFilter: 500 }
+  )
+
+  return watchId
+}
