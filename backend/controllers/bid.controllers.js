@@ -2,80 +2,143 @@ import Bid from '../models/bids.models.js';
 import Job from '../models/jobs.models.js';
 import { createNotification } from './notification.controllers.js';
 
-export const createBid = async (req, res, io) => {
+export const placeBid = async (req, res) => {
   try {
     const professional = req.user;
+    const io = req.io;
 
     if (!professional || professional.role !== 'professional') {
-      return res.status(401).json({
-        message: 'Unauthorized: Only professionals can place bids',
-        success: false,
-        data: null,
-      });
+      return res
+        .status(401)
+        .json({ message: 'Only professionals can place bids' });
     }
 
-    const { jobId, amount, message } = req.body;
-    const requiredFields = ['jobId', 'amount'];
-    const missingFields = requiredFields.filter((field) => !req.body[field]);
-    if (missingFields.length > 0) {
-      return res.status(400).json({
-        message: `Missing fields: ${missingFields.join(', ')}`,
-        success: false,
-        data: null,
-      });
-    }
+    const { jobId, amount, message } = req.body || {};
 
-    const job = await Job.findById(jobId);
+    //  findOne check with Blocklist
+    const job = await Job.findOne({
+      _id: jobId,
+      status: 'open',
+      blockedProfessionals: { $ne: professional._id },
+    });
+
     if (!job) {
-      return res.status(404).json({
-        message: 'Job not found',
-        success: false,
-        data: null,
-      });
+      return res
+        .status(404)
+        .json({ message: 'Job unavailable or you are ineligible' });
     }
 
+    //  Prevent duplicate bids
     const existingBid = await Bid.findOne({
       professional: professional._id,
-      job: jobId,
       status: 'pending',
+      job: jobId,
     });
     if (existingBid) {
-      return res.status(400).json({
-        message: 'You already have a pending bid for this job',
-        success: false,
-        data: null,
-      });
+      return res
+        .status(400)
+        .json({ message: "You've already bid on this job" });
     }
 
+    // Create Bid with initial history
     const bid = await Bid.create({
       professional: professional._id,
       job: jobId,
-      amount,
-      message: message || '',
-      status: 'pending',
+      client: job.client,
+      currentAmount: amount,
+      awaitingResponseFrom: 'client',
+      negotiationHistory: [
+        {
+          offeredBy: professional._id,
+          amount: amount,
+          message: message || 'Initial bid placed',
+        },
+      ],
     });
 
-    // 1️⃣ Emit real-time bid to client
+    // Real-time & Persistent Notification
     io.to(`client:${job.client}`).emit('newBid', bid);
-
-    // 2️⃣ Create persistent notification for client
     await createNotification(
       {
         userId: job.client,
         type: 'newBid',
-        message: `You received a new bid from ${professional.name} for "${job.title}"`,
-        meta: { jobId: job._id, bidId: bid._id },
+        message: `New bid for "${job.title}"`,
+        meta: { jobId, bidId: bid._id },
       },
       io
     );
 
-    return res.status(201).json({
-      message: 'Bid successfully placed',
-      success: true,
-      data: bid,
-    });
+    return res.status(201).json({ success: true, data: bid });
   } catch (error) {
     console.log('Error creating bid ⚠️:', error.message);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export const acceptBid = async (req, res) => {
+  try {
+    const { bidId } = req.body || {};
+    const { io, user } = req;
+
+    const bid = await Bid.findById(bidId).populate('job');
+
+    if (!bidId || !bid) {
+      return res.status(404).json({
+        message: 'Bid does not exist',
+        success: false,
+        data: null,
+      });
+    }
+
+    // Ensure only correct users can accept the bid
+    const isProfessional = bid.professional.toString() === user._id.toString();
+    const isClient = bid.job.client.toString() === user._id.toString();
+
+    if (!isClient && !isProfessional) {
+      return res.status(401).json({
+        message: 'Not authorized to accept this bid',
+        success: false,
+        data: null,
+      });
+    }
+
+    // Ensure user can accept only if it's their turn
+    if (bid.awaitingResponseFrom !== user.role) {
+      return res.status(401).json({
+        message: 'It is not your turn to accept this offer',
+        success: false,
+        data: null,
+      });
+    }
+    if (bid.job.status !== 'open') {
+      return res.status(400).json({
+        message: 'job is not open for bidding',
+        success: false,
+        data: null,
+      });
+    }
+
+    // update bid status
+    bid.status = 'accepted';
+    await bid.save();
+
+    // update job status
+    await Job.findByIdAndUpdate(bid.job._id, {
+      status: 'awarded',
+      chosenProfessional: bid.professional,
+    });
+
+    user.role === 'professional'
+      ? io.to(`client:${bid.job.client}`).emit('bidAccepted', bid)
+      : io.to(`professional:${bid.professional}`).emit('bidAccepted', bid);
+
+    return res.status(200).json({
+      message: 'Bid accepted succesfully',
+      success: true,
+      data: null,
+    });
+  } catch (error) {
+    console.log('Error accepting bid ⚠️:', error.message);
     return res.status(500).json({
       message: 'Server error',
       success: false,
@@ -84,164 +147,161 @@ export const createBid = async (req, res, io) => {
   }
 };
 
-export const handleBidAction = async (req, res, io) => {
+export const counterBid = async (req, res) => {
   try {
-    const user = req.user;
-    const { bidId } = req.params;
-    const { action, amount } = req.body;
-
-    if (!['accept', 'reject', 'counter'].includes(action)) {
-      return res.status(400).json({
-        message: 'Invalid action. Must be accept, reject, or counter.',
-        success: false,
-        data: null,
-      });
-    }
+    const { io, user } = req;
+    const { bidId, offer, message } = req.body || {};
 
     const bid = await Bid.findById(bidId).populate('job');
-    if (!bid) {
+    if (!bid || !bidId) {
       return res.status(404).json({
-        message: 'Bid not found',
+        message: 'Bid does not exist',
         success: false,
         data: null,
       });
     }
 
-    const job = bid.job;
-
-    if (
-      user.role === 'client' &&
-      job.client.toString() !== user._id.toString()
-    ) {
-      return res.status(403).json({
-        message: 'Unauthorized: You are not the owner of this job',
+    if (bid.job.status !== 'open') {
+      return res.status(400).json({
+        message: 'job is not open for bidding',
         success: false,
         data: null,
       });
     }
 
-    if (
-      user.role === 'professional' &&
-      bid.professional.toString() !== user._id.toString()
-    ) {
-      return res.status(403).json({
-        message: 'Unauthorized: You are not the owner of this bid',
+    const isProfessional = bid.professional.toString() === user._id.toString();
+    const isClient = bid.job.client.toString() === user._id.toString();
+
+    if (!isClient && !isProfessional) {
+      return res.status(401).json({
+        message: 'Not authorized to make an offer',
         success: false,
         data: null,
       });
     }
 
-    // Accept bid
-    if (action === 'accept') {
-      if (user.role !== 'client') {
-        return res
-          .status(403)
-          .json({
-            message: 'Only the client can accept a bid',
-            success: false,
-            data: null,
-          });
-      }
+    if (user.role !== bid.awaitingResponseFrom) {
+      return res.status(401).json({
+        message: 'It is not your turn to make a counter offer',
+        success: false,
+        data: null,
+      });
+    }
 
-      bid.status = 'accepted';
-      await bid.save();
+    if (!offer) {
+      return res.status(404).json({
+        message: 'Invalid offer',
+        success: false,
+        data: null,
+      });
+    }
 
-      job.status = 'awarded';
-      await job.save();
+    bid.currentAmount = offer;
+    bid.negotiationHistory.push({
+      offeredBy: user._id,
+      amount: offer,
+      message: message || '',
+    });
+    bid.awaitingResponseFrom =
+      user.role === 'professional' ? 'client' : 'professional';
+    await bid.save();
 
-      io.to(`professional:${bid.professional}`).emit('bidUpdated', bid);
+    // Real time notification
+    const targetRoom =
+      user.role === 'professional'
+        ? `client:${bid.job.client}`
+        : `professional:${bid.professional}`;
 
-      await createNotification(
-        {
-          userId: bid.professional,
-          type: 'bidAccepted',
-          message: `Your bid on "${job.title}" was accepted!`,
-          meta: { bidId: bid._id, jobId: job._id },
-        },
-        io
-      );
+    io.to(targetRoom).emit('counterOffer', bid);
 
+    return res.status(200).json({
+      message: 'counter offer made !',
+      success: true,
+      data: bid,
+    });
+  } catch (error) {
+    console.log('Error making counter offer ⚠️:', error.message);
+    return res.status(500).json({
+      message: 'Server error',
+      success: false,
+      data: null,
+    });
+  }
+};
+
+export const rejectBid = async (req, res) => {
+  try {
+    const { io, user } = req;
+    const { reason, bidId } = req.body || {};
+
+    // 1. Validation
+    const bid = await Bid.findById(bidId).populate('job');
+    if (!bidId || !bid) {
+      return res.status(404).json({ message: 'Bid not found', success: false });
+    }
+
+    const isClient = bid.job.client.toString() === user._id.toString();
+    const isProfessional = bid.professional.toString() === user._id.toString();
+
+    // Safety Check: Is it your turn to act on this bid?
+    if (bid.awaitingResponseFrom !== user.role) {
       return res
-        .status(200)
-        .json({
-          message: 'Bid accepted and job awarded',
-          success: true,
-          data: bid,
-        });
+        .status(400)
+        .json({ message: "It's not your turn to cancel/reject this bid." });
     }
 
-    // Reject bid
-    if (action === 'reject') {
-      if (user.role !== 'client') {
+    // client rejection
+    if (isClient) {
+      if (!reason) {
         return res
-          .status(403)
-          .json({
-            message: 'Only the client can reject a bid',
-            success: false,
-            data: null,
-          });
+          .status(400)
+          .json({ message: 'Please provide a reason for rejection.' });
       }
 
       bid.status = 'rejected';
-      await bid.save();
 
-      io.to(`professional:${bid.professional}`).emit('bidUpdated', bid);
-
-      await createNotification(
-        {
-          userId: bid.professional,
-          type: 'bidRejected',
-          message: `Your bid on "${job.title}" was rejected.`,
-          meta: { bidId: bid._id, jobId: job._id },
-        },
-        io
-      );
-
-      return res
-        .status(200)
-        .json({ message: 'Bid rejected', success: true, data: bid });
-    }
-
-    // Counter bid
-    if (action === 'counter') {
-      if (!amount || typeof amount !== 'number') {
-        return res
-          .status(400)
-          .json({
-            message: 'Counter offer must include a numeric amount',
-            success: false,
-            data: null,
-          });
+      // If "bad fit", use $addToSet to prevent duplicates in the blocked list
+      if (reason === 'fit') {
+        await Job.findByIdAndUpdate(bid.job._id, {
+          $addToSet: { blockedProfessionals: bid.professional },
+        });
       }
 
-      bid.status = 'countered';
-      bid.counterOffer = amount;
       await bid.save();
 
-      let notifyUserId;
-      if (user.role === 'client') notifyUserId = bid.professional;
-      else if (user.role === 'professional') notifyUserId = job.client;
-
-      io.to(`user:${notifyUserId}`).emit('bidUpdated', bid);
-
-      await createNotification(
-        {
-          userId: notifyUserId,
-          type: 'bidCounter',
-          message: `You received a counter offer for "${job.title}": ${amount}`,
-          meta: { bidId: bid._id, jobId: job._id },
-        },
-        io
-      );
-
-      return res
-        .status(200)
-        .json({ message: 'Counter offer sent', success: true, data: bid });
+      // Notify Professional
+      io.to(`professional:${bid.professional}`).emit('bidRejected', {
+        jobId: bid.job._id,
+        reason:
+          reason === 'fit' ? 'Not a match for this project' : 'Price mismatch',
+      });
     }
+
+    // PROFESSIONAL
+    else if (isProfessional) {
+      bid.status = 'withdrawn';
+      await bid.save();
+
+      // Notify Client
+      io.to(`client:${bid.job.client}`).emit('bidWithdrawn', {
+        jobId: bid.job._id,
+        message: 'The professional has withdrawn their bid.',
+      });
+    } else {
+      return res.status(401).json({ message: 'Unauthorized action' });
+    }
+
+    return res.status(200).json({
+      message: isClient ? 'Bid rejected' : 'Bid withdrawn',
+      success: true,
+    });
   } catch (error) {
-    console.log('Error in handleBidAction ⚠️:', error.message);
-    return res
-      .status(500)
-      .json({ message: 'Server error', success: false, data: null });
+    console.log('Error rejecting bid ⚠️:', error.message);
+    return res.status(500).json({ message: 'Server error', success: false });
   }
 };
+
+// To do:
+// 1. make all other bids default to rejected once a bid is accepted on a job.
+// 2. If you're going to keep negotiationHistory then add it to the original place bid, you forgot
+// 3. create persistent Notifications

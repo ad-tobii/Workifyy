@@ -38,11 +38,21 @@ const jobSchema = new mongoose.Schema(
       enum: ['open', 'awarded', 'in-progress', 'completed', 'cancelled'],
       default: 'open',
     },
+    chosenProfessional: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    blockedProfessionals: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
   },
   { timestamps: true }
 );
 
-jobSchema.index({ hexId: 1 }); 
+jobSchema.index({ hexId: 1 });
 jobSchema.index({ status: 1 });
 
 const Job = mongoose.model('Job', jobSchema);
