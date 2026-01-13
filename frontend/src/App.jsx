@@ -16,6 +16,8 @@ import ProfessionalDashboard from './Pages/ProfessionalDashboard/ProfessionalDas
 import Onboarding from './Pages/Authentication/Onboarding/Onboarding'
 import ClientOnboarding from './Pages/Authentication/ClientOnboarding/ClientOnboarding'
 import ClientDashboard from './Pages/ClientDashoard/ClientDashboard'
+import JobDetailsPage from './Pages/ProfessionalDashboard/JobDetailsPage/JobDetailsPage'
+
 // Route Wrappers
 import GuestRoute from './Components/GuestRoute'
 import SessionGate from './Components/SessionGate'
@@ -114,6 +116,14 @@ const App = () => {
                     </ProtectRoute>
                   }
                 />
+                <Route
+                  path="jobs/:jobId"
+                  element={
+                    <ProtectRoute role="professional" checkOnboarded={true}>
+                      <JobDetailsPage />
+                    </ProtectRoute>
+                  }
+                />
               </Route>
             </Route>
             <Route path="/Dashboard">
@@ -148,3 +158,4 @@ export default App
 // Format numbers across the entire app to have commas
 // pagination or view all jobs.
 // Changing location should trigger new job fetch and delete old ones
+// Need to move my listeners to a more global layout to prevent mounting and un mounting

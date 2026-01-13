@@ -5,31 +5,31 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Your custom styles below */
 @layer base {
   html {
-    font-family: "Poppins", sans-serif;
+    font-family: 'Poppins', sans-serif;
   }
 
-body {
-    @apply bg-[#000000]; }
-    
+  body {
+    @apply bg-[#000000];
+  }
 }
-.container{
-  @apply max-w-[1250px] mx-auto
+.container {
+  @apply mx-auto max-w-[1250px];
 }
 label:after {
-  content: "";
+  content: '';
 }
 
-input[type="radio"]:checked + label {
+input[type='radio']:checked + label {
   background-color: #000000;
   color: #ffffff;
   border-color: #32cd32;
 }
-input[type="radio"]:checked + label:after{
- 
-  border:5px solid #32cd32;
-  background-color:black;
+input[type='radio']:checked + label:after {
+  border: 5px solid #32cd32;
+  background-color: black;
 }
 
 .mylink {
@@ -46,7 +46,11 @@ input[type="radio"]:checked + label:after{
   background-color: #32cd32;
 }
 @keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
     transform: translateY(0);
   }
   40% {
@@ -58,12 +62,12 @@ input[type="radio"]:checked + label:after{
 }
 
 .vecimg {
-  animation: bounce 2.5s  infinite;
+  animation: bounce 2.5s infinite;
 }
 .backdrop-blur {
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
 
 .loader {
   width: 40px;
@@ -76,7 +80,7 @@ input[type="radio"]:checked + label:after{
 }
 .loader:before,
 .loader:after {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   border-radius: inherit;

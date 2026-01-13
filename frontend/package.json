@@ -23,7 +23,10 @@
     "@sendinblue/client": "^3.3.1",
     "@tanstack/react-query": "^5.59.0",
     "axios": "^1.13.2",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "embla-carousel-react": "^8.6.0",
     "framer-motion": "^12.23.24",
     "js-cookie": "^3.0.5",
     "lodash": "^4.17.21",
@@ -39,6 +42,8 @@
     "react-router-dom": "^6.30.1",
     "react-select": "^5.8.1",
     "socket.io-client": "^4.8.3",
+    "tailwind-merge": "^3.4.0",
+    "tailwindcss-animate": "^1.0.7",
     "zustand": "^5.0.8"
   },
   "devDependencies": {
