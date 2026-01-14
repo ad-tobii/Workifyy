@@ -4,12 +4,30 @@ import JobDescription from './JobDescription'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 import BidPanel from './BidPanel'
 import BidModal from './BidModal'
-import { useState } from 'react'
-
+import { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
+import useJobStore from '../../../store/jobStore.store'
 
 const JobDetailsPage = () => {
-  
+  const { jobId } = useParams()
+  const fetchJob = useJobStore(state => state.fetchJob)
+
   const [isOpen, setIsOpen] = useState(false)
+  useEffect(() => {
+    const loadJob = async () => {
+      try {
+        const res = await fetchJob(jobId)
+        console.log(res)
+      } catch (err) {
+        console.error('Failed to fetch job:', err)
+      }
+    }
+
+    if (jobId) {
+      loadJob()
+    }
+  }, [jobId, fetchJob])
+
   return (
     <div className="min-h-screen bg-[#0f0f10]">
       {isOpen && <BidModal setIsOpen={setIsOpen} />}

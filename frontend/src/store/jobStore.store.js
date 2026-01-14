@@ -48,6 +48,34 @@ const useJobStore = create((set, get) => ({
       throw error // Throw so the component's catch block also runs
     }
   },
+
+  // Fetch a single job by ID
+  fetchJob: async jobId => {
+    set({ loading: true, error: null })
+
+    try {
+      if (!jobId) throw new Error('Job ID is required')
+
+      const res = await api.get(`/job/${jobId}`)
+
+      if (!res.data?.success) {
+        throw new Error(res.data?.message || 'Failed to fetch job')
+      }
+
+      // Update the store with the fetched job
+      set({ job: res.data.data, loading: false })
+
+      return res.data.data
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || error.message || 'Failed to fetch job'
+      set({ error: errorMsg, loading: false })
+      console.error('Store Error:', errorMsg)
+      throw error
+    }
+  },
+
+  // Optional: clear selected job
+  clearJob: () => set({ job: null, error: null }),
 }))
 
 export default useJobStore
