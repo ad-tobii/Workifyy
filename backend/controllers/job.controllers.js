@@ -2,6 +2,7 @@ import Job from '../models/jobs.models.js';
 import { createNotification } from './notification.controllers.js';
 import User from '../models/users.models.js';
 import { latLngToHex, getJobCoverage } from '../utils/spatial.utils.js';
+import mongoose from 'mongoose';
 
 export const createJob = async (req, res) => {
   try {
@@ -137,7 +138,7 @@ export const getJob = async (req, res) => {
     }
 
     // Validate jobId
-    if (!jobId ) {
+    if (!jobId || !mongoose.Types.ObjectId.isValid(jobId)) {
       return res.status(400).json({
         message: 'Invalid job ID',
         success: false,
