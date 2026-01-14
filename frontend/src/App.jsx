@@ -159,3 +159,4 @@ export default App
 // pagination or view all jobs.
 // Changing location should trigger new job fetch and delete old ones
 // Need to move my listeners to a more global layout to prevent mounting and un mounting
+// Rename your stores man, no need to write store twice

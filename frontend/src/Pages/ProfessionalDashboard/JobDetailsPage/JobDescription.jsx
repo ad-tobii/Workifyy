@@ -1,8 +1,9 @@
 import React from 'react'
+import { ClockIcon } from '@heroicons/react/24/outline'
 
 const JobDescription = () => {
   return (
-    <div className="mt-6 flex flex-col space-y-6 px-1">
+    <div className="mb-12 mt-6 flex flex-col space-y-6 px-1 sm:mb-0">
       {/* 1. The Client Card */}
       <div className="flex h-20 w-full items-center justify-between rounded-2xl border border-zinc-800 bg-zinc-900/30 p-4 backdrop-blur-sm">
         <div className="flex items-center gap-3">
@@ -56,8 +57,9 @@ const JobDescription = () => {
       </div>
 
       {/* 4. Bottom Meta Info */}
-      <div className="pt-2">
-        <p className="text-[11px] italic text-zinc-600">Posted 2 hours ago</p>
+      <div className="flex space-x-2 pt-2">
+        <ClockIcon className="h-6 w-6" />
+        <p className="text-[18px] italic text-zinc-600">Posted 2 hours ago</p>
       </div>
     </div>
   )

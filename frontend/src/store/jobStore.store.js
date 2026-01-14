@@ -6,6 +6,7 @@ import { socket } from '../utils/socket.utils'
 const useJobStore = create((set, get) => ({
   // --- STATE ---
   jobs: [],
+  job: null,
   loading: false,
   error: null,
 

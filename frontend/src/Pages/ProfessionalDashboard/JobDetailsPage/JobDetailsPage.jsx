@@ -1,15 +1,26 @@
 import TopBar from '../TopBar'
-import BottomBar from '../BottomBar'
 import JobImages from './JobImages'
 import JobDescription from './JobDescription'
+import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 import BidPanel from './BidPanel'
+import BidModal from './BidModal'
+import { useState } from 'react'
+
 
 const JobDetailsPage = () => {
+  
+  const [isOpen, setIsOpen] = useState(false)
   return (
     <div className="min-h-screen bg-[#0f0f10]">
-      <TopBar />
-
+      {isOpen && <BidModal setIsOpen={setIsOpen} />}
+      <div className="hidden sm:block">
+        <TopBar />
+      </div>
       <div className="mx-auto w-[90%] px-2 py-4 text-zinc-400">
+        <button className="mb-4 flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800/50 text-zinc-300 shadow-sm transition-colors duration-200 hover:bg-zinc-700/70 hover:text-white hover:shadow-md active:scale-95">
+          <ArrowLeftIcon className="h-5 w-5" />
+        </button>
+
         {/* Title now starts exactly where the images start */}
         <h1 className="mb-6 text-xl font-medium tracking-wide text-zinc-400 sm:text-3xl md:text-3xl lg:text-3xl">
           I no go say person matter no matter
@@ -20,25 +31,24 @@ const JobDetailsPage = () => {
           <JobImages />
         </div>
 
-        <div className="mt-8 flex flex-col gap-10 lg:flex-row lg:items-start">
-          {/* Left Side: Job Description (Main Content) */}
-          <div className="w-full lg:flex-[1.5]">
+        <div className="mt-8 flex flex-col gap-10 xl:flex-row xl:items-start">
+          {/* Left: Job Description */}
+          <div className="w-full xl:flex-[1.5]">
             <JobDescription />
           </div>
 
-          {/* Right Side: Bid Panel (Sticky Sidebar) */}
-          <div className="w-full lg:sticky lg:top-10 lg:w-[380px]">
-            {/* flex justify-center ensures it looks good if the column is wider than the card */}
-            <div className="flex justify-center lg:justify-end">
-              <BidPanel />
+          {/* Right: Bid Panel */}
+          <div className="w-full xl:w-auto">
+            {' '}
+            {/* important: full width when column */}
+            <div className="w-full xl:ml-auto xl:w-[380px]">
+              {' '}
+              {/* allow it to stretch < xl */}
+              <BidPanel setIsOpen={setIsOpen} />
             </div>
           </div>
         </div>
-        {/* You can add description or other details here, 
-              and they will also align with the images! */}
       </div>
-
-      <BottomBar />
     </div>
   )
 }

@@ -101,7 +101,7 @@ export const listJobs = async (req, res) => {
     // retrieve matching jobs from db
     const jobs = await Job.find(filter)
       .select(
-        'title budget category hexId status description createdAt scheduledAt address'
+        'title _id budget category hexId status description createdAt scheduledAt address'
       )
       .populate('client', 'firstname lastname -_id')
       .sort({ createdAt: -1 });
@@ -114,6 +114,77 @@ export const listJobs = async (req, res) => {
     });
   } catch (error) {
     console.error('Job listing error:', error.message);
+    return res.status(500).json({
+      message: 'Server error',
+      success: false,
+      data: null,
+    });
+  }
+};
+
+export const getJob = async (req, res) => {
+  try {
+    const { jobId } = req.params;
+    const pro = req.user; // professional trying to access the job
+
+    // Validate professional
+    if (!pro || pro.role !== 'professional') {
+      return res.status(401).json({
+        message: 'Unauthorized: Please login as a professional',
+        success: false,
+        data: null,
+      });
+    }
+
+    // Validate jobId
+    if (!jobId || !mongoose.Types.ObjectId.isValid(jobId)) {
+      return res.status(400).json({
+        message: 'Invalid job ID',
+        success: false,
+        data: null,
+      });
+    }
+
+    // Find job and select fields
+    const job = await Job.findById(jobId)
+      .select(
+        'title images client description budget status createdAt updatedAt scheduledAt'
+      )
+      .populate('client', 'firstname lastname -_id');
+
+    if (!job) {
+      return res.status(404).json({
+        message: 'Job not found',
+        success: false,
+        data: null,
+      });
+    }
+
+    // Ensure job is open
+    if (job.status !== 'open') {
+      return res.status(400).json({
+        message: 'This job is no longer open',
+        success: false,
+        data: null,
+      });
+    }
+
+    // Check if pro is blocked
+    if (job.blockedProfessionals?.includes(pro._id)) {
+      return res.status(403).json({
+        message: 'You are blocked from viewing this job',
+        success: false,
+        data: null,
+      });
+    }
+
+    return res.status(200).json({
+      message: 'Job fetched successfully',
+      success: true,
+      data: job,
+    });
+  } catch (error) {
+    console.error('Get job error:', error.message);
     return res.status(500).json({
       message: 'Server error',
       success: false,
