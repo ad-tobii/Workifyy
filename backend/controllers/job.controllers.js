@@ -137,7 +137,7 @@ export const getJob = async (req, res) => {
     }
 
     // Validate jobId
-    if (!jobId || !mongoose.Types.ObjectId.isValid(jobId)) {
+    if (!jobId ) {
       return res.status(400).json({
         message: 'Invalid job ID',
         success: false,
