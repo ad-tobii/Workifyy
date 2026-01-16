@@ -1,10 +1,11 @@
 import express from 'express';
 import protectRoutes from '../middleware/protectRoutes.middleware.js';
-import { 
-  placeBid, 
-  acceptBid, 
-  counterBid, 
-  rejectBid 
+import {
+  placeBid,
+  acceptBid,
+  counterBid,
+  rejectBid,
+  getProfessionalBids,
 } from '../controllers/bid.controllers.js';
 
 const router = express.Router();
@@ -20,5 +21,8 @@ router.patch('/counter', protectRoutes, counterBid);
 
 // 4. Reject or Withdraw a bid
 router.patch('/reject', protectRoutes, rejectBid);
+
+// 5. Fetch all bids for logged-in professional
+router.get('/professional', protectRoutes, getProfessionalBids);
 
 export default router;

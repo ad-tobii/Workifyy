@@ -301,6 +301,59 @@ export const rejectBid = async (req, res) => {
   }
 };
 
+export const getProfessionalBids = async (req, res) => {
+  try {
+    const professional = req.user;
+
+    // 1. Auth + Role check
+    if (!professional || professional.role !== 'professional') {
+      return res.status(401).json({
+        success: false,
+        message: 'Only professionals can access bids',
+      });
+    }
+
+    // 2. Fetch bids
+    const bids = await Bid.find({ professional: professional._id })
+      .populate({
+        path: 'job',
+        select: 'title',
+      })
+      .select(
+        'job awaitingResponseFrom status currentAmount negotiationHistory'
+      )
+      .sort({ updatedAt: -1 });
+
+    // 3. Shape response (important)
+    const formattedBids = bids.map((bid) => {
+      const lastMessage =
+        bid.negotiationHistory?.length > 0
+          ? bid.negotiationHistory[bid.negotiationHistory.length - 1].message
+          : '';
+
+      return {
+        _id: bid._id,
+        jobTitle: bid.job?.title || 'Unknown Job',
+        awaitingResponseFrom: bid.awaitingResponseFrom,
+        status: bid.status,
+        currentAmount: bid.currentAmount,
+        message: lastMessage,
+      };
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: formattedBids,
+    });
+  } catch (error) {
+    console.log('Error fetching professional bids ⚠️:', error.message);
+    return res.status(500).json({
+      success: false,
+      message: 'Server error',
+    });
+  }
+};
+
 // To do:
 // 1. make all other bids default to rejected once a bid is accepted on a job.
 // 2. If you're going to keep negotiationHistory then add it to the original place bid, you forgot
