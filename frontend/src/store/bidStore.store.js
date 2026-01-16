@@ -5,6 +5,7 @@ const useBidStore = create((set, get) => ({
   bids: [],
   error: null,
   loading: false,
+  hasFetched: false,
 
   placeBid: async (jobId, amount, message) => {
     set({ loading: true, error: null })
@@ -29,6 +30,35 @@ const useBidStore = create((set, get) => ({
       const msg = error.response?.data?.message || 'Server Error'
       set({ error: msg })
       throw error
+    } finally {
+      set({ loading: false })
+    }
+  },
+
+  getProBids: async () => {
+    const { hasFetched, loading } = get()
+
+    // 🚫 prevent unnecessary calls
+    if (hasFetched || loading) return
+
+    set({ loading: true, error: null })
+
+    try {
+      const res = await api.get('/bid/professional')
+
+      if (!res.data.success) {
+        set({ error: res.data.message })
+        return
+      }
+
+      set({
+        bids: res.data.data,
+        hasFetched: true, // ✅ mark as fetched
+      })
+    } catch (error) {
+      set({
+        error: error.response?.data?.message || 'Server error',
+      })
     } finally {
       set({ loading: false })
     }

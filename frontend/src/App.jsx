@@ -162,3 +162,4 @@ export default App
 // Rename your stores man, no need to write store twice
 // your guards arent working
 // UI error handling
+// Basically sort out initial bids fetch and then handle updates with zustand
