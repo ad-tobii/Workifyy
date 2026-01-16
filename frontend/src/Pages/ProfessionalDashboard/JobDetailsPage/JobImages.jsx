@@ -1,23 +1,19 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
-
-const testArray = [
-  '/assets/black-worker.jpg',
-  '/assets/portfolio1.jpg',
-  '/assets/portfolio2.jpg',
-  '/assets/HeroSection.jpg',
-  '/assets/portfolio1.jpg',
-]
+import useJobStore from '../../../store/jobStore.store'
 
 const JobImages = () => {
+  const job = useJobStore(state => state.job)
+  console.log('this is ', job.images)
+
   return (
     <div>
       {' '}
       <div className="hidden sm:block">
-        <JobImagesLarge images={testArray} />
+        <JobImagesLarge images={job.images} />
       </div>
-      <div className=" sm:hidden">
-        <JobImagesSmall images={testArray} />
+      <div className="sm:hidden">
+        <JobImagesSmall images={job.images} />
       </div>
     </div>
   )

@@ -2,12 +2,14 @@ import { useState } from 'react'
 import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/24/solid'
 import { useParams } from 'react-router-dom'
 import useBidStore from '../../../store/bidStore.store'
+import useJobStore from '../../../store/jobStore.store'
 
 const formatNumber = num => new Intl.NumberFormat('en-NG').format(num)
 
-const BidModal = ({ setIsOpen, budget }) => {
+const BidModal = ({ setIsOpen }) => {
+  const job = useJobStore(state => state.job)
   const { jobId } = useParams()
-
+  const budget = job.budget
   const [amount, setAmount] = useState(25000)
   const [message, setMessage] = useState('')
   const [success, setSuccess] = useState(false) // track success

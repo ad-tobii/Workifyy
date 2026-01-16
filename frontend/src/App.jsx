@@ -161,3 +161,4 @@ export default App
 // Need to move my listeners to a more global layout to prevent mounting and un mounting
 // Rename your stores man, no need to write store twice
 // your guards arent working
+// UI error handling

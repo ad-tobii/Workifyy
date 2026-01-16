@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
+import useJobStore from '../../../store/jobStore.store'
 
 const BidPanel = ({ setIsOpen }) => {
+  const job = useJobStore(state => state.job)
   const handleClick = () => {
     setIsOpen(true)
   }
@@ -8,7 +10,7 @@ const BidPanel = ({ setIsOpen }) => {
     <div>
       {' '}
       <div className="hidden sm:block">
-        <LargeBidPanel handleClick={handleClick} />
+        <LargeBidPanel handleClick={handleClick} job={job} />
       </div>
       <div className="sm:hidden">
         <SmallBidPanel handleClick={handleClick} />
@@ -17,12 +19,12 @@ const BidPanel = ({ setIsOpen }) => {
   )
 }
 
-const LargeBidPanel = ({ handleClick }) => {
+const LargeBidPanel = ({ handleClick, job }) => {
   return (
     <div className="w-full rounded-3xl border border-zinc-800 bg-[#131314] p-6 shadow-2xl shadow-black/50 xl:sticky xl:top-6 xl:max-w-[380px]">
       <div className="mb-6 flex items-baseline gap-2">
         <span className="text-2xl font-medium text-zinc-500">Client's Budget :</span>
-        <span className="text-2xl font-bold text-[#32cd32]">₦ 25,000</span>
+        <span className="text-2xl font-bold text-[#32cd32]">₦ {job.budget}</span>
       </div>
 
       <button

@@ -1,8 +1,11 @@
 import { ChevronRightIcon } from '@heroicons/react/24/solid'
 import useJobStore from '../../../../store/jobStore.store'
+import { useNavigate } from 'react-router-dom'
 
 const Feed = () => {
   const jobs = useJobStore(state => state.jobs)
+  const navigate = useNavigate()
+  console.log(jobs)
   return (
     <div className="mt-6 w-[90%]">
       {/* Section title */}
@@ -13,7 +16,7 @@ const Feed = () => {
         jobs.map(job => (
           <div
             key={job._id}
-            className="flex flex-col my-6 justify-between rounded-2xl border border-white/10 bg-[#242427]/80 px-4 py-4 text-white shadow-lg"
+            className="my-6 flex flex-col justify-between rounded-2xl border border-white/10 bg-[#242427]/80 px-4 py-4 text-white shadow-lg"
           >
             {/* Top */}
             <div className="flex items-center justify-between">
@@ -44,10 +47,13 @@ const Feed = () => {
             </div>
 
             {/* CTA */}
-            <div className="mt-4 flex items-center justify-between rounded-xl bg-[#151517]/80 px-3 py-2">
+            <button
+              onClick={() => navigate(`jobs/${job._id}`)}
+              className="mt-4 flex items-center justify-between rounded-xl bg-[#151517]/80 px-3 py-2"
+            >
               <span className="text-sm font-medium">View Job</span>
               <ChevronRightIcon className="h-5 w-5 text-white/70" />
-            </div>
+            </button>
           </div>
         ))}
     </div>

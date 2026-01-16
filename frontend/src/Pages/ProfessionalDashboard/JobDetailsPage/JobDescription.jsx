@@ -1,9 +1,11 @@
 import React from 'react'
 import { ClockIcon } from '@heroicons/react/24/outline'
+import useJobStore from '../../../store/jobStore.store'
 
 const JobDescription = () => {
+  const job = useJobStore(state => state.job)
   return (
-    <div className="mb-12 mt-6 flex flex-col space-y-6 px-1 sm:mb-0">
+    <div className="mb-12 mt- flex flex-col space-y-6 px-1 sm:mb-0">
       {/* 1. The Client Card */}
       <div className="flex h-20 w-full items-center justify-between rounded-2xl border border-zinc-800 bg-zinc-900/30 p-4 backdrop-blur-sm">
         <div className="flex items-center gap-3">
@@ -11,10 +13,9 @@ const JobDescription = () => {
             BO
           </div>
           <div>
-            <h4 className="text-sm font-semibold text-zinc-100">Babatunde Olawale</h4>
-            <p className="text-[10px] uppercase tracking-tighter text-zinc-500">
-              Member since 2024
-            </p>
+            <h4 className="text-sm font-semibold text-zinc-100">
+              {job.client.firstname + ' ' + job.client.lastname}
+            </h4>
           </div>
         </div>
 
@@ -48,12 +49,7 @@ const JobDescription = () => {
       {/* 3. The Paragraph */}
       <div className="space-y-3">
         <h3 className="text-lg font-bold tracking-tight text-white">Job Description</h3>
-        <p className="text-justify text-[15px] leading-relaxed text-zinc-400">
-          Looking for a sharp technician to service 3 split units and install 1 new Panasonic AC in
-          a flat at Surulere. You must come with your own vacuum pump and manifold gauge—strictly no{' '}
-          <span className="text-zinc-200">"trial and error"</span> work. Pay is ₦25,000 flat for the
-          day, starting tomorrow 9:00 AM sharp. Come correct with your tools and your Workifyy vest.
-        </p>
+        <p className="text-justify text-[15px] leading-relaxed text-zinc-400">{job.description}</p>
       </div>
 
       {/* 4. Bottom Meta Info */}

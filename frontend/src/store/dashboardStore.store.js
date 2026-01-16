@@ -13,6 +13,7 @@ const useDashboardStore = create((set, get) => ({
       const res = await api.get('/dashboard')
 
       useJobStore.setState({ jobs: res.data.data.jobs })
+     
 
       set({ loading: false, error: null })
     } catch (error) {

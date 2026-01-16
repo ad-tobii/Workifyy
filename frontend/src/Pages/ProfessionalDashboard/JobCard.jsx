@@ -1,7 +1,9 @@
 import { ChevronRightIcon } from '@heroicons/react/24/solid'
 import { format } from 'date-fns'
+import { useNavigate } from 'react-router-dom'
+
 const JobCard = ({ job }) => {
-  console.log(job)
+  const navigate = useNavigate()
   return (
     <div className="mt-6 w-[90%]">
       {/* Ongoing Job Card */}
@@ -37,10 +39,13 @@ const JobCard = ({ job }) => {
         </div>
 
         {/* CTA */}
-        <div className="mt-4 flex items-center justify-between rounded-xl bg-[#151517]/80 px-3 py-2">
+        <button
+          onClick={() => navigate(`jobs/${job._id}`)}
+          className="mt-4 flex items-center justify-between rounded-xl bg-[#151517]/80 px-3 py-2"
+        >
           <span className="text-sm font-medium">View Job</span>
           <ChevronRightIcon className="h-5 w-5 text-white/70" />
-        </div>
+        </button>
       </div>
     </div>
   )
