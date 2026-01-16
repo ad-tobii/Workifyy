@@ -163,3 +163,6 @@ export default App
 // your guards arent working
 // UI error handling
 // Basically sort out initial bids fetch and then handle updates with zustand
+// Have to overtly request location permissions, and also you have to handle it better, louder.
+//Bid cleanup : make it much better.... delete bids once rejected or accepted for professional or others
+// Use Ui to diffrentiate between offers and bids.

@@ -1,12 +1,26 @@
-import useBidStore from '../../../../store/bidStore.store'
+import useBidStore from '../../../../../store/bidStore.store'
 
 const BidCard = ({ bid }) => {
   const { _id, jobTitle, awaitingResponseFrom, status, currentAmount, message } = bid
-
   const isMyTurn = awaitingResponseFrom === 'professional'
 
+  // Store actions
+  const acceptBid = useBidStore(state => state.acceptBid)
+  const rejectBid = useBidStore(state => state.rejectBid)
+  const counterBid = useBidStore(state => state.counterBid)
+  const loading = useBidStore(state => state.loading)
+
+  // Handlers
+  const handleAccept = () => acceptBid(_id)
+  const handleReject = () => rejectBid(_id)
+  const handleCounter = () => {
+    const offer = prompt('Enter your counter offer amount', currentAmount)
+    const msg = prompt('Enter a message (optional)', message)
+    if (offer) counterBid(_id, Number(offer), msg)
+  }
+
   return (
-    <div className="w-[90%] rounded-2xl bg-[#151518] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.4)] transition hover:translate-y-[-2px]">
+    <div className="w-full rounded-2xl bg-[#151518] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.4)] transition hover:translate-y-[-2px]">
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <h3 className="text-base font-semibold leading-snug text-white">{jobTitle}</h3>
@@ -39,7 +53,6 @@ const BidCard = ({ bid }) => {
 
       {/* Footer */}
       <div className="flex items-center justify-between">
-        {/* State text */}
         <p className="text-xs text-gray-500">
           {status === 'pending'
             ? isMyTurn
@@ -48,18 +61,29 @@ const BidCard = ({ bid }) => {
             : `Bid ${status}`}
         </p>
 
-        {/* Actions */}
         {status === 'pending' && isMyTurn && (
           <div className="flex gap-2">
-            <button className=" rounded-2xl bg-[#32cd32] px-4 py-2 text-xs font-medium text-white hover:bg-green-500/20">
+            <button
+              onClick={handleAccept}
+              disabled={loading}
+              className="rounded-2xl bg-[#32cd32] px-4 py-2 text-xs font-medium text-white hover:bg-green-500/20 disabled:cursor-not-allowed disabled:opacity-50"
+            >
               Accept
             </button>
 
-            <button className="rounded-2xl bg-yellow-500 px-4 py-2 text-xs font-medium text-white hover:bg-yellow-500/20">
+            <button
+              onClick={handleCounter}
+              disabled={loading}
+              className="rounded-2xl bg-yellow-500 px-4 py-2 text-xs font-medium text-white hover:bg-yellow-500/20 disabled:cursor-not-allowed disabled:opacity-50"
+            >
               Counter
             </button>
 
-            <button className="rounded-2xl bg-red-500 px-4 py-2 text-xs font-medium text-white hover:bg-red-500/20">
+            <button
+              onClick={handleReject}
+              disabled={loading}
+              className="rounded-2xl bg-red-500 px-4 py-2 text-xs font-medium text-white hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-50"
+            >
               Reject
             </button>
           </div>
