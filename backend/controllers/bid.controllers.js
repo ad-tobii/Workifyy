@@ -314,7 +314,10 @@ export const getProfessionalBids = async (req, res) => {
     }
 
     // 2. Fetch bids
-    const bids = await Bid.find({ professional: professional._id })
+    const bids = await Bid.find({
+      professional: professional._id,
+      status: 'pending',
+    })
       .populate({
         path: 'job',
         select: 'title',
