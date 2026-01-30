@@ -166,3 +166,5 @@ export default App
 // Have to overtly request location permissions, and also you have to handle it better, louder.
 //Bid cleanup : make it much better.... delete bids once rejected or accepted for professional or others
 // Use Ui to diffrentiate between offers and bids.
+// Need to ensure the whole bids=> ongoing jobs =>notification of rejected jobs works.
+// Indicate price trend  negotiation trend on bid ui
