@@ -1,5 +1,7 @@
 import { create } from 'zustand'
 import api from '../api/axios.api'
+import useJobStore from './jobStore.store'
+import useUserStore from './userStore.store'
 
 const useBidStore = create((set, get) => ({
   bids: [],
@@ -39,6 +41,9 @@ const useBidStore = create((set, get) => ({
         set({ error: res.data.message })
       } else {
         set(state => ({ bids: [res.data.data, ...state.bids] }))
+        const jobs = useJobStore.getState().jobs
+        const newJobs = jobs.filter(job => job._id !== jobId)
+        useJobStore.setState({ jobs: newJobs })
       }
       return res.data
     } catch (error) {
@@ -83,10 +88,15 @@ const useBidStore = create((set, get) => ({
         return res.data
       }
 
-      // Optimistic update: mark bid as rejected
-      set(state => ({
-        bids: state.bids.map(b => (b._id === bidId ? { ...b, status: 'rejected' } : b)),
-      }))
+      if (useUserStore.getState().user.role === 'professional') {
+        set(state => ({
+          bids: state.bids.map(b => (b._id === bidId ? { ...b, status: 'withdrawn' } : b)),
+        }))
+      } else {
+        set(state => ({
+          bids: state.bids.map(b => (b._id === bidId ? { ...b, status: 'rejected' } : b)),
+        }))
+      }
 
       return res.data
     } catch (error) {

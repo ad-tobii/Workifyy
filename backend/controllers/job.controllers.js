@@ -1,4 +1,5 @@
 import Job from '../models/jobs.models.js';
+import Bid from '../models/bids.models.js';
 import { createNotification } from './notification.controllers.js';
 import User from '../models/users.models.js';
 import { latLngToHex, getJobCoverage } from '../utils/spatial.utils.js';
@@ -96,8 +97,20 @@ export const listJobs = async (req, res) => {
     const hexId = latLngToHex(latitude, longitude);
     const searchArea = getJobCoverage(hexId);
 
-    // filter for only open jobs within the search area
-    const filter = { status: 'open', hexId: { $in: searchArea } };
+    // first check for all the professionals open bids
+    const openBids = await Bid.find({
+      professional: req.user._id,
+      status: { $in: ['pending', 'accepted'] },
+    }).select('job -_id');
+
+    const jobIds = openBids.map((bid) => bid.job);
+
+    // filter for only open jobs within the search area and not yet bid on
+    const filter = {
+      status: 'open',
+      hexId: { $in: searchArea },
+      _id: { $nin: jobIds },
+    };
 
     // retrieve matching jobs from db
     const jobs = await Job.find(filter)

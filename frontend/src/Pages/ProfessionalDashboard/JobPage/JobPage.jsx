@@ -20,7 +20,8 @@ const JobPage = () => {
     <div className="mt-4 flex flex-col items-center space-y-6 pb-48 text-white">
       <JobTabs />
 
-      {jobTab === 'Find Jobs' && jobs.map(job => <JobCard key={job._id} job={job} />)}
+      {jobTab === 'Find Jobs' &&
+        jobs.map((job, index) => <JobCard key={job._id} job={job} index={index} />)}
 
       {jobTab === 'Bids' && <BidPage />}
     </div>

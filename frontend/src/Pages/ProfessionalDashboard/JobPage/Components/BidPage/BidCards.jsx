@@ -31,7 +31,7 @@ const BidCard = ({ bid }) => {
               ? 'bg-yellow-500/10 text-yellow-400'
               : status === 'accepted'
                 ? 'bg-green-500/10 text-green-400'
-                : status === 'rejected'
+                : status === 'rejected' || status === 'withdrawn'
                   ? 'bg-red-500/10 text-red-400'
                   : 'bg-gray-500/10 text-gray-400'
           }`}

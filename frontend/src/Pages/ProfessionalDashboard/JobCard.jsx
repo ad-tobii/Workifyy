@@ -1,50 +1,59 @@
-import { ChevronRightIcon } from '@heroicons/react/24/solid'
-import { format } from 'date-fns'
+import { ArrowUpRightIcon, CalendarIcon, StarIcon } from '@heroicons/react/24/solid'
 import { useNavigate } from 'react-router-dom'
 
-const JobCard = ({ job }) => {
+
+
+const JobCard = ({ job, index }) => {
   const navigate = useNavigate()
+
+  
+
   return (
-    <div className="mt-6 w-[90%]">
-      {/* Ongoing Job Card */}
-      <div className="flex flex-col justify-between rounded-2xl border border-white/10 bg-[#242427]/80 px-4 py-4 text-white shadow-lg">
-        {/* Top */}
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-semibold">{job.title}</p>
-            <p className="mt-2 text-xs text-white/60">
-              {job?.client?.firstname + ' ' + job?.client?.lastname}
-            </p>
-          </div>
+    <div className="mt-6 w-[90%] rounded-2xl bg-[#151518] p-5">
+      {/* Job Title Section */}
+      <h3 className="mb-3 text-2xl font-semibold leading-tight text-white">
+        {job.title || 'Need a Plumber To Fix My Leaking Sink'}
+      </h3>
 
-          {/* Status badge */}
-          <span className="rounded-full bg-[#32cd32]/20 px-3 py-1 text-xs font-medium text-[#32cd32]">
-            Ongoing
-          </span>
+      {/* Job Meta Information: Price, Posted Date, and Client Rating */}
+      <div className="mb-4 flex items-center gap-2 text-sm text-[#bebec6]">
+        {/* Job Price */}
+        <span className="text-lg font-bold text-white">
+          ₦{job.amount?.toLocaleString() || '50,000'}
+        </span>
+
+        <span>•</span>
+
+        {/* When Job Was Posted */}
+        <span>Posted {job.postedDate || 'Today'}</span>
+
+        <span>•</span>
+
+        {/* Client Rating */}
+        <div className="flex items-center gap-1">
+          <StarIcon className="h-4 w-4 text-yellow-400" />
+          <span>{job.rating || '5.0'}</span>
+        </div>
+      </div>
+
+      {/* Divider */}
+      <hr className="mb-4 border-gray-600" />
+
+      {/* Footer Section: When Job is Needed & Details Button */}
+      <div className="flex items-center justify-between">
+        {/* When the job needs to be done */}
+        <div className="flex items-center gap-2 text-sm text-zinc-300">
+          <CalendarIcon className="h-4 w-4" />
+          <span>Needed: {job.neededBy || 'Today'}</span>
         </div>
 
-        {/* Middle */}
-        <div className="mt-4 flex items-center justify-between">
-          <div>
-            <p className="text-xs text-white/60">Payment</p>
-            <p className="text-sm font-semibold">₦ {job.budget}</p>
-          </div>
-
-          <div>
-            <p className="text-xs text-white/60">Deadline</p>
-            <p className="text-sm font-semibold text-red-600">
-              {format(new Date(job.scheduledAt), 'dd/MM/yyyy')}
-            </p>
-          </div>
-        </div>
-
-        {/* CTA */}
+        {/* Navigate to job details page */}
         <button
           onClick={() => navigate(`jobs/${job._id}`)}
-          className="mt-4 flex items-center justify-between rounded-xl bg-[#151517]/80 px-3 py-2"
+          className="flex items-center gap-2 rounded-full bg-[#32cd32] px-4 py-2 font-semibold text-black transition-colors hover:bg-[#28a428]"
         >
-          <span className="text-sm font-medium">View Job</span>
-          <ChevronRightIcon className="h-5 w-5 text-white/70" />
+          Details
+          <ArrowUpRightIcon className="h-4 w-4" />
         </button>
       </div>
     </div>
