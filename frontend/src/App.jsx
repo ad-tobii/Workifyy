@@ -7,7 +7,7 @@ import './styles/index.css'
 import Home from './Pages/Home/Home'
 import NotFound from './Components/NotFound'
 import SignupOptions from './Pages/Authentication/SignupOptions/Signup'
-import Signin from './Pages/Authentication/Signin/signin_user'
+import Signin from './Pages/Authentication/Signin/Signin'
 import Otp from './Pages/Authentication/OTP/Otp'
 import ClientSignup from './Pages/Authentication/Signup/SignupFormOptions/Clientsignup'
 import ProfessionalSignup from './Pages/Authentication/Signup/SignupFormOptions/Professionalsignup'
@@ -161,7 +161,6 @@ export default App
 // Changing location should trigger new job fetch and delete old ones
 // Need to move my listeners to a more global layout to prevent mounting and un mounting
 // Rename your stores man, no need to write store twice
-// your guards arent working
 // UI error handling
 // Basically sort out initial bids fetch and then handle updates with zustand
 // Have to overtly request location permissions, and also you have to handle it better, louder.
