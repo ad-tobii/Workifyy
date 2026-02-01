@@ -13,6 +13,7 @@ import ClientSignup from './Pages/Authentication/Signup/SignupFormOptions/Client
 import ProfessionalSignup from './Pages/Authentication/Signup/SignupFormOptions/Professionalsignup'
 import WelcomePage from './Pages/Authentication/Onboarding/WelcomePage'
 import ProfessionalDashboard from './Pages/ProfessionalDashboard/ProfessionalDashboard'
+import ProfessionalDasboardWrapper from './Pages/ProfessionalDashboard/ProfessionalDasboardWrapper'
 import Onboarding from './Pages/Authentication/Onboarding/Onboarding'
 import ClientOnboarding from './Pages/Authentication/ClientOnboarding/ClientOnboarding'
 import ClientDashboard from './Pages/ClientDashoard/ClientDashboard'
@@ -107,7 +108,7 @@ const App = () => {
 
             {/* Dashboards */}
             <Route path="/Dashboard">
-              <Route path="professionalDashboard">
+              <Route path="professionalDashboard" element={<ProfessionalDasboardWrapper />}>
                 <Route
                   path=""
                   element={

@@ -1,11 +1,22 @@
 import { ChevronRightIcon } from '@heroicons/react/24/solid'
 import useJobStore from '../../../../store/jobStore.store'
 import { useNavigate } from 'react-router-dom'
+import { parseISO, isToday, isTomorrow, format } from 'date-fns'
 
 const Feed = () => {
   const jobs = useJobStore(state => state.jobs)
   const navigate = useNavigate()
   console.log(jobs)
+
+  function formatScheduledDate(isoDate) {
+    const date = parseISO(isoDate)
+
+    if (isToday(date)) return `Today at ${format(date, 'hh:mm a')}`
+    if (isTomorrow(date)) return `Tomorrow at ${format(date, 'hh:mm a')}`
+
+    return format(date, 'dd MMM yyyy')
+  }
+
   return (
     <div className="mt-6 w-[90%]">
       {/* Section title */}
@@ -42,7 +53,10 @@ const Feed = () => {
 
               <div>
                 <p className="text-xs text-white/60">Deadline</p>
-                <p className="text-sm font-semibold text-red-600">{job.scheduledAt}</p>
+
+                <p className="text-sm font-semibold text-red-600">
+                  {formatScheduledDate(job.scheduledAt)}
+                </p>
               </div>
             </div>
 

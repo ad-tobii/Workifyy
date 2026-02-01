@@ -35,11 +35,13 @@ export default function Signin() {
     try {
       const { success, error, user } = await login(data)
       if (success) {
+        console.log('user in signin_user.jsx', user)
         if (user.isVerified) {
           if (user.isOnboarded) {
             navigate(
               `/Dashboard/${user.role === 'professional' ? 'professionalDashboard' : 'clientDashboard'}`
             )
+
           } else {
             navigate('/Onboarding/welcome')
           }

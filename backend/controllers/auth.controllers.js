@@ -126,6 +126,7 @@ export const login = async (req, res) => {
       email: user.email,
       role: user.role,
       isVerified: user.isVerified,
+      isOnboarded: user.isOnboarded,
     };
 
     // generate a token
