@@ -6,6 +6,7 @@ import {
   counterBid,
   rejectBid,
   getProfessionalBids,
+  getClientBids,
 } from '../controllers/bid.controllers.js';
 
 const router = express.Router();
@@ -25,4 +26,6 @@ router.patch('/reject', protectRoutes, rejectBid);
 // 5. Fetch all bids for logged-in professional
 router.get('/professional', protectRoutes, getProfessionalBids);
 
+// 6. Fetch all bids for logged-in client
+router.get('/client', protectRoutes, getClientBids);
 export default router;

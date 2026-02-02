@@ -357,6 +357,44 @@ export const getProfessionalBids = async (req, res) => {
   }
 };
 
+export const getClientBids = async (req, res) => {
+  try {
+    const client = req.user;
+    if (!client || client.role !== 'client') {
+      return res.status(401).json({
+        success: false,
+        message: 'Only clients can access bids',
+      });
+    }
+
+    const bids = await Bid.find({
+      client: client._id,
+      status: 'pending',
+    })
+      .populate({
+        path: 'job',
+        select: 'title',
+      })
+      .populate({
+        path: 'professional',
+        select: 'firstname lastname',
+      })
+      .select('job professional status currentAmount negotiationHistory')
+      .sort({ updatedAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      data: bids,
+    });
+  } catch (error) {
+    console.log('Error fetching client bids ⚠️:', error.message);
+    return res.status(500).json({
+      success: false,
+      message: 'Server error',
+    });
+  }
+};
+
 // To do:
 // 1. make all other bids default to rejected once a bid is accepted on a job.
 // 2. If you're going to keep negotiationHistory then add it to the original place bid, you forgot
