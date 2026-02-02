@@ -12,12 +12,12 @@ import Otp from './Pages/Authentication/OTP/Otp'
 import ClientSignup from './Pages/Authentication/Signup/SignupFormOptions/Clientsignup'
 import ProfessionalSignup from './Pages/Authentication/Signup/SignupFormOptions/Professionalsignup'
 import WelcomePage from './Pages/Authentication/Onboarding/WelcomePage'
-import ProfessionalDashboard from './Pages/ProfessionalDashboard/ProfessionalDashboard'
-import ProfessionalDasboardWrapper from './Pages/ProfessionalDashboard/ProfessionalDasboardWrapper'
+import ProfessionalDashboard from './Pages/Dashboard/ProfessionalDashboard/ProfessionalDashboard'
+import ProfessionalDasboardWrapper from './Pages/Dashboard/ProfessionalDashboard/ProfessionalDasboardWrapper'
 import Onboarding from './Pages/Authentication/Onboarding/Onboarding'
 import ClientOnboarding from './Pages/Authentication/ClientOnboarding/ClientOnboarding'
-import ClientDashboard from './Pages/ClientDashoard/ClientDashboard'
-import JobDetailsPage from './Pages/ProfessionalDashboard/JobDetailsPage/JobDetailsPage'
+import ClientDashboard from './Pages/Dashboard/ClientDashoard/ClientDashboard'
+import JobDetailsPage from './Pages/Dashboard/ProfessionalDashboard/JobDetailsPage/JobDetailsPage'
 
 // Route Wrappers
 import GuestRoute from './Components/GuestRoute'
@@ -168,3 +168,4 @@ export default App
 // Use Ui to diffrentiate between offers and bids.
 // Need to ensure the whole bids=> ongoing jobs =>notification of rejected jobs works.
 // Indicate price trend  negotiation trend on bid ui
+// Refactor api controllers to be more dry particularly checks and other repetitive code.
