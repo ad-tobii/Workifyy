@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom'
-import useUserStore from '../store/userStore.store'
+import useUserStore from '../store/useUserStore'
 import toast from 'react-hot-toast'
 
 const ProtectRoute = ({ checkOnboarded, children, role }) => {

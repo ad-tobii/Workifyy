@@ -1,6 +1,6 @@
 import { Mail, Lock } from 'lucide-react'
 import { ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline'
-import useUserStore from '../../../store/userStore.store'
+import useUserStore from '../../../store/useUserStore'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 

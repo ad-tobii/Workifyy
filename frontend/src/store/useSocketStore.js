@@ -1,12 +1,16 @@
 import { create } from 'zustand'
 import { socket } from '../utils/socket.utils'
-import useJobStore from './jobStore.store'
+import useJobStore from './useJobStore'
 import { getBrowserLocation } from '../utils/geoLocation.utils'
 
 const useSocketStore = create((set, get) => ({
   isConnected: false,
+  hasInitialized: false,
 
   initializeSocket: async () => {
+    if (get().hasInitialized) {
+      return
+    }
     const { longitude, latitude } = await getBrowserLocation()
     socket.on('connect', () => {
       console.log("yh i'm tapped in")
@@ -19,11 +23,10 @@ const useSocketStore = create((set, get) => ({
     })
     socket.on('newJob', newJob => {
       console.log('yh  i got a new job')
-      useJobStore.setState(state => ({
-        jobs: [newJob, ...state.jobs],
-      }))
+      useJobStore.getState().addJob(newJob)
     })
 
+    set({ hasInitialized: true })
     socket.connect()
   },
 
@@ -32,6 +35,7 @@ const useSocketStore = create((set, get) => ({
     socket.off('disconnect')
     socket.off('newJob')
     socket.disconnect()
+    set({ isConnected: false, hasInitialized: false })
   },
 }))
 

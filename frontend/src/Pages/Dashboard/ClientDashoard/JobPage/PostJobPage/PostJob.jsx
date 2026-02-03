@@ -6,7 +6,7 @@ import Step4 from './Step4'
 import Step5 from './Step5'
 import Step6 from './Step6'
 import Step7 from './Step7'
-import useJobStore from '../../../../../store/jobStore.store'
+import useJobStore from '../../../../../store/useJobStore'
 
 export default function PostJobPage() {
   const loading = useJobStore(state => state.loading) // Hooking into global store state

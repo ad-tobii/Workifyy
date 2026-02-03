@@ -1,6 +1,6 @@
 import React from 'react'
 import { ClockIcon } from '@heroicons/react/24/outline'
-import useJobStore from '../../../../store/jobStore.store'
+import useJobStore from '../../../../store/useJobStore'
 
 const JobDescription = () => {
   const job = useJobStore(state => state.job)

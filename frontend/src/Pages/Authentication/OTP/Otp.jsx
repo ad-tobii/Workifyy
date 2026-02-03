@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import OTPInput from './OtpInput.jsx'
-import useUserStore from '../../../store/userStore.store.js'
+import useUserStore from '../../../store/useUserStore'
 import { Lock } from 'lucide-react'
 
 export default function Otp() {

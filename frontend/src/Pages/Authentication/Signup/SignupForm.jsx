@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form'
 import PasswordInput from './PasswordInput'
 import api from '../../../api/axios.api'
 import { FcGoogle } from 'react-icons/fc'
-import useUserStore from '../../../store/userStore.store'
+import useUserStore from '../../../store/useUserStore'
 import toast from 'react-hot-toast'
 
 export default function SignupForm({ role }) {

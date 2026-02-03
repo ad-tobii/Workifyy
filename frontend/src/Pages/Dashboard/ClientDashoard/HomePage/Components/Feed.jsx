@@ -1,5 +1,5 @@
 import JobCard from './JobCard'
-import useJobStore from '../../../../../store/jobStore.store'
+import useJobStore from '../../../../../store/useJobStore'
 const Feed = () => {
   const jobs = useJobStore(state => state.jobs)
   return (

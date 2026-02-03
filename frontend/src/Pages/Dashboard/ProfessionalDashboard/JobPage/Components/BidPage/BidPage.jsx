@@ -1,4 +1,4 @@
-import useBidStore from '../../../../../../store/bidStore.store'
+import useBidStore from '../../../../../../store/useBidStore'
 import { useEffect } from 'react'
 import BidCard from './BidCards'
 import React from 'react'

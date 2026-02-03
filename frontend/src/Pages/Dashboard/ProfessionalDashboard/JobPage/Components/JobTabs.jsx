@@ -5,7 +5,7 @@ import {
   BookmarkIcon,
 } from '@heroicons/react/24/outline'
 
-import useProStore from '../../../../../store/proStore.store'
+import useProStore from '../../../../../store/useProStore'
 
 const tabs = [
   { name: 'Find Jobs', icon: MagnifyingGlassIcon },

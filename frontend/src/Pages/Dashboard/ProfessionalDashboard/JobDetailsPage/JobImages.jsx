@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
-import useJobStore from '../../../../store/jobStore.store'
+import useJobStore from '../../../../store/useJobStore'
 
 const JobImages = () => {
   const job = useJobStore(state => state.job)
