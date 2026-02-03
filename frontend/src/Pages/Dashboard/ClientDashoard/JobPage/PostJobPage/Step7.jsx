@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Calendar, Clock, CheckCircle2 } from 'lucide-react'
-import useJobStore from '../../../../../store/jobStore.store'
-import useClientStore from '../../../../../store/clientStore.store'
+import useJobStore from '../../../../../store/useJobStore'
+import useClientStore from '../../../../../store/useClientStore'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 

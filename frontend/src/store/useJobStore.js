@@ -1,7 +1,6 @@
 import { create } from 'zustand'
 import api from '../api/axios.api'
 import { getBrowserLocation } from '../utils/geoLocation.utils'
-import { socket } from '../utils/socket.utils'
 
 const useJobStore = create((set, get) => ({
   // --- STATE ---
@@ -11,6 +10,15 @@ const useJobStore = create((set, get) => ({
   error: null,
 
   // --- ACTIONS ---
+  setJobs: jobs => set({ jobs }),
+  addJob: job =>
+    set(state => ({
+      jobs: [job, ...state.jobs],
+    })),
+  removeJob: jobId =>
+    set(state => ({
+      jobs: state.jobs.filter(job => job._id !== jobId),
+    })),
   postJob: async data => {
     set({ loading: true, error: null })
 
@@ -33,10 +41,10 @@ const useJobStore = create((set, get) => ({
       const res = await api.post('/job/post-job', formData)
 
       // 2. Update the local jobs list with the new job from server
-      set(state => ({
-        jobs: [res.data?.data, ...state.jobs],
-        loading: false,
-      }))
+      if (res.data?.data) {
+        get().addJob(res.data.data)
+      }
+      set({ loading: false })
 
       return res.data // Return to the component for success handling (e.g., redirect)
     } catch (error) {

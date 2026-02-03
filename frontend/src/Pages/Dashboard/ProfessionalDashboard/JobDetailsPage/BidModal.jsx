@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/24/solid'
 import { useParams } from 'react-router-dom'
-import useBidStore from '../../../../store/bidStore.store'
-import useJobStore from '../../../../store/jobStore.store'
+import useBidStore from '../../../../store/useBidStore'
+import useJobStore from '../../../../store/useJobStore'
 
 const formatNumber = num => new Intl.NumberFormat('en-NG').format(num)
 

@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import useUserStore from '../store/userStore.store'
+import useUserStore from '../store/useUserStore'
 import { useEffect } from 'react'
 
 const GuestRoute = ({ children }) => {

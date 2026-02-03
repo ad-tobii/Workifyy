@@ -1,4 +1,4 @@
-import useSocketStore from '../../../store/useSocket.store'
+import useSocketStore from '../../../store/useSocketStore'
 import { useEffect } from 'react'
 import { watchLocation } from '../../../utils/geoLocation.utils'
 import { Outlet } from 'react-router-dom'

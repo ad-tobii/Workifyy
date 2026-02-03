@@ -1,6 +1,6 @@
 import JobTabs from './Components/JobTabs'
 import PostJobPage from './PostJobPage/PostJob'
-import useClientStore from '../../../../store/clientStore.store'
+import useClientStore from '../../../../store/useClientStore'
 import BidPage from './BidPage/BidPage'
 
 const JobPage = () => {

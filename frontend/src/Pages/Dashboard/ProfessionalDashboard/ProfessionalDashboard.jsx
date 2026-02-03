@@ -4,8 +4,8 @@ import HomePage from './HomePage/HomePage'
 import JobPage from './JobPage/JobPage'
 import { useEffect } from 'react'
 
-import useProStore from '../../../store/proStore.store'
-import useDashboardStore from '../../../store/dashboardStore.store'
+import useProStore from '../../../store/useProStore'
+import useDashboardStore from '../../../store/useDashboardStore'
 
 const ProfessionalDashboard = () => {
   const mainTab = useProStore(state => state.mainTab)

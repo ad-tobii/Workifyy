@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import api from '../api/axios.api'
-import useJobStore from './jobStore.store'
+import useJobStore from './useJobStore'
 import { getBrowserLocation } from '../utils/geoLocation.utils'
 
 const useDashboardStore = create((set, get) => ({
@@ -12,8 +12,7 @@ const useDashboardStore = create((set, get) => ({
     try {
       const res = await api.get('/dashboard')
 
-      useJobStore.setState({ jobs: res.data.data.jobs })
-     
+      useJobStore.getState().setJobs(res.data.data.jobs)
 
       set({ loading: false, error: null })
     } catch (error) {
@@ -31,7 +30,7 @@ const useDashboardStore = create((set, get) => ({
       const result = await api.get(`/job/get-jobs?longitude=${longitude}&latitude=${latitude}`)
 
       if (result.data.success) {
-        useJobStore.setState({ jobs: result.data.data })
+        useJobStore.getState().setJobs(result.data.data)
         set({ loading: false, error: null })
         return true // Now this ONLY happens after connection
       } else {

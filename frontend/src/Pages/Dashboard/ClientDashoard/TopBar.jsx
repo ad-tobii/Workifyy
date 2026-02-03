@@ -7,7 +7,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { MapPinIcon } from '@heroicons/react/24/solid'
 
-import useClientStore from '../../../store/clientStore.store'
+import useClientStore from '../../../store/useClientStore'
 
 const TopBar = () => {
   return (
