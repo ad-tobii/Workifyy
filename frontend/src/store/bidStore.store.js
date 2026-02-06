@@ -51,6 +51,8 @@ const useBidStore = create((set, get) => ({
       // Send bid to backend
       const res = await api.post('/bid/place', { jobId, amount, message })
 
+      console.log(res.data)
+
       if (!res.data.success) {
         // Backend rejected the bid
         set({ error: res.data.message })
