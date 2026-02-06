@@ -68,7 +68,19 @@ export const placeBid = async (req, res) => {
       io
     );
 
-    return res.status(201).json({ success: true, data: bid });
+    const data = {
+      _id: bid._id,
+      professional: bid.professional,
+      client: bid.client,
+      jobTitle: job.title,
+      negotiationHistory: bid.negotiationHistory,
+      awaitingResponseFrom: bid.awaitingResponseFrom,
+      status: bid.status,
+      currentAmount: bid.currentAmount.toLocaleString(),
+      message: bid.message,
+    };
+
+    return res.status(201).json({ success: true, data });
   } catch (error) {
     console.log('Error creating bid ⚠️:', error.message);
     return res.status(500).json({ message: 'Server error' });
