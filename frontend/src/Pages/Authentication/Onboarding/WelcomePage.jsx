@@ -1,7 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
-import useUserStore from '../../../store/userStore.store'
+import useUserStore from '../../../store/useUserStore'
 
 const WelcomePage = () => {
   const user = useUserStore(state => state.user)

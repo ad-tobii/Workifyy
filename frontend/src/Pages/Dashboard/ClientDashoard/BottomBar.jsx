@@ -4,7 +4,7 @@ import {
   QuestionMarkCircleIcon,
   BriefcaseIcon,
 } from '@heroicons/react/24/outline'
-import useClientStore from '../../../store/clientStore.store'
+import useClientStore from '../../../store/useClientStore'
 
 const BottomBar = () => {
   const setMainTab = useClientStore(state => state.setMainTab)

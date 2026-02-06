@@ -6,7 +6,7 @@ import {
   QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline'
 import { MapPinIcon } from '@heroicons/react/24/solid'
-import useProStore from '../../../store/proStore.store'
+import useProStore from '../../../store/useProStore'
 
 const TopBar = () => {
   const setMainTab = useProStore(state => state.setMainTab)

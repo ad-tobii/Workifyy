@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import useJobStore from '../../../../store/jobStore.store'
+import useJobStore from '../../../../store/useJobStore'
 
 const BidPanel = ({ setIsOpen }) => {
   const job = useJobStore(state => state.job)

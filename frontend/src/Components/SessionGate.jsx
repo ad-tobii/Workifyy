@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import useUserStore from '../store/userStore.store'
+import useUserStore from '../store/useUserStore'
 
 const SessionGate = ({ children }) => {
   const sessionChecked = useUserStore(state => state.sessionChecked)

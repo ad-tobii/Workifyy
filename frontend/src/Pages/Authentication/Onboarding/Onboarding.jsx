@@ -8,7 +8,7 @@ import Step3 from './steps/Step3'
 import Step4 from './steps/Step4'
 import Step5 from './steps/Step5'
 import Step6 from './steps/Step6'
-import useUserStore from '../../../store/userStore.store'
+import useUserStore from '../../../store/useUserStore'
 import toast from 'react-hot-toast' // only import toast, not Toaster
 import { useNavigate } from 'react-router-dom'
 

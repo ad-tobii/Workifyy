@@ -1,5 +1,5 @@
 import { ChevronRightIcon } from '@heroicons/react/24/solid'
-import useJobStore from '../../../../../store/jobStore.store'
+import useJobStore from '../../../../../store/useJobStore'
 import { useNavigate } from 'react-router-dom'
 import { parseISO, isToday, isTomorrow, format } from 'date-fns'
 

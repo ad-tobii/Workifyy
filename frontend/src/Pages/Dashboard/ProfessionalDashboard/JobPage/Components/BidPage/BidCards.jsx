@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import useBidStore from '../../../../../../store/bidStore.store'
+import useBidStore from '../../../../../../store/useBidStore'
 import ConfirmModal from './ConfirmModal'
 import CounterOfferModal from './CounterOfferModal'
 

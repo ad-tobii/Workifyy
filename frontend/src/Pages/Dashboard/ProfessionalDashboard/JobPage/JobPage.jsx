@@ -1,7 +1,7 @@
 import JobTabs from './Components/JobTabs'
-import useProStore from '../../../../store/proStore.store'
-import useJobStore from '../../../../store/jobStore.store'
-import useBidStore from '../../../../store/bidStore.store'
+import useProStore from '../../../../store/useProStore'
+import useJobStore from '../../../../store/useJobStore'
+import useBidStore from '../../../../store/useBidStore'
 import BidPage from './Components/BidPage/BidPage'
 import { useEffect } from 'react'
 

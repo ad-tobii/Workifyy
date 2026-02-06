@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import useUserStore from '../../../store/userStore.store'
+import useUserStore from '../../../store/useUserStore'
 import { useNavigate } from 'react-router-dom'
 import { Clock, CheckCircle } from 'lucide-react'
 import toast, { Toaster } from 'react-hot-toast'

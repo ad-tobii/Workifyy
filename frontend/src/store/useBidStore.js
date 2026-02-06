@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import api from '../api/axios.api'
-import useJobStore from './jobStore.store'
-import useUserStore from './userStore.store'
+import useJobStore from './useJobStore'
+import useUserStore from './useUserStore'
 
 // Bid store handles all bid-related state and actions
 const useBidStore = create((set, get) => ({
@@ -63,7 +63,7 @@ const useBidStore = create((set, get) => ({
         // Remove that job from the global job list
         // so the user doesn't see jobs they've already bid on
 
-        useJobStore.setState({ jobs: useJobStore.getState().jobs.filter(job => job._id !== jobId) })
+        useJobStore.getState().removeJob(jobId)
       }
 
       return res.data

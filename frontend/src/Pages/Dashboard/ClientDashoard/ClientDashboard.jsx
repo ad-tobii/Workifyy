@@ -3,8 +3,8 @@ import BottomBar from './BottomBar'
 import HomePage from './HomePage/HomePage'
 import { useEffect } from 'react'
 import JobPage from './JobPage/JobPage'
-import useClientStore from '../../../store/clientStore.store'
-import useDashboardStore from '../../../store/dashboardStore.store'
+import useClientStore from '../../../store/useClientStore'
+import useDashboardStore from '../../../store/useDashboardStore'
 const ClientDashboard = () => {
   const mainTab = useClientStore(state => state.mainTab)
   const getDashboardData = useDashboardStore(state => state.getDashboardData)

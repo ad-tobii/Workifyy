@@ -7,7 +7,7 @@ import BidModal from './BidModal'
 import { useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import useJobStore from '../../../../store/jobStore.store'
+import useJobStore from '../../../../store/useJobStore'
 
 const JobDetailsPage = () => {
   const { jobId } = useParams()
