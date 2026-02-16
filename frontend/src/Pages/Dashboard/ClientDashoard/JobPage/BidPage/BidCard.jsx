@@ -1,5 +1,8 @@
 import { ArrowUpRightIcon } from '@heroicons/react/24/solid'
+import { useNavigate } from 'react-router-dom'
+
 const BidCard = () => {
+  const navigate = useNavigate()
   // Dummy data
   const bid = {
     name: 'Tunde Ade',
@@ -9,6 +12,13 @@ const BidCard = () => {
     budget: 12000,
     message: "I can complete this job quickly and with high quality. Let's get it done!",
     jobsCompleted: 12,
+    professional: {
+      _id: '123',
+      name: 'Tunde Ade',
+      avatarUrl: '', // leave empty for now
+      rating: 4,
+      price: 15000,
+    },
   }
 
   const budgetDiff = bid.price - bid.budget
@@ -44,7 +54,10 @@ const BidCard = () => {
             </div>
           </div>
         </div>
-        <button className="flex items-center gap-1 rounded-full bg-zinc-800 px-3 py-3 text-sm font-medium text-zinc-300 transition-all hover:bg-zinc-700/60 hover:text-white">
+        <button
+          onClick={() => navigate(`bids/${bid.professional._id}`)}
+          className="flex items-center gap-1 rounded-full bg-zinc-800 px-3 py-3 text-sm font-medium text-zinc-300 transition-all hover:bg-zinc-700/60 hover:text-white"
+        >
           Details
           <ArrowUpRightIcon className="h-4 w-4 font-extrabold" />
         </button>

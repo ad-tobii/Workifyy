@@ -17,6 +17,7 @@ import ProfessionalDasboardWrapper from './Pages/Dashboard/ProfessionalDashboard
 import Onboarding from './Pages/Authentication/Onboarding/Onboarding'
 import ClientOnboarding from './Pages/Authentication/ClientOnboarding/ClientOnboarding'
 import ClientDashboard from './Pages/Dashboard/ClientDashoard/ClientDashboard'
+import ProfessionalOfferPage from './Pages/Dashboard/ClientDashoard/JobPage/BidPage/ProfessionalOfferPage'
 import JobDetailsPage from './Pages/Dashboard/ProfessionalDashboard/JobDetailsPage/JobDetailsPage'
 
 // Route Wrappers
@@ -137,8 +138,17 @@ const App = () => {
                     </ProtectRoute>
                   }
                 />
+                <Route
+                  path="bids/:bidId"
+                  element={
+                    <ProtectRoute role="client" checkOnboarded={true}>
+                      <ProfessionalOfferPage />
+                    </ProtectRoute>
+                  }
+                />
               </Route>
             </Route>
+
             <Route path="*" element={<NotFound />} />
           </Routes>
         </SessionGate>
