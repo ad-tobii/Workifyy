@@ -7,9 +7,11 @@ import useUserStore from './useUserStore'
 const useBidStore = create((set, get) => ({
   // ===== STATE =====
   bids: [], // all bids belonging to the current user (professional)
+  clientBids: [], // all pending bids on the client's jobs
   loading: false, // global loading flag for any bid action
   error: null, // last error message from any bid action
   hasFetched: false, // prevents refetching bids multiple times unnecessarily
+  hasFetchedClientBids: false, // prevents refetching client bids unnecessarily
 
   // ===== ACTIONS =====
 
@@ -22,24 +24,45 @@ const useBidStore = create((set, get) => ({
 
     set({ loading: true, error: null })
     try {
-      // Call backend to get professional's bids
       const res = await api.get('/bid/professional')
 
-      // Backend responded but flagged failure
       if (!res.data.success) {
         set({ error: res.data.message })
         return
       }
 
-      // Save bids to store and mark as fetched
       set({ bids: res.data.data, hasFetched: true })
       return res.data
     } catch (error) {
-      // Network/server error
       set({ error: error.response?.data?.message || 'Server error' })
       throw error
     } finally {
-      // Always stop loading spinner
+      set({ loading: false })
+    }
+  },
+
+  // Fetch all pending bids on the logged-in client's jobs
+  getClientBids: async () => {
+    const { hasFetchedClientBids, loading } = get()
+
+    // Prevent duplicate requests if already fetched or currently loading
+    if (hasFetchedClientBids || loading) return
+
+    set({ loading: true, error: null })
+    try {
+      const res = await api.get('/bid/client')
+
+      if (!res.data.success) {
+        set({ error: res.data.message })
+        return
+      }
+
+      set({ clientBids: res.data.data, hasFetchedClientBids: true })
+      return res.data
+    } catch (error) {
+      set({ error: error.response?.data?.message || 'Server error' })
+      throw error
+    } finally {
       set({ loading: false })
     }
   },
@@ -48,13 +71,11 @@ const useBidStore = create((set, get) => ({
   placeBid: async (jobId, amount, message) => {
     set({ loading: true, error: null })
     try {
-      // Send bid to backend
       const res = await api.post('/bid/place', { jobId, amount, message })
 
       console.log(res.data)
 
       if (!res.data.success) {
-        // Backend rejected the bid
         set({ error: res.data.message })
       } else {
         // Add new bid to the top of local bids list (optimistic insert)
@@ -62,7 +83,6 @@ const useBidStore = create((set, get) => ({
 
         // Remove that job from the global job list
         // so the user doesn't see jobs they've already bid on
-
         useJobStore.getState().removeJob(jobId)
       }
 
@@ -86,10 +106,11 @@ const useBidStore = create((set, get) => ({
         return res.data
       }
 
-      // Optimistic update:
-      // immediately mark this bid as accepted in local state
+      const role = useUserStore.getState().user.role
+      const listKey = role === 'professional' ? 'bids' : 'clientBids'
+
       set(state => ({
-        bids: state.bids.filter(b => b._id !== bidId),
+        [listKey]: state[listKey].filter(b => b._id !== bidId),
       }))
 
       return res.data
@@ -112,18 +133,19 @@ const useBidStore = create((set, get) => ({
         return res.data
       }
 
-      // Behaviour depends on who is performing the action
       const role = useUserStore.getState().user.role
 
       if (role === 'professional') {
-        // Professional is withdrawing their own bid
+        // Professional withdrawing their own bid
         set(state => ({
           bids: state.bids.filter(b => b._id !== bidId),
         }))
       } else {
-        // Client is rejecting a professional's bid
+        // Client rejecting — mark as rejected in clientBids
         set(state => ({
-          bids: state.bids.map(b => (b._id === bidId ? { ...b, status: 'rejected' } : b)),
+          clientBids: state.clientBids.map(b =>
+            b._id === bidId ? { ...b, status: 'rejected' } : b
+          ),
         }))
       }
 
@@ -147,12 +169,11 @@ const useBidStore = create((set, get) => ({
         return res.data
       }
 
-      // Optimistic update of the bid:
-      // - update amount to new offer
-      // - optionally update message
-      // - flip who needs to respond next
+      const role = useUserStore.getState().user.role
+      const listKey = role === 'professional' ? 'bids' : 'clientBids'
+
       set(state => ({
-        bids: state.bids.map(b =>
+        [listKey]: state[listKey].map(b =>
           b._id === bidId
             ? {
                 ...b,

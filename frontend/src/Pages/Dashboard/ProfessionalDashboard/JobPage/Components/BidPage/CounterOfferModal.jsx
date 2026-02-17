@@ -38,7 +38,7 @@ const CounterOfferModal = ({
             <input
               type="number"
               value={amount}
-              onChange={(e) => setAmount(e.target.value)}
+              onChange={e => setAmount(e.target.value)}
               placeholder="Enter amount"
               className="w-full rounded-xl bg-[#2a2a2d] px-4 py-3 pl-8 text-white placeholder-gray-500 outline-none focus:ring-2 focus:ring-yellow-500"
             />
@@ -47,20 +47,18 @@ const CounterOfferModal = ({
 
         {/* Message Input */}
         <div className="mb-6">
-          <label className="mb-2 block text-sm font-medium text-gray-300">
-            Message (Optional)
-          </label>
+          <label className="mb-2 block text-sm font-medium text-gray-300">Message (Optional)</label>
           <textarea
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            onChange={e => setMessage(e.target.value)}
             placeholder="Add a message to explain your counter offer..."
             rows={3}
-            className="w-full rounded-xl bg-[#2a2a2d] px-4 py-3 text-white placeholder-gray-500 outline-none focus:ring-2 focus:ring-yellow-500 resize-none"
+            className="w-full resize-none rounded-xl bg-[#2a2a2d] px-4 py-3 text-white placeholder-gray-500 outline-none focus:ring-2 focus:ring-yellow-500"
           />
         </div>
 
         {/* Buttons */}
-        <div className="flex gap-3 justify-end">
+        <div className="flex justify-end gap-3">
           <button
             onClick={onClose}
             disabled={loading}
