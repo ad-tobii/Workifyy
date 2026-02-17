@@ -385,11 +385,11 @@ export const getClientBids = async (req, res) => {
     })
       .populate({
         path: 'job',
-        select: 'title',
+        select: 'title budget',
       })
       .populate({
         path: 'professional',
-        select: 'firstname lastname',
+        select: 'firstname photo lastname',
       })
       .select('job professional status currentAmount negotiationHistory')
       .sort({ updatedAt: -1 });
