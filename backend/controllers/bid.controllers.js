@@ -1,6 +1,7 @@
 import Bid from '../models/bids.models.js';
 import Job from '../models/jobs.models.js';
 import { createNotification } from './notification.controllers.js';
+import ProfessionalProfile from '../models/professionalProfiles.models.js';
 
 export const placeBid = async (req, res) => {
   try {
@@ -40,12 +41,21 @@ export const placeBid = async (req, res) => {
         .json({ message: "You've already bid on this job" });
     }
 
+    const professionalProfile = await ProfessionalProfile.findOne({
+      user: professional._id,
+    });
+    if (!professionalProfile) {
+      return res
+        .status(404)
+        .json({ message: 'Professional profile not found' });
+    }
     // Create Bid with initial history
     const bid = await Bid.create({
       professional: professional._id,
       job: jobId,
       client: job.client,
       currentAmount: amount,
+      professionalProfile: professionalProfile._id,
       awaitingResponseFrom: 'client',
       negotiationHistory: [
         {
@@ -389,7 +399,11 @@ export const getClientBids = async (req, res) => {
       })
       .populate({
         path: 'professional',
-        select: 'firstname photo lastname',
+        select: 'firstname lastname',
+      })
+      .populate({
+        path: 'professionalProfile',
+        select: 'tagline photo experience expertise languages bio',
       })
       .select('job professional status currentAmount negotiationHistory')
       .sort({ updatedAt: -1 });

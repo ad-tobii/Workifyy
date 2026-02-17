@@ -50,8 +50,8 @@ const professionalProfileSchema = new mongoose.Schema(
 
 professionalProfileSchema.index({ 'location.geo': '2dsphere' });
 
-const ProfessionaProfile = mongoose.model(
+const ProfessionalProfile = mongoose.model(
   'ProfessionalProfile',
   professionalProfileSchema
 );
-export default ProfessionaProfile;
+export default ProfessionalProfile;

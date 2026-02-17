@@ -12,9 +12,15 @@ const bidSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
+
     professional: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
+      required: true,
+    },
+    professionalProfile: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'ProfessionalProfile',
       required: true,
     },
     // The "Current" state of the bid
