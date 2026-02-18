@@ -1,5 +1,5 @@
 import express from 'express';
-import { createJob, listJobs,getJob } from '../controllers/job.controllers.js';
+import { createJob, listJobs,getJob, getOngoingJobs } from '../controllers/job.controllers.js';
 import parser from '../utils/multer.utils.js';
 import protectRoutes from '../middleware/protectRoutes.middleware.js';
 
@@ -11,5 +11,6 @@ router.post('/post-job', protectRoutes, parser.array('images', 5), createJob);
 // Get all open jobs
 router.get('/get-jobs', protectRoutes, listJobs);
 router.get('/:jobId', protectRoutes, getJob);
+router.get('/ongoing', protectRoutes, getOngoingJobs);
 
 export default router;
