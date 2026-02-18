@@ -208,3 +208,34 @@ export const getJob = async (req, res) => {
     });
   }
 };
+
+export const getOngoingJobs = async (req, res) => {
+  try {
+    const professional = req.user;
+    if (!professional || professional.role !== 'professional') {
+      return res.status(401).json({
+        message: 'Unauthorized: Please login as a professional',
+        success: false,
+        data: null,
+      });
+    }
+    const ongoingJobs = await Job.find({
+      chosenProfessional: professional._id,
+      status: 'ongoing',
+    })
+      .populate('client', 'firstname lastname -_id')
+      .sort({ createdAt: -1 });
+    return res.status(200).json({
+      message: 'Ongoing jobs fetched successfully',
+      success: true,
+      data: ongoingJobs,
+    });
+  } catch (error) {
+    console.error('Get ongoing jobs error:', error.message);
+    return res.status(500).json({
+      message: 'Server error',
+      success: false,
+      data: null,
+    });
+  }
+};
