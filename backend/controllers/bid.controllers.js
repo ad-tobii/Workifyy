@@ -66,8 +66,26 @@ export const placeBid = async (req, res) => {
       ],
     });
 
+    // Populate bid for socket emission (same as getClientBids)
+    const populatedBid = await Bid.findById(bid._id)
+      .populate({
+        path: 'job',
+        select: 'title budget',
+      })
+      .populate({
+        path: 'professional',
+        select: 'firstname lastname',
+      })
+      .populate({
+        path: 'professionalProfile',
+        select: 'tagline photo experience expertise languages bio',
+      })
+      .select(
+        'job professional professionalProfile status awaitingResponseFrom currentAmount negotiationHistory'
+      );
+
     // Real-time & Persistent Notification
-    io.to(`client:${job.client}`).emit('newBid', bid);
+    io.to(`client:${job.client}`).emit('newBid', populatedBid);
     await createNotification(
       {
         userId: job.client,
@@ -150,9 +168,29 @@ export const acceptBid = async (req, res) => {
       chosenProfessional: bid.professional,
     });
 
+    // Populate bid before emitting
+    const populatedBid = await Bid.findById(bid._id)
+      .populate({
+        path: 'job',
+        select: 'title budget',
+      })
+      .populate({
+        path: 'professional',
+        select: 'firstname lastname',
+      })
+      .populate({
+        path: 'professionalProfile',
+        select: 'tagline photo experience expertise languages bio',
+      })
+      .select(
+        'job professional professionalProfile status awaitingResponseFrom currentAmount negotiationHistory'
+      );
+
     user.role === 'professional'
-      ? io.to(`client:${bid.job.client}`).emit('bidAccepted', bid)
-      : io.to(`professional:${bid.professional}`).emit('bidAccepted', bid);
+      ? io.to(`client:${bid.job.client}`).emit('bidAccepted', populatedBid)
+      : io
+          .to(`professional:${bid.professional}`)
+          .emit('bidAccepted', populatedBid);
 
     return res.status(200).json({
       message: 'Bid accepted succesfully',
@@ -228,13 +266,31 @@ export const counterBid = async (req, res) => {
       user.role === 'professional' ? 'client' : 'professional';
     await bid.save();
 
+    // Populate bid before emitting
+    const populatedBid = await Bid.findById(bid._id)
+      .populate({
+        path: 'job',
+        select: 'title budget',
+      })
+      .populate({
+        path: 'professional',
+        select: 'firstname lastname',
+      })
+      .populate({
+        path: 'professionalProfile',
+        select: 'tagline photo experience expertise languages bio',
+      })
+      .select(
+        'job professional professionalProfile status awaitingResponseFrom currentAmount negotiationHistory'
+      );
+
     // Real time notification
     const targetRoom =
       user.role === 'professional'
         ? `client:${bid.job.client}`
         : `professional:${bid.professional}`;
 
-    io.to(targetRoom).emit('counterOffer', bid);
+    io.to(targetRoom).emit('counterOffer', populatedBid);
 
     return res.status(200).json({
       message: 'counter offer made !',
@@ -293,8 +349,8 @@ export const rejectBid = async (req, res) => {
 
       // Notify Professional
       io.to(`professional:${bid.professional}`).emit('bidRejected', {
-        jobId: bid.job._id,
         bidId: bid._id,
+        jobId: bid.job._id,
         reason:
           reason === 'fit' ? 'Not a match for this project' : 'Price mismatch',
       });
@@ -307,8 +363,8 @@ export const rejectBid = async (req, res) => {
 
       // Notify Client
       io.to(`client:${bid.job.client}`).emit('bidWithdrawn', {
-        jobId: bid.job._id,
         bidId: bid._id,
+        jobId: bid.job._id,
         message: 'The professional has withdrawn their bid.',
       });
     } else {
@@ -408,7 +464,7 @@ export const getClientBids = async (req, res) => {
         select: 'tagline photo experience expertise languages bio',
       })
       .select(
-        'job professional status awaitingResponseFrom currentAmount negotiationHistory'
+        'job professional professionalProfile status awaitingResponseFrom currentAmount negotiationHistory'
       )
       .sort({ updatedAt: -1 });
 
@@ -427,5 +483,4 @@ export const getClientBids = async (req, res) => {
 
 // To do:
 // 1. make all other bids default to rejected once a bid is accepted on a job.
-// 2. If you're going to keep negotiationHistory then add it to the original place bid, you forgot
-// 3. create persistent Notifications
+// 2. create persistent Notifications for all bid events
