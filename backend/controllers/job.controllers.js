@@ -92,6 +92,7 @@ export const listJobs = async (req, res) => {
   try {
     // Retrieve Longitude and latitude from request
     const { latitude, longitude } = req.query;
+    const user = req.user;
 
     // Determine Hex_id and coverage
     const hexId = latLngToHex(latitude, longitude);
@@ -110,6 +111,7 @@ export const listJobs = async (req, res) => {
       status: 'open',
       hexId: { $in: searchArea },
       _id: { $nin: jobIds },
+      blockedProfessionals: { $nin: [user._id] },
     };
 
     // retrieve matching jobs from db
