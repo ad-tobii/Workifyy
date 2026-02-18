@@ -1,4 +1,3 @@
-// CounterOfferModal.jsx
 import { useState } from 'react'
 
 const CounterOfferModal = ({
@@ -8,17 +7,22 @@ const CounterOfferModal = ({
   currentAmount,
   currentMessage,
   loading = false,
+  error = null, // NEW: error message to display
 }) => {
   const [amount, setAmount] = useState(currentAmount || '')
   const [message, setMessage] = useState(currentMessage || '')
+  const [validationError, setValidationError] = useState(null)
 
   if (!isOpen) return null
 
   const handleSubmit = () => {
+    setValidationError(null)
+
     if (!amount || amount <= 0) {
-      alert('Please enter a valid amount')
+      setValidationError('Please enter a valid amount')
       return
     }
+
     onConfirm(Number(amount), message)
   }
 
@@ -56,6 +60,13 @@ const CounterOfferModal = ({
             className="w-full resize-none rounded-xl bg-[#2a2a2d] px-4 py-3 text-white placeholder-gray-500 outline-none focus:ring-2 focus:ring-yellow-500"
           />
         </div>
+
+        {/* Error Messages */}
+        {(validationError || error) && (
+          <div className="mb-4 rounded-xl border border-red-500/20 bg-red-500/10 p-3">
+            <p className="text-sm text-red-400">{validationError || error}</p>
+          </div>
+        )}
 
         {/* Buttons */}
         <div className="flex justify-end gap-3">

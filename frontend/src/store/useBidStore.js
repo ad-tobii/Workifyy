@@ -6,12 +6,21 @@ import useUserStore from './useUserStore'
 // Bid store handles all bid-related state and actions
 const useBidStore = create((set, get) => ({
   // ===== STATE =====
-  bids: [], // all bids belonging to the current user (professional)
-  clientBids: [], // all pending bids on the client's jobs
+  bids: [], // all bids belonging to the current user
   loading: false, // global loading flag for any bid action
   error: null, // last error message from any bid action
   hasFetched: false, // prevents refetching bids multiple times unnecessarily
-  hasFetchedClientBids: false, // prevents refetching client bids unnecessarily
+
+  // ===== HELPER: Sort bids (pending at bottom) =====
+  sortBids: bids => {
+    return [...bids].sort((a, b) => {
+      // Pending bids go to bottom
+      if (a.status === 'pending' && b.status !== 'pending') return 1
+      if (a.status !== 'pending' && b.status === 'pending') return -1
+      // Keep original order for same status
+      return 0
+    })
+  },
 
   // ===== ACTIONS =====
 
@@ -43,10 +52,10 @@ const useBidStore = create((set, get) => ({
 
   // Fetch all pending bids on the logged-in client's jobs
   getClientBids: async () => {
-    const { hasFetchedClientBids, loading } = get()
+    const { hasFetched, loading } = get()
 
     // Prevent duplicate requests if already fetched or currently loading
-    if (hasFetchedClientBids || loading) return
+    if (hasFetched || loading) return
 
     set({ loading: true, error: null })
     try {
@@ -57,7 +66,7 @@ const useBidStore = create((set, get) => ({
         return
       }
 
-      set({ clientBids: res.data.data, hasFetchedClientBids: true })
+      set({ bids: res.data.data, hasFetched: true })
       return res.data
     } catch (error) {
       set({ error: error.response?.data?.message || 'Server error' })
@@ -95,7 +104,6 @@ const useBidStore = create((set, get) => ({
     }
   },
 
-  // Accept a bid (usually done by the client)
   acceptBid: async bidId => {
     set({ loading: true, error: null })
     try {
@@ -106,12 +114,11 @@ const useBidStore = create((set, get) => ({
         return res.data
       }
 
-      const role = useUserStore.getState().user.role
-      const listKey = role === 'professional' ? 'bids' : 'clientBids'
-
-      set(state => ({
-        [listKey]: state[listKey].filter(b => b._id !== bidId),
-      }))
+      // Remove accepted bid from list and sort remaining
+      set(state => {
+        const updatedBids = state.bids.filter(b => b._id !== bidId)
+        return { bids: state.sortBids(updatedBids) }
+      })
 
       return res.data
     } catch (error) {
@@ -123,31 +130,27 @@ const useBidStore = create((set, get) => ({
   },
 
   // Reject or withdraw a bid
-  rejectBid: async bidId => {
+  rejectBid: async (bidId, reason) => {
     set({ loading: true, error: null })
     try {
-      const res = await api.patch('/bid/reject', { bidId })
+      const role = useUserStore.getState().user.role
+      let res
+      if (role === 'professional') {
+        res = await api.patch('/bid/reject', { bidId })
+      } else if (role === 'client') {
+        res = await api.patch('/bid/reject', { bidId, reason })
+      }
 
       if (!res.data.success) {
         set({ error: res.data.message })
         return res.data
       }
 
-      const role = useUserStore.getState().user.role
-
-      if (role === 'professional') {
-        // Professional withdrawing their own bid
-        set(state => ({
-          bids: state.bids.filter(b => b._id !== bidId),
-        }))
-      } else {
-        // Client rejecting — mark as rejected in clientBids
-        set(state => ({
-          clientBids: state.clientBids.map(b =>
-            b._id === bidId ? { ...b, status: 'rejected' } : b
-          ),
-        }))
-      }
+      // Remove rejected bid from list and sort remaining
+      set(state => {
+        const updatedBids = state.bids.filter(b => b._id !== bidId)
+        return { bids: state.sortBids(updatedBids) }
+      })
 
       return res.data
     } catch (error) {
@@ -169,22 +172,21 @@ const useBidStore = create((set, get) => ({
         return res.data
       }
 
-      const role = useUserStore.getState().user.role
-      const listKey = role === 'professional' ? 'bids' : 'clientBids'
-
-      set(state => ({
-        [listKey]: state[listKey].map(b =>
-          b._id === bidId
+      // Update bid with new values and sort (countered bids stay pending, but turn changes)
+      set(state => {
+        const updatedBids = state.bids.map(bid =>
+          bid._id === bidId
             ? {
-                ...b,
+                ...bid,
                 currentAmount: offer,
-                message: message || b.message,
+                message: message || bid.message,
                 awaitingResponseFrom:
-                  b.awaitingResponseFrom === 'professional' ? 'client' : 'professional',
+                  bid.awaitingResponseFrom === 'professional' ? 'client' : 'professional',
               }
-            : b
-        ),
-      }))
+            : bid
+        )
+        return { bids: state.sortBids(updatedBids) }
+      })
 
       return res.data
     } catch (error) {

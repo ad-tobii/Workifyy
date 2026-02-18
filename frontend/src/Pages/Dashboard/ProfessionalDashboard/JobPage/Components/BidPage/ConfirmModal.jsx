@@ -1,4 +1,3 @@
-// ConfirmModal.jsx
 const ConfirmModal = ({
   isOpen,
   onClose,
@@ -10,6 +9,7 @@ const ConfirmModal = ({
   confirmVariant = 'success', // 'success' or 'danger'
   showCancel = true,
   loading = false,
+  error = null, // NEW: error message to display
 }) => {
   if (!isOpen) return null
 
@@ -26,6 +26,13 @@ const ConfirmModal = ({
 
         {/* Message */}
         <p className="mb-6 text-sm text-gray-300">{message}</p>
+
+        {/* Error Message */}
+        {error && (
+          <div className="mb-4 rounded-xl border border-red-500/20 bg-red-500/10 p-3">
+            <p className="text-sm text-red-400">{error}</p>
+          </div>
+        )}
 
         {/* Buttons */}
         <div className="flex justify-end gap-3">
