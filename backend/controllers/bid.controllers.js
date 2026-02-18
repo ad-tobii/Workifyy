@@ -294,6 +294,7 @@ export const rejectBid = async (req, res) => {
       // Notify Professional
       io.to(`professional:${bid.professional}`).emit('bidRejected', {
         jobId: bid.job._id,
+        bidId: bid._id,
         reason:
           reason === 'fit' ? 'Not a match for this project' : 'Price mismatch',
       });
@@ -307,6 +308,7 @@ export const rejectBid = async (req, res) => {
       // Notify Client
       io.to(`client:${bid.job.client}`).emit('bidWithdrawn', {
         jobId: bid.job._id,
+        bidId: bid._id,
         message: 'The professional has withdrawn their bid.',
       });
     } else {
@@ -405,7 +407,9 @@ export const getClientBids = async (req, res) => {
         path: 'professionalProfile',
         select: 'tagline photo experience expertise languages bio',
       })
-      .select('job professional status awaitingResponseFrom currentAmount negotiationHistory')
+      .select(
+        'job professional status awaitingResponseFrom currentAmount negotiationHistory'
+      )
       .sort({ updatedAt: -1 });
 
     return res.status(200).json({
