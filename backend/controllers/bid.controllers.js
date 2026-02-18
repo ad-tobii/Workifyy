@@ -405,7 +405,7 @@ export const getClientBids = async (req, res) => {
         path: 'professionalProfile',
         select: 'tagline photo experience expertise languages bio',
       })
-      .select('job professional status currentAmount negotiationHistory')
+      .select('job professional status awaitingResponseFrom currentAmount negotiationHistory')
       .sort({ updatedAt: -1 });
 
     return res.status(200).json({
