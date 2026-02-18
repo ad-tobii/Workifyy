@@ -40,7 +40,9 @@ const BidCard = ({ bid }) => {
 
   const latestMessage = negotiationHistory?.at(-1)?.message || ''
 
-  const budgetDiff = currentAmount - job.budget
+  const previousAmount =
+    bid.negotiationHistory.length > 1 ? bid.negotiationHistory.at(-2).amount : job.budget
+  const budgetDiff = currentAmount - previousAmount
   const budgetText =
     budgetDiff === 0
       ? 'Matches your budget'
@@ -107,6 +109,7 @@ const BidCard = ({ bid }) => {
     setCounterError(null)
     setShowCounterModal(false)
   }
+  console.log('this is profile', professionalProfile)
 
   return (
     <>

@@ -13,7 +13,7 @@ const JobCard = ({ job, index }) => {
       <div className="mb-4 flex items-center gap-2 text-sm text-[#bebec6]">
         {/* Job Price */}
         <span className="text-lg font-bold text-white">
-          ₦{job.amount?.toLocaleString() || '50,000'}
+          ₦ {job.budget?.toLocaleString() || '50,000'}
         </span>
 
         <span>•</span>

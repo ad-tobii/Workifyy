@@ -43,17 +43,13 @@ const useSocketStore = create((set, get) => ({
     socket.on('bidRejected', data => {
       console.log('✗ Bid rejected:', data.reason)
       // Remove bid from list (rejected by client)
-      useBidStore.getState().removeBid(data.jobId)
+      useBidStore.getState().removeBid(data.bidId)
     })
 
     socket.on('counterOffer', bid => {
       console.log('💬 Counter offer received')
-      // Update bid with new amount and turn
-      useBidStore.getState().updateBid(bid._id, {
-        currentAmount: bid.currentAmount,
-        awaitingResponseFrom: bid.awaitingResponseFrom,
-        negotiationHistory: bid.negotiationHistory,
-      })
+      // Update entire bid with populated data from backend
+      useBidStore.getState().updateBid(bid._id, bid)
     })
 
     set({ hasInitialized: true })
@@ -79,7 +75,7 @@ const useSocketStore = create((set, get) => ({
     // Bid events for clients
     socket.on('newBid', newBid => {
       console.log('📬 New bid received')
-      // Add new bid to client's list
+      // Add fully populated bid to client's list
       useBidStore.getState().addBid(newBid)
     })
 
@@ -89,27 +85,16 @@ const useSocketStore = create((set, get) => ({
       useBidStore.getState().removeBid(bid._id)
     })
 
-    socket.on('bidRejected', data => {
-      console.log('✗ Bid rejected')
-      // This shouldn't happen on client side (they're the ones rejecting)
-      // But if it does, remove the bid
-      useBidStore.getState().removeBid(data.jobId)
-    })
-
     socket.on('bidWithdrawn', data => {
       console.log('↩ Bid withdrawn by professional')
       // Remove bid from list (professional withdrew)
-      useBidStore.getState().removeBid(data.jobId)
+      useBidStore.getState().removeBid(data.bidId)
     })
 
     socket.on('counterOffer', bid => {
       console.log('💬 Counter offer received')
-      // Update bid with new amount and turn
-      useBidStore.getState().updateBid(bid._id, {
-        currentAmount: bid.currentAmount,
-        awaitingResponseFrom: bid.awaitingResponseFrom,
-        negotiationHistory: bid.negotiationHistory,
-      })
+      // Update entire bid with populated data from backend
+      useBidStore.getState().updateBid(bid._id, bid)
     })
 
     set({ hasInitialized: true })
