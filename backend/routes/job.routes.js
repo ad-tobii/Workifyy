@@ -10,7 +10,8 @@ router.post('/post-job', protectRoutes, parser.array('images', 5), createJob);
 
 // Get all open jobs
 router.get('/get-jobs', protectRoutes, listJobs);
-router.get('/:jobId', protectRoutes, getJob);
 router.get('/ongoing', protectRoutes, getOngoingJobs);
+router.get('/:jobId', protectRoutes, getJob);
+
 
 export default router;
