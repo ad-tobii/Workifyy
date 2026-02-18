@@ -22,7 +22,9 @@ const JobPage = () => {
       <JobTabs />
 
       {jobTab === 'Find Jobs' &&
-        jobs.map((job, index) => <JobCard key={job._id} job={job} index={index} />)}
+        jobs
+          .filter(job => job.status !== 'ongoing')
+          .map((job, index) => <JobCard key={job._id} job={job} index={index} />)}
 
       {jobTab === 'Bids' && <BidPage />}
       {jobTab === 'Ongoing Jobs' && <OngoingJobsPage />}

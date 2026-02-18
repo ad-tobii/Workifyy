@@ -112,8 +112,6 @@ const useBidStore = create((set, get) => ({
     try {
       const res = await api.post('/bid/place', { jobId, amount, message })
 
-      console.log(res.data)
-
       if (!res.data.success) {
         set({ error: res.data.message })
       } else {
@@ -149,6 +147,13 @@ const useBidStore = create((set, get) => ({
         const updatedBids = state.bids.filter(b => b._id !== bidId)
         return { bids: state.sortBids(updatedBids) }
       })
+
+      // Update job status to ongoing in jobs store
+      const acceptedBid = get().bids.find(b => b._id === bidId)
+      if (acceptedBid?.job) {
+        const jobId = typeof acceptedBid.job === 'object' ? acceptedBid.job._id : acceptedBid.job
+        useJobStore.getState().updateJobStatus(jobId, 'ongoing')
+      }
 
       return res.data
     } catch (error) {

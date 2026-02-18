@@ -9,16 +9,44 @@ const useJobStore = create((set, get) => ({
   loading: false,
   error: null,
 
+  // --- HELPERS ---
+
+  // Upsert job: if exists, update it; if not, add it
+  upsertJob: job => {
+    set(state => {
+      const existingIndex = state.jobs.findIndex(j => j._id === job._id)
+
+      if (existingIndex !== -1) {
+        // Job exists, update it
+        const updatedJobs = [...state.jobs]
+        updatedJobs[existingIndex] = { ...updatedJobs[existingIndex], ...job }
+        return { jobs: updatedJobs }
+      } else {
+        // Job doesn't exist, add it
+        return { jobs: [job, ...state.jobs] }
+      }
+    })
+  },
+
   // --- ACTIONS ---
   setJobs: jobs => set({ jobs }),
+
   addJob: job =>
     set(state => ({
       jobs: [job, ...state.jobs],
     })),
+
   removeJob: jobId =>
     set(state => ({
       jobs: state.jobs.filter(job => job._id !== jobId),
     })),
+
+  updateJobStatus: (jobId, status) => {
+    set(state => ({
+      jobs: state.jobs.map(job => (job._id === jobId ? { ...job, status } : job)),
+    }))
+  },
+
   postJob: async data => {
     set({ loading: true, error: null })
 
@@ -40,20 +68,19 @@ const useJobStore = create((set, get) => ({
       })
       const res = await api.post('/job/post-job', formData)
 
-      // 2. Update the local jobs list with the new job from server
+      // Update the local jobs list with the new job from server
       if (res.data?.data) {
         get().addJob(res.data.data)
       }
       set({ loading: false })
 
-      return res.data // Return to the component for success handling (e.g., redirect)
+      return res.data // Return to the component for success handling
     } catch (error) {
-      // 3. Always reset loading on error and save the error message
       const errorMsg = error.response?.data?.message || 'Failed to post job'
       set({ error: errorMsg, loading: false })
 
       console.error('Store Error:', errorMsg)
-      throw error // Throw so the component's catch block also runs
+      throw error
     }
   },
 
@@ -82,7 +109,35 @@ const useJobStore = create((set, get) => ({
     }
   },
 
-  // Optional: clear selected job
+  // Fetch ongoing jobs and merge into main jobs array
+  fetchOngoingJobs: async () => {
+    set({ loading: true, error: null })
+
+    try {
+      const res = await api.get('/job/ongoing')
+
+      if (!res.data?.success) {
+        throw new Error(res.data?.message || 'Failed to fetch ongoing jobs')
+      }
+
+      // Upsert each ongoing job into the main jobs array
+      const ongoingJobs = res.data.data || []
+      ongoingJobs.forEach(job => {
+        get().upsertJob(job)
+      })
+
+      set({ loading: false })
+      return res.data.data
+    } catch (error) {
+      const errorMsg =
+        error.response?.data?.message || error.message || 'Failed to fetch ongoing jobs'
+      set({ error: errorMsg, loading: false })
+      console.error('Store Error:', errorMsg)
+      throw error
+    }
+  },
+
+  // Clear selected job
   clearJob: () => set({ job: null, error: null }),
 }))
 

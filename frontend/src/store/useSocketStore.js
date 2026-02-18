@@ -38,6 +38,11 @@ const useSocketStore = create((set, get) => ({
       console.log('✓ Bid accepted')
       // Remove bid from list (no longer pending)
       useBidStore.getState().removeBid(bid._id)
+      // Update job status to ongoing
+      if (bid.job) {
+        const jobId = typeof bid.job === 'object' ? bid.job._id : bid.job
+        useJobStore.getState().updateJobStatus(jobId, 'ongoing')
+      }
     })
 
     socket.on('bidRejected', data => {
@@ -83,6 +88,11 @@ const useSocketStore = create((set, get) => ({
       console.log('✓ Bid accepted')
       // Remove bid from list (no longer pending)
       useBidStore.getState().removeBid(bid._id)
+      // Update job status to ongoing
+      if (bid.job) {
+        const jobId = typeof bid.job === 'object' ? bid.job._id : bid.job
+        useJobStore.getState().updateJobStatus(jobId, 'ongoing')
+      }
     })
 
     socket.on('bidWithdrawn', data => {
