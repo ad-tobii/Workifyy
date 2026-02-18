@@ -17,6 +17,7 @@ import ProfessionalDasboardWrapper from './Pages/Dashboard/ProfessionalDashboard
 import Onboarding from './Pages/Authentication/Onboarding/Onboarding'
 import ClientOnboarding from './Pages/Authentication/ClientOnboarding/ClientOnboarding'
 import ClientDashboard from './Pages/Dashboard/ClientDashoard/ClientDashboard'
+import ClientDashboardWrapper from './Pages/Dashboard/ClientDashoard/ClientDashboardWrapper'
 import ProfessionalOfferPage from './Pages/Dashboard/ClientDashoard/JobPage/BidPage/ProfessionalOfferPage'
 import JobDetailsPage from './Pages/Dashboard/ProfessionalDashboard/JobDetailsPage/JobDetailsPage'
 
@@ -129,7 +130,7 @@ const App = () => {
               </Route>
             </Route>
             <Route path="/Dashboard">
-              <Route path="clientdashboard">
+              <Route path="clientdashboard" element={<ClientDashboardWrapper />}>
                 <Route
                   path=""
                   element={

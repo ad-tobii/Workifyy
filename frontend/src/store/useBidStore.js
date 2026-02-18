@@ -22,6 +22,36 @@ const useBidStore = create((set, get) => ({
     })
   },
 
+  // ===== SOCKET HELPERS (exposed for socket store) =====
+
+  // Add new bid to list (used when client receives a new bid from professional)
+  addBid: newBid => {
+    set(state => {
+      const exists = state.bids.some(b => b._id === newBid._id)
+      if (exists) return state // Prevent duplicates
+
+      const updatedBids = [newBid, ...state.bids]
+      return { bids: state.sortBids(updatedBids) }
+    })
+  },
+
+  // Update existing bid (used for counteroffers)
+  updateBid: (bidId, updatedData) => {
+    set(state => {
+      const updatedBids = state.bids.map(bid =>
+        bid._id === bidId ? { ...bid, ...updatedData } : bid
+      )
+      return { bids: state.sortBids(updatedBids) }
+    })
+  },
+
+  // Remove bid from list (used when accepted/rejected/withdrawn)
+  removeBid: bidId => {
+    set(state => ({
+      bids: state.bids.filter(b => b._id !== bidId),
+    }))
+  },
+
   // ===== ACTIONS =====
 
   // Fetch all bids for the logged-in professional
