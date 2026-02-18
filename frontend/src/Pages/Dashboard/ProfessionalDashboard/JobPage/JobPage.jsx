@@ -3,6 +3,7 @@ import useProStore from '../../../../store/useProStore'
 import useJobStore from '../../../../store/useJobStore'
 import useBidStore from '../../../../store/useBidStore'
 import BidPage from './Components/BidPage/BidPage'
+import OngoingJobsPage from './Components/OngoingPage/OngoingJobsPage'
 import { useEffect } from 'react'
 
 import JobCard from '../JobCard'
@@ -24,6 +25,8 @@ const JobPage = () => {
         jobs.map((job, index) => <JobCard key={job._id} job={job} index={index} />)}
 
       {jobTab === 'Bids' && <BidPage />}
+      {jobTab === 'Ongoing Jobs' && <OngoingJobsPage />}
+      {/* {jobTab === 'Saved Jobs' && <SavedJobs />} */}
     </div>
   )
 }

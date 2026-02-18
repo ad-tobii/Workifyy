@@ -7,5 +7,6 @@ const useProStore = create((set, get) => ({
 
   setMainTab: tab => set({ mainTab: tab, jobTab: 'Find Jobs' }),
   setJobTab: tab => set({ jobTab: tab }),
+  
 }))
 export default useProStore

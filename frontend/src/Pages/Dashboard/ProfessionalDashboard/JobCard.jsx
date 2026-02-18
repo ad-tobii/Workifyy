@@ -3,11 +3,18 @@ import { useNavigate } from 'react-router-dom'
 
 const JobCard = ({ job, index }) => {
   const navigate = useNavigate()
-
+  console.log('this is job', job)
   return (
     <div className="mt-6 w-[90%] rounded-2xl bg-[#151518] p-5">
       {/* Job Title Section */}
-      <h3 className="mb-3 text-2xl font-semibold leading-tight text-white">{job.title}</h3>
+      {job && job.status === 'ongoing' ? (
+        <div className="flex justify-between">
+          <h3 className="mb-3 text-2xl font-semibold leading-tight text-white">{job.title}</h3>
+          <spam className="border-[#32cd32] bg-[#32cd32]/50 text-[#32cd32]">Ongoing</spam>
+        </div>
+      ) : (
+        <h3 className="mb-3 text-2xl font-semibold leading-tight text-white">{job.title}</h3>
+      )}
 
       {/* Job Meta Information: Price, Posted Date, and Client Rating */}
       <div className="mb-4 flex items-center gap-2 text-sm text-[#bebec6]">
