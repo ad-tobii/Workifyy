@@ -236,6 +236,7 @@ export const getOngoingJobs = async (req, res) => {
       data: ongoingJobs,
     });
   } catch (error) {
+    console.log('This is the error ⚠️ : ', error.message);
     console.error('Get ongoing jobs error:', error.message);
     return res.status(500).json({
       message: 'Server error',
