@@ -164,7 +164,7 @@ export const acceptBid = async (req, res) => {
 
     // update job status
     await Job.findByIdAndUpdate(bid.job._id, {
-      status: 'awarded',
+      status: 'ongoing',
       chosenProfessional: bid.professional,
     });
 

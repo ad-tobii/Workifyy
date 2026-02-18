@@ -117,9 +117,9 @@ export const listJobs = async (req, res) => {
     // retrieve matching jobs from db
     const jobs = await Job.find(filter)
       .select(
-        'title _id budget category hexId status description createdAt scheduledAt address'
+        'title _id budget category hexId status description createdAt scheduledAt address images'
       )
-      .populate('client', 'firstname lastname -_id')
+      .populate('client', 'firstname lastname')
       .sort({ createdAt: -1 });
 
     // send response
@@ -164,9 +164,9 @@ export const getJob = async (req, res) => {
     // Find job and select fields
     const job = await Job.findById(jobId)
       .select(
-        'title images client description budget status createdAt updatedAt scheduledAt'
+        'title images client description budget status createdAt updatedAt scheduledAt address'
       )
-      .populate('client', 'firstname lastname -_id');
+      .populate('client', 'firstname lastname');
 
     if (!job) {
       return res.status(404).json({
@@ -219,12 +219,17 @@ export const getOngoingJobs = async (req, res) => {
         data: null,
       });
     }
+
     const ongoingJobs = await Job.find({
       chosenProfessional: professional._id,
       status: 'ongoing',
     })
-      .populate('client', 'firstname lastname -_id')
+      .select(
+        'title description budget category hexId status createdAt scheduledAt address images'
+      )
+      .populate('client', 'firstname lastname')
       .sort({ createdAt: -1 });
+
     return res.status(200).json({
       message: 'Ongoing jobs fetched successfully',
       success: true,
