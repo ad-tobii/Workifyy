@@ -580,7 +580,15 @@ export const cancelJob = async (req, res) => {
       });
     }
 
-    job.status = 'cancelled';
+    job.status = 'open';
+    job.chosenProfessional = undefined;
+    job.submission = undefined;
+    job.redoRequest = undefined;
+    job.blockedProfessionals = [
+      ...(job.blockedProfessionals || []),
+      professional._id,
+    ];
+
     await job.save();
 
     io.to(`client:${job.client}`).emit('jobCancelled', {

@@ -1,19 +1,19 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
-import useJobStore from '../../../../store/useJobStore'
 
-const JobImages = () => {
-  const job = useJobStore(state => state.job)
-  console.log('this is ', job.images)
+const JobImages = ({ images }) => {
+  // Handle both array and object with images property
+  const imageArray = Array.isArray(images) ? images : images?.images || []
+
+  if (!imageArray || imageArray.length === 0) return null
 
   return (
     <div>
-      {' '}
       <div className="hidden sm:block">
-        <JobImagesLarge images={job.images} />
+        <JobImagesLarge images={imageArray} />
       </div>
       <div className="sm:hidden">
-        <JobImagesSmall images={job.images} />
+        <JobImagesSmall images={imageArray} />
       </div>
     </div>
   )
@@ -34,9 +34,10 @@ const JobImagesSmall = ({ images = [] }) => {
     emblaApi.on('select', onSelect)
   }, [emblaApi, onSelect])
 
+  if (images.length === 0) return null
+
   return (
-    <div className="relative w-full overflow-hidden lg:hidden ">
-      {/* 1. Viewport with rounded corners and a subtle inner shadow */}
+    <div className="relative w-full overflow-hidden lg:hidden">
       <div className="overflow-hidden shadow-inner" ref={emblaRef}>
         <div className="-ml-4 flex">
           {images.map((src, index) => (
@@ -44,7 +45,7 @@ const JobImagesSmall = ({ images = [] }) => {
               <img
                 src={src}
                 className="h-full w-full rounded-2xl object-cover"
-                alt={`Job view ${index + 1}`}
+                alt={`View ${index + 1}`}
               />
               <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/60 to-transparent" />
             </div>
@@ -52,12 +53,12 @@ const JobImagesSmall = ({ images = [] }) => {
         </div>
       </div>
 
-      {/* 3. Floating Page Counter (Glassmorphism look) */}
-      <div className="absolute bottom-4 right-4 rounded-2xl bg-black/40  px-2.5 py-1 text-[10px] font-medium uppercase tracking-widest text-white backdrop-blur-md">
+      {/* Page Counter */}
+      <div className="absolute bottom-4 right-4 rounded-2xl bg-black/40 px-2.5 py-1 text-[10px] font-medium uppercase tracking-widest text-white backdrop-blur-md">
         {selectedIndex + 1} / {images.length}
       </div>
 
-      {/* 4. Animated Dot Indicators (The Airbnb Look) */}
+      {/* Dot Indicators */}
       <div className="absolute bottom-5 left-1/2 flex -translate-x-1/2 items-center gap-1.5">
         {images.map((_, index) => (
           <button
@@ -83,7 +84,7 @@ const JobImagesLarge = ({ images = [] }) => {
   if (count === 1) {
     return (
       <div className="h-[300px]">
-        <img src={images[0]} className="h-full w-full rounded-2xl object-cover" />
+        <img src={images[0]} className="h-full w-full rounded-2xl object-cover" alt="Job" />
       </div>
     )
   }
@@ -99,6 +100,7 @@ const JobImagesLarge = ({ images = [] }) => {
             className={`h-full min-h-0 w-full object-cover ${
               i === 0 ? 'rounded-l-2xl' : 'rounded-r-2xl'
             }`}
+            alt={`View ${i + 1}`}
           />
         ))}
       </div>
@@ -111,7 +113,11 @@ const JobImagesLarge = ({ images = [] }) => {
   return (
     <div className="grid h-[300px] min-h-0 grid-cols-2 gap-2">
       {/* LEFT */}
-      <img src={main} className="h-full min-h-0 w-full rounded-l-2xl object-cover" />
+      <img
+        src={main}
+        className="h-full min-h-0 w-full rounded-l-2xl object-cover"
+        alt="Main view"
+      />
 
       {/* RIGHT */}
       <div className="grid h-full min-h-0 grid-cols-2 grid-rows-2 gap-2">
@@ -126,6 +132,7 @@ const JobImagesLarge = ({ images = [] }) => {
               className={`h-full min-h-0 w-full object-cover ${
                 isTopRight ? 'rounded-tr-2xl' : ''
               } ${isBottomRight ? 'rounded-br-2xl' : ''}`}
+              alt={`View ${i + 2}`}
             />
           )
         })}

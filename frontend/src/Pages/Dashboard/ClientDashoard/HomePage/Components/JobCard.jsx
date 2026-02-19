@@ -5,6 +5,7 @@ import {
   CurrencyDollarIcon,
 } from '@heroicons/react/24/outline'
 import { format } from 'date-fns'
+import { useNavigate } from 'react-router-dom'
 
 const STATUS = {
   ongoing: { color: '#22c55e', label: 'Ongoing' },
@@ -15,7 +16,7 @@ const STATUS = {
 
 const JobCard = ({ job }) => {
   const { color, label } = STATUS[job.status] || STATUS.pending
-
+  const navigate = useNavigate()
   return (
     <div className="group relative flex cursor-pointer flex-col gap-5 overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[#1a1a1d] to-[#0f0f12] p-6 shadow-lg transition-all duration-300 hover:scale-[1.015] hover:border-white/20 hover:shadow-xl">
       {/* Straight left accent bar — overflow-hidden on parent clips it flush */}
@@ -80,7 +81,12 @@ const JobCard = ({ job }) => {
 
         {/* CTA */}
         <div className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3 transition-all duration-200 group-hover:border-white/20 group-hover:bg-white/[0.07]">
-          <span className="text-sm font-semibold text-white">View Job</span>
+          <span
+            onClick={() => navigate(`jobs/${job._id}`)}
+            className="text-sm font-semibold text-white"
+          >
+            View Job
+          </span>
           <ChevronRightIcon className="h-4 w-4 text-white/50 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-white" />
         </div>
       </div>

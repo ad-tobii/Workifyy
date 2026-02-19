@@ -48,7 +48,7 @@ const OngoingPage = () => {
   // Empty state
   if (ongoingJobs.length === 0) {
     return (
-      <div className="flex h-[60vh] items-center justify-center">
+      <div className="flex  h-[60vh] items-center justify-center">
         <div className="text-center">
           <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-zinc-800">
             <svg

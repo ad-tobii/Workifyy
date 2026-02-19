@@ -18,6 +18,7 @@ import Onboarding from './Pages/Authentication/Onboarding/Onboarding'
 import ClientOnboarding from './Pages/Authentication/ClientOnboarding/ClientOnboarding'
 import ClientDashboard from './Pages/Dashboard/ClientDashoard/ClientDashboard'
 import ClientDashboardWrapper from './Pages/Dashboard/ClientDashoard/ClientDashboardWrapper'
+import ClientJobPage from './Pages/Dashboard/ClientDashoard/JobPage/ClientJobPage'
 import ProfessionalOfferPage from './Pages/Dashboard/ClientDashoard/JobPage/BidPage/ProfessionalOfferPage'
 import JobDetailsPage from './Pages/Dashboard/ProfessionalDashboard/JobDetailsPage/JobDetailsPage'
 
@@ -136,6 +137,14 @@ const App = () => {
                   element={
                     <ProtectRoute role="client" checkOnboarded={true}>
                       <ClientDashboard />
+                    </ProtectRoute>
+                  }
+                />
+                <Route
+                  path="jobs/:jobId"
+                  element={
+                    <ProtectRoute role="client" checkOnboarded={true}>
+                      <ClientJobPage />
                     </ProtectRoute>
                   }
                 />

@@ -17,12 +17,10 @@ const useJobStore = create((set, get) => ({
       const existingIndex = state.jobs.findIndex(j => j._id === job._id)
 
       if (existingIndex !== -1) {
-        // Job exists, update it
         const updatedJobs = [...state.jobs]
         updatedJobs[existingIndex] = { ...updatedJobs[existingIndex], ...job }
         return { jobs: updatedJobs }
       } else {
-        // Job doesn't exist, add it
         return { jobs: [job, ...state.jobs] }
       }
     })
@@ -47,6 +45,16 @@ const useJobStore = create((set, get) => ({
     }))
   },
 
+  updateJob: (jobId, updates) => {
+    set(state => ({
+      jobs: state.jobs.map(job => (job._id === jobId ? { ...job, ...updates } : job)),
+    }))
+    const currentJob = get().job
+    if (currentJob && currentJob._id === jobId) {
+      set({ job: { ...currentJob, ...updates } })
+    }
+  },
+
   postJob: async data => {
     set({ loading: true, error: null })
 
@@ -58,7 +66,6 @@ const useJobStore = create((set, get) => ({
 
       Object.keys(data).forEach(key => {
         if (key === 'images' && Array.isArray(data[key])) {
-          // Loop and append each file individually
           data[key].forEach(file => {
             formData.append('images', file)
           })
@@ -68,13 +75,12 @@ const useJobStore = create((set, get) => ({
       })
       const res = await api.post('/job/post-job', formData)
 
-      // Update the local jobs list with the new job from server
       if (res.data?.data) {
         get().addJob(res.data.data)
       }
       set({ loading: false })
 
-      return res.data // Return to the component for success handling
+      return res.data
     } catch (error) {
       const errorMsg = error.response?.data?.message || 'Failed to post job'
       set({ error: errorMsg, loading: false })
@@ -84,7 +90,6 @@ const useJobStore = create((set, get) => ({
     }
   },
 
-  // Fetch a single job by ID
   fetchJob: async jobId => {
     set({ loading: true, error: null })
 
@@ -97,7 +102,6 @@ const useJobStore = create((set, get) => ({
         throw new Error(res.data?.message || 'Failed to fetch job')
       }
 
-      // Update the store with the fetched job
       set({ job: res.data.data, loading: false })
 
       return res.data.data
@@ -109,7 +113,6 @@ const useJobStore = create((set, get) => ({
     }
   },
 
-  // Fetch ongoing jobs and merge into main jobs array
   fetchOngoingJobs: async () => {
     set({ loading: true, error: null })
 
@@ -120,7 +123,6 @@ const useJobStore = create((set, get) => ({
         throw new Error(res.data?.message || 'Failed to fetch ongoing jobs')
       }
 
-      // Upsert each ongoing job into the main jobs array
       const ongoingJobs = res.data.data || []
       ongoingJobs.forEach(job => {
         get().upsertJob(job)
@@ -137,7 +139,109 @@ const useJobStore = create((set, get) => ({
     }
   },
 
-  // Clear selected job
+  submitWork: async (jobId, images, message) => {
+    set({ loading: true, error: null })
+
+    try {
+      const formData = new FormData()
+      formData.append('jobId', jobId)
+      formData.append('message', message || '')
+
+      images.forEach(file => {
+        formData.append('images', file)
+      })
+
+      const res = await api.post('/job/submit-work', formData)
+
+      if (!res.data?.success) {
+        throw new Error(res.data?.message || 'Failed to submit work')
+      }
+
+      get().updateJob(jobId, {
+        status: 'awaiting_review',
+        submission: res.data.data.submission,
+      })
+
+      set({ loading: false })
+      return res.data
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || error.message || 'Failed to submit work'
+      set({ error: errorMsg, loading: false })
+      console.error('Store Error:', errorMsg)
+      throw error
+    }
+  },
+
+  acceptWork: async (jobId, rating, review) => {
+    set({ loading: true, error: null })
+
+    try {
+      const res = await api.post('/job/accept-work', { jobId, rating, review })
+
+      if (!res.data?.success) {
+        throw new Error(res.data?.message || 'Failed to accept work')
+      }
+
+      get().updateJob(jobId, { status: 'completed' })
+
+      set({ loading: false })
+      return res.data
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || error.message || 'Failed to accept work'
+      set({ error: errorMsg, loading: false })
+      console.error('Store Error:', errorMsg)
+      throw error
+    }
+  },
+
+  requestRedo: async (jobId, message) => {
+    set({ loading: true, error: null })
+
+    try {
+      const res = await api.post('/job/request-redo', { jobId, message })
+
+      if (!res.data?.success) {
+        throw new Error(res.data?.message || 'Failed to request redo')
+      }
+
+      get().updateJob(jobId, {
+        status: 'ongoing',
+        submission: undefined,
+        redoRequest: res.data.data.redoRequest,
+      })
+
+      set({ loading: false })
+      return res.data
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || error.message || 'Failed to request redo'
+      set({ error: errorMsg, loading: false })
+      console.error('Store Error:', errorMsg)
+      throw error
+    }
+  },
+
+  cancelJob: async jobId => {
+    set({ loading: true, error: null })
+
+    try {
+      const res = await api.post('/job/cancel-job', { jobId })
+
+      if (!res.data?.success) {
+        throw new Error(res.data?.message || 'Failed to cancel job')
+      }
+
+      get().removeJob(jobId)
+
+      set({ loading: false })
+      return res.data
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || error.message || 'Failed to cancel job'
+      set({ error: errorMsg, loading: false })
+      console.error('Store Error:', errorMsg)
+      throw error
+    }
+  },
+
   clearJob: () => set({ job: null, error: null }),
 }))
 

@@ -36,9 +36,7 @@ const useSocketStore = create((set, get) => ({
     // Bid events for professionals
     socket.on('bidAccepted', bid => {
       console.log('✓ Bid accepted')
-      // Remove bid from list (no longer pending)
       useBidStore.getState().removeBid(bid._id)
-      // Update job status to ongoing
       if (bid.job) {
         const jobId = typeof bid.job === 'object' ? bid.job._id : bid.job
         useJobStore.getState().updateJobStatus(jobId, 'ongoing')
@@ -47,14 +45,30 @@ const useSocketStore = create((set, get) => ({
 
     socket.on('bidRejected', data => {
       console.log('✗ Bid rejected:', data.reason)
-      // Remove bid from list (rejected by client)
       useBidStore.getState().removeBid(data.bidId)
     })
 
     socket.on('counterOffer', bid => {
       console.log('💬 Counter offer received')
-      // Update entire bid with populated data from backend
       useBidStore.getState().updateBid(bid._id, bid)
+    })
+
+    // Job workflow events
+    socket.on('workAccepted', data => {
+      console.log('✓ Work accepted by client')
+      useJobStore.getState().updateJob(data.jobId, { status: 'completed' })
+    })
+
+    socket.on('redoRequested', data => {
+      console.log('↩ Redo requested by client')
+      useJobStore.getState().updateJob(data.jobId, {
+        status: 'ongoing',
+        submission: undefined,
+        redoRequest: {
+          message: data.message,
+          requestedAt: new Date(),
+        },
+      })
     })
 
     set({ hasInitialized: true })
@@ -80,15 +94,12 @@ const useSocketStore = create((set, get) => ({
     // Bid events for clients
     socket.on('newBid', newBid => {
       console.log('📬 New bid received')
-      // Add fully populated bid to client's list
       useBidStore.getState().addBid(newBid)
     })
 
     socket.on('bidAccepted', bid => {
       console.log('✓ Bid accepted')
-      // Remove bid from list (no longer pending)
       useBidStore.getState().removeBid(bid._id)
-      // Update job status to ongoing
       if (bid.job) {
         const jobId = typeof bid.job === 'object' ? bid.job._id : bid.job
         useJobStore.getState().updateJobStatus(jobId, 'ongoing')
@@ -97,14 +108,23 @@ const useSocketStore = create((set, get) => ({
 
     socket.on('bidWithdrawn', data => {
       console.log('↩ Bid withdrawn by professional')
-      // Remove bid from list (professional withdrew)
       useBidStore.getState().removeBid(data.bidId)
     })
 
     socket.on('counterOffer', bid => {
       console.log('💬 Counter offer received')
-      // Update entire bid with populated data from backend
       useBidStore.getState().updateBid(bid._id, bid)
+    })
+
+    // Job workflow events
+    socket.on('workSubmitted', data => {
+      console.log('📦 Work submitted by professional')
+      useJobStore.getState().updateJob(data.jobId, { status: 'awaiting_review' })
+    })
+
+    socket.on('jobCancelled', data => {
+      console.log('✗ Job cancelled by professional')
+      useJobStore.getState().removeJob(data.jobId)
     })
 
     set({ hasInitialized: true })
@@ -120,6 +140,10 @@ const useSocketStore = create((set, get) => ({
     socket.off('bidRejected')
     socket.off('bidWithdrawn')
     socket.off('counterOffer')
+    socket.off('workSubmitted')
+    socket.off('workAccepted')
+    socket.off('redoRequested')
+    socket.off('jobCancelled')
     socket.disconnect()
     set({ isConnected: false, hasInitialized: false })
   },
