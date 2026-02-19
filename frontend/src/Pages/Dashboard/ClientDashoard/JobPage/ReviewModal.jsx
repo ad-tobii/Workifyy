@@ -9,12 +9,14 @@ const ReviewModal = ({ isOpen, onClose, jobId, professionalName }) => {
   const [review, setReview] = useState('')
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState(null)
+  const [isRetrying, setIsRetrying] = useState(false)
 
   const acceptWork = useJobStore(state => state.acceptWork)
   const loading = useJobStore(state => state.loading)
 
   const handleSubmit = async () => {
     setError(null)
+    setIsRetrying(false)
 
     if (rating === 0) {
       setError('Please select a rating')
@@ -25,7 +27,8 @@ const ReviewModal = ({ isOpen, onClose, jobId, professionalName }) => {
       await acceptWork(jobId, rating, review)
       setSuccess(true)
     } catch (err) {
-      setError('Failed to submit review. Please try again.')
+      setError('We could not submit your review. Please try again.')
+      setIsRetrying(true)
     }
   }
 
@@ -146,9 +149,19 @@ const ReviewModal = ({ isOpen, onClose, jobId, professionalName }) => {
                 disabled={loading || rating === 0}
                 className="flex-1 rounded-2xl bg-[#32cd32] py-3 text-sm font-bold text-black transition-all hover:bg-[#2eb32e] active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {loading ? 'Submitting...' : 'Accept & Submit'}
+                {loading ? (isRetrying ? 'Retrying...' : 'Submitting...') : 'Accept & Submit'}
               </button>
             </div>
+
+            {error && (
+              <button
+                onClick={handleSubmit}
+                disabled={loading}
+                className="mt-3 w-full rounded-2xl border border-[#32cd32]/40 py-3 text-sm font-semibold text-[#32cd32] transition-colors hover:bg-[#32cd32]/10 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {loading ? 'Retrying...' : 'Retry'}
+              </button>
+            )}
           </>
         )}
       </div>

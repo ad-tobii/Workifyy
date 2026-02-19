@@ -484,3 +484,61 @@ export const getClientBids = async (req, res) => {
 // To do:
 // 1. make all other bids default to rejected once a bid is accepted on a job.
 // 2. create persistent Notifications for all bid events
+
+
+export const getBidDetails = async (req, res) => {
+  try {
+    const { bidId } = req.params;
+    const user = req.user;
+
+    const bid = await Bid.findById(bidId)
+      .populate({
+        path: 'professional',
+        select: 'firstname lastname email',
+      })
+      .populate({
+        path: 'job',
+        select:
+          'title description budget status category address scheduledAt submission completedAt createdAt',
+      })
+      .populate({
+        path: 'professionalProfile',
+        select: 'tagline photo experience expertise languages bio reviews portfolioPictures',
+      })
+      .select(
+        'job client professional professionalProfile status awaitingResponseFrom currentAmount negotiationHistory createdAt updatedAt'
+      );
+
+    if (!bid) {
+      return res.status(404).json({
+        success: false,
+        message: 'Bid not found',
+        data: null,
+      });
+    }
+
+    const isClient = bid.client.toString() === user._id.toString();
+    const isProfessional = bid.professional._id.toString() === user._id.toString();
+
+    if (!isClient && !isProfessional) {
+      return res.status(403).json({
+        success: false,
+        message: 'You are not authorized to view this bid',
+        data: null,
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Bid details fetched successfully',
+      data: bid,
+    });
+  } catch (error) {
+    console.log('Error fetching bid details ⚠️:', error.message);
+    return res.status(500).json({
+      success: false,
+      message: 'Server error',
+      data: null,
+    });
+  }
+};

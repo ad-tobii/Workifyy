@@ -4,7 +4,14 @@ export const getDashboardData = async (req, res) => {
   const user = req.user;
   try {
     if (user.role === 'client') {
-      const jobs = await Job.find({ client: user._id })
+      const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+      const jobs = await Job.find({
+        client: user._id,
+        $or: [
+          { status: { $ne: 'completed' } },
+          { status: 'completed', completedAt: { $gte: oneHourAgo } },
+        ],
+      })
         .populate('client', 'firstname lastname -_id')
         .sort({ createdAt: -1 });
 

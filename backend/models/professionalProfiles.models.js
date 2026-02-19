@@ -43,6 +43,10 @@ const professionalProfileSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    portfolioPictures: {
+      type: [String],
+      default: [],
+    },
     reviews: [
       {
         client: {

@@ -2,6 +2,27 @@ import { create } from 'zustand'
 import api from '../api/axios.api'
 import { getBrowserLocation } from '../utils/geoLocation.utils'
 
+const CLIENT_JOB_STATUS_ORDER = {
+  ongoing: 0,
+  open: 1,
+  completed: 2,
+}
+
+const sortClientJobsByStatus = jobs => {
+  if (!Array.isArray(jobs)) return []
+
+  return [...jobs].sort((a, b) => {
+    const aOrder = CLIENT_JOB_STATUS_ORDER[a?.status] ?? Number.MAX_SAFE_INTEGER
+    const bOrder = CLIENT_JOB_STATUS_ORDER[b?.status] ?? Number.MAX_SAFE_INTEGER
+
+    if (aOrder !== bOrder) {
+      return aOrder - bOrder
+    }
+
+    return new Date(b?.createdAt || 0) - new Date(a?.createdAt || 0)
+  })
+}
+
 const useJobStore = create((set, get) => ({
   // --- STATE ---
   jobs: [],
@@ -19,19 +40,19 @@ const useJobStore = create((set, get) => ({
       if (existingIndex !== -1) {
         const updatedJobs = [...state.jobs]
         updatedJobs[existingIndex] = { ...updatedJobs[existingIndex], ...job }
-        return { jobs: updatedJobs }
+        return { jobs: sortClientJobsByStatus(updatedJobs) }
       } else {
-        return { jobs: [job, ...state.jobs] }
+        return { jobs: sortClientJobsByStatus([job, ...state.jobs]) }
       }
     })
   },
 
   // --- ACTIONS ---
-  setJobs: jobs => set({ jobs }),
+  setJobs: jobs => set({ jobs: sortClientJobsByStatus(jobs) }),
 
   addJob: job =>
     set(state => ({
-      jobs: [job, ...state.jobs],
+      jobs: sortClientJobsByStatus([job, ...state.jobs]),
     })),
 
   removeJob: jobId =>
@@ -41,13 +62,15 @@ const useJobStore = create((set, get) => ({
 
   updateJobStatus: (jobId, status) => {
     set(state => ({
-      jobs: state.jobs.map(job => (job._id === jobId ? { ...job, status } : job)),
+      jobs: sortClientJobsByStatus(state.jobs.map(job => (job._id === jobId ? { ...job, status } : job))),
     }))
   },
 
   updateJob: (jobId, updates) => {
     set(state => ({
-      jobs: state.jobs.map(job => (job._id === jobId ? { ...job, ...updates } : job)),
+      jobs: sortClientJobsByStatus(
+        state.jobs.map(job => (job._id === jobId ? { ...job, ...updates } : job))
+      ),
     }))
     const currentJob = get().job
     if (currentJob && currentJob._id === jobId) {

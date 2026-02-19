@@ -145,7 +145,7 @@ const BidCard = ({ bid }) => {
             </div>
           </div>
           <button
-            onClick={() => navigate(`bids/${professional._id}`)}
+            onClick={() => navigate(`/Dashboard/clientdashboard/bids/${bid._id}`)}
             className="flex items-center gap-1 rounded-full bg-zinc-800 px-3 py-2 text-xs font-medium text-zinc-300 transition-all hover:bg-zinc-700/60 hover:text-white"
           >
             Details

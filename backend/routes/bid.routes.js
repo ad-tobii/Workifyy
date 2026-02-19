@@ -7,6 +7,7 @@ import {
   rejectBid,
   getProfessionalBids,
   getClientBids,
+  getBidDetails,
 } from '../controllers/bid.controllers.js';
 
 const router = express.Router();
@@ -28,4 +29,7 @@ router.get('/professional', protectRoutes, getProfessionalBids);
 
 // 6. Fetch all bids for logged-in client
 router.get('/client', protectRoutes, getClientBids);
+
+// 7. Fetch bid details for bid details page
+router.get('/:bidId', protectRoutes, getBidDetails);
 export default router;
