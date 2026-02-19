@@ -11,7 +11,7 @@ import useClientStore from '../../../store/useClientStore'
 
 const TopBar = () => {
   return (
-    <div className="h-20 w-full sm:h-16">
+    <div className="z-50 h-20 w-full sm:h-16">
       {/* TopBar on Mobile screens */}
       <div className="flex sm:hidden">
         <MobileTopBar />
@@ -28,7 +28,7 @@ const TopBar = () => {
 const LargeTopBar = () => {
   const setMainTab = useClientStore(state => state.setMainTab)
   return (
-    <div className="fixed flex w-full justify-between bg-[#0f0f10] px-6 py-4">
+    <div className="fixed z-50 flex w-full justify-between bg-[#0f0f10] px-6 py-4">
       {/* Logo */}
       <div className="">
         <img src="/assets/workifyy-logo.png" alt="logo" className="w-44" />
@@ -80,7 +80,7 @@ const LargeTopBar = () => {
 
 const MobileTopBar = () => {
   return (
-    <div className="fixed flex w-full justify-between bg-[#0f0f10] px-6 py-4">
+    <div className="fixed z-50 flex w-full justify-between bg-[#0f0f10] px-6 py-4">
       {/* Right side */}
       <div className="flex space-x-2">
         <img

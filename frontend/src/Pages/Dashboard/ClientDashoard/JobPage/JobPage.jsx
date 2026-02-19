@@ -3,6 +3,8 @@ import PostJobPage from './PostJobPage/PostJob'
 import useClientStore from '../../../../store/useClientStore'
 import BidPage from './BidPage/BidPage'
 
+import OngoingPage from './OngoingPage'
+
 const JobPage = () => {
   const jobTab = useClientStore(state => state.jobTab)
   return (
@@ -11,7 +13,7 @@ const JobPage = () => {
 
       {jobTab === 'Post Jobs' && <PostJobPage />}
       {jobTab === 'Bids' && <BidPage />}
-      {jobTab === 'Ongoing Jobs' && <PostJobPage />}
+      {jobTab === 'Ongoing Jobs' && <OngoingPage />}
     </div>
   )
 }
