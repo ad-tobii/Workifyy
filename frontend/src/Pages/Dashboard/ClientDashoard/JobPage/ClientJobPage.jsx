@@ -83,7 +83,7 @@ const ClientJobPage = () => {
           </button>
 
           {/* Title & Status */}
-          <div className="flex items-start justify-between gap-4">
+          <div className="flex flex-col items-start justify-between gap-4 sm:flex-row">
             <div>
               <h1 className="text-2xl font-bold text-white sm:text-3xl">{job.title}</h1>
               <p className="mt-1 text-sm text-zinc-400">

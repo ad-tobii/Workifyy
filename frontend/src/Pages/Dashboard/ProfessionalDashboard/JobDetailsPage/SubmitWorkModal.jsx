@@ -143,7 +143,7 @@ const SubmitWorkModal = ({ isOpen, onClose, jobId }) => {
             {/* Message */}
             <div className="mb-6">
               <label className="mb-2 block text-sm font-medium text-white">
-                Message (Optional)
+                Message <span className="text-red-500">*</span>
               </label>
               <textarea
                 value={message}
