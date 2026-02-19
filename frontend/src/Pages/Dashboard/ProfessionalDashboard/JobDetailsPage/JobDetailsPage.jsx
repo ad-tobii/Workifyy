@@ -23,7 +23,7 @@ const JobDetailsPage = () => {
     if (jobId) {
       fetchJob(jobId)
     }
-  }, [jobId, fetchJob])
+  }, [])
 
   // 🔒 Block page render until job is fetched
   if (loading || !job) {
