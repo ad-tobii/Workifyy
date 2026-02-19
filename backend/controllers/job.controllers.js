@@ -6,6 +6,40 @@ import User from '../models/users.models.js';
 import { latLngToHex, getJobCoverage } from '../utils/spatial.utils.js';
 import mongoose from 'mongoose';
 
+const pickRandomSubmissionImages = (images = [], limit = 2) => {
+  const shuffled = [...images]
+    .filter(Boolean)
+    .sort(() => Math.random() - 0.5);
+
+  return shuffled.slice(0, limit);
+};
+
+const syncPortfolioPicturesFromSubmission = async (job) => {
+  if (!job?.chosenProfessional || !job?.submission?.images?.length || job.portfolioSyncedAt) {
+    return;
+  }
+
+  const profile = await ProfessionalProfile.findOne({ user: job.chosenProfessional }).select(
+    'portfolioPictures'
+  );
+
+  if (!profile) {
+    return;
+  }
+
+  const existingPictures = new Set(profile.portfolioPictures || []);
+  const randomImages = pickRandomSubmissionImages(job.submission.images, 2);
+  const imagesToAdd = randomImages.filter((image) => !existingPictures.has(image));
+
+  if (imagesToAdd.length > 0) {
+    profile.portfolioPictures = [...(profile.portfolioPictures || []), ...imagesToAdd];
+    await profile.save();
+  }
+
+  job.portfolioSyncedAt = new Date();
+  await job.save();
+};
+
 export const createJob = async (req, res) => {
   try {
     const io = req.io;
@@ -422,7 +456,10 @@ export const acceptWork = async (req, res) => {
     }
 
     job.status = 'completed';
+    job.completedAt = new Date();
     await job.save();
+
+    await syncPortfolioPicturesFromSubmission(job);
 
     await ProfessionalProfile.findOneAndUpdate(
       { user: job.chosenProfessional },

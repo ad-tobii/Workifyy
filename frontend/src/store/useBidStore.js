@@ -7,6 +7,7 @@ import useUserStore from './useUserStore'
 const useBidStore = create((set, get) => ({
   // ===== STATE =====
   bids: [], // all bids belonging to the current user
+  bidDetails: null,
   loading: false, // global loading flag for any bid action
   error: null, // last error message from any bid action
   hasFetched: false, // prevents refetching bids multiple times unnecessarily
@@ -105,6 +106,29 @@ const useBidStore = create((set, get) => ({
       set({ loading: false })
     }
   },
+
+
+  getBidDetails: async bidId => {
+    set({ loading: true, error: null, bidDetails: null })
+    try {
+      const res = await api.get(`/bid/${bidId}`)
+
+      if (!res.data?.success) {
+        set({ error: res.data?.message || 'Failed to fetch bid details' })
+        return null
+      }
+
+      set({ bidDetails: res.data.data })
+      return res.data.data
+    } catch (error) {
+      set({ error: error.response?.data?.message || 'Failed to fetch bid details' })
+      throw error
+    } finally {
+      set({ loading: false })
+    }
+  },
+
+  clearBidDetails: () => set({ bidDetails: null, error: null }),
 
   // Place a new bid on a job
   placeBid: async (jobId, amount, message) => {

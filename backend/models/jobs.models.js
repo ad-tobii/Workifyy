@@ -70,6 +70,14 @@ const jobSchema = new mongoose.Schema(
         type: Date,
       },
     },
+    completedAt: {
+      type: Date,
+      default: null,
+    },
+    portfolioSyncedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );
