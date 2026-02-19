@@ -62,7 +62,7 @@ const JobDetailsPage = () => {
 
         {/* Job images */}
         <div className="w-full">
-          <JobImages />
+          <JobImages images={job.images} />
         </div>
 
         {/* ✅ Client Budget (centered between images & description) */}

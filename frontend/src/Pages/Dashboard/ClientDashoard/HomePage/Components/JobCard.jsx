@@ -8,6 +8,7 @@ import { format } from 'date-fns'
 import { useNavigate } from 'react-router-dom'
 
 const STATUS = {
+  awaiting_review: { color: '#ef4444', label: 'Awaiting Review' },
   ongoing: { color: '#22c55e', label: 'Ongoing' },
   open: { color: '#fbbf24', label: 'Open' },
   completed: { color: '#60a5fa', label: 'Completed' },

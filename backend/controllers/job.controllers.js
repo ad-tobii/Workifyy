@@ -418,6 +418,14 @@ export const acceptWork = async (req, res) => {
       });
     }
 
+    if (!jobId || !mongoose.Types.ObjectId.isValid(jobId)) {
+      return res.status(400).json({
+        message: 'Invalid job ID',
+        success: false,
+        data: null,
+      });
+    }
+
     if (!rating || rating < 1 || rating > 5) {
       return res.status(400).json({
         message: 'Rating must be between 1 and 5',
@@ -426,56 +434,66 @@ export const acceptWork = async (req, res) => {
       });
     }
 
-    const job = await Job.findById(jobId).populate(
-      'client',
-      'firstname lastname'
+    const job = await Job.findOneAndUpdate(
+      {
+        _id: jobId,
+        client: client._id,
+        status: 'awaiting_review',
+      },
+      {
+        $set: {
+          status: 'completed',
+          completedAt: new Date(),
+        },
+      },
+      { new: true }
     );
 
     if (!job) {
-      return res.status(404).json({
-        message: 'Job not found',
-        success: false,
-        data: null,
-      });
-    }
-
-    if (job.client._id.toString() !== client._id.toString()) {
-      return res.status(403).json({
-        message: 'You do not own this job',
-        success: false,
-        data: null,
-      });
-    }
-
-    if (job.status !== 'awaiting_review') {
       return res.status(400).json({
-        message: 'Job must be awaiting review',
+        message: 'Job must be awaiting review and belong to you',
         success: false,
         data: null,
       });
     }
 
-    job.status = 'completed';
-    job.completedAt = new Date();
-    await job.save();
+    if (!job.chosenProfessional) {
+      return res.status(400).json({
+        message: 'No professional is assigned to this job',
+        success: false,
+        data: null,
+      });
+    }
 
     await syncPortfolioPicturesFromSubmission(job);
 
-    await ProfessionalProfile.findOneAndUpdate(
-      { user: job.chosenProfessional },
+    const reviewCreated = await ProfessionalProfile.findOneAndUpdate(
+      {
+        user: job.chosenProfessional,
+        reviews: { $not: { $elemMatch: { jobId: job._id } } },
+      },
       {
         $push: {
           reviews: {
             client: client._id,
-            clientName: `${job.client.firstname} ${job.client.lastname}`,
+            clientName: `${client.firstname} ${client.lastname}`,
             rating,
             review: review || '',
             jobId: job._id,
             createdAt: new Date(),
           },
         },
-      }
+      },
+      { new: true }
     );
+
+    if (!reviewCreated) {
+      return res.status(409).json({
+        message: 'A review has already been submitted for this job',
+        success: false,
+        data: null,
+      });
+    }
 
     io.to(`professional:${job.chosenProfessional}`).emit('workAccepted', {
       jobId: job._id,
@@ -513,6 +531,14 @@ export const requestRedo = async (req, res) => {
       });
     }
 
+    if (!jobId || !mongoose.Types.ObjectId.isValid(jobId)) {
+      return res.status(400).json({
+        message: 'Invalid job ID',
+        success: false,
+        data: null,
+      });
+    }
+
     if (!message || message.trim().length === 0) {
       return res.status(400).json({
         message: 'Message is required',
@@ -521,44 +547,41 @@ export const requestRedo = async (req, res) => {
       });
     }
 
-    const job = await Job.findById(jobId);
+    const normalizedMessage = message.trim();
+
+    const job = await Job.findOneAndUpdate(
+      {
+        _id: jobId,
+        client: client._id,
+        status: 'awaiting_review',
+      },
+      {
+        $set: {
+          redoRequest: {
+            message: normalizedMessage,
+            requestedAt: new Date(),
+          },
+          status: 'ongoing',
+        },
+        $unset: {
+          submission: 1,
+        },
+      },
+      { new: true }
+    );
 
     if (!job) {
-      return res.status(404).json({
-        message: 'Job not found',
+      return res.status(409).json({
+        message: 'Redo has already been requested or this job is no longer awaiting review',
         success: false,
         data: null,
       });
     }
-
-    if (job.client.toString() !== client._id.toString()) {
-      return res.status(403).json({
-        message: 'You do not own this job',
-        success: false,
-        data: null,
-      });
-    }
-
-    if (job.status !== 'awaiting_review') {
-      return res.status(400).json({
-        message: 'Job must be awaiting review',
-        success: false,
-        data: null,
-      });
-    }
-
-    job.redoRequest = {
-      message,
-      requestedAt: new Date(),
-    };
-    job.submission = undefined;
-    job.status = 'ongoing';
-    await job.save();
 
     io.to(`professional:${job.chosenProfessional}`).emit('redoRequested', {
       jobId: job._id,
       jobTitle: job.title,
-      message,
+      message: normalizedMessage,
     });
 
     return res.status(200).json({

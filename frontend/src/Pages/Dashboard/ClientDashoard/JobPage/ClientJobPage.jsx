@@ -48,12 +48,14 @@ const ClientJobPage = () => {
     if (jobId) {
       fetchJob(jobId)
     }
-  }, [jobId])
+  }, [jobId, fetchJob])
 
-  if (loading || !job) {
+  const isCurrentJobLoaded = job && job._id === jobId
+
+  if (!isCurrentJobLoaded) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#0f0f10] text-zinc-400">
-        Loading job…
+        {loading ? 'Loading job…' : 'Fetching latest job data…'}
       </div>
     )
   }
