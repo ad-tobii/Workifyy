@@ -211,23 +211,47 @@ export const getJob = async (req, res) => {
 
 export const getOngoingJobs = async (req, res) => {
   try {
-    const professional = req.user;
-    if (!professional || professional.role !== 'professional') {
+    const user = req.user;
+    if (!user) {
       return res.status(401).json({
-        message: 'Unauthorized: Please login as a professional',
+        message: 'Unauthorized: Please login',
         success: false,
         data: null,
       });
     }
 
-    const ongoingJobs = await Job.find({
-      chosenProfessional: professional._id,
-      status: 'ongoing',
-    })
+    let query;
+    let populateField;
+
+    // Determine query and populate based on role
+    if (user.role === 'professional') {
+      query = {
+        chosenProfessional: user._id,
+        status: 'ongoing',
+      };
+      populateField = { path: 'client', select: 'firstname lastname' };
+    } else if (user.role === 'client') {
+      query = {
+        client: user._id,
+        status: 'ongoing',
+      };
+      populateField = {
+        path: 'chosenProfessional',
+        select: 'firstname lastname',
+      };
+    } else {
+      return res.status(401).json({
+        message: 'Invalid user role',
+        success: false,
+        data: null,
+      });
+    }
+
+    const ongoingJobs = await Job.find(query)
       .select(
-        'title description budget category hexId status createdAt scheduledAt address images'
+        'title description budget category hexId status createdAt scheduledAt address images client chosenProfessional'
       )
-      .populate('client', 'firstname lastname')
+      .populate(populateField)
       .sort({ createdAt: -1 });
 
     return res.status(200).json({
@@ -236,7 +260,6 @@ export const getOngoingJobs = async (req, res) => {
       data: ongoingJobs,
     });
   } catch (error) {
-
     console.error('Get ongoing jobs error:', error.message);
     return res.status(500).json({
       message: 'Server error',
