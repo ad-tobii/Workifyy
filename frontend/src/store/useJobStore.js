@@ -3,9 +3,10 @@ import api from '../api/axios.api'
 import { getBrowserLocation } from '../utils/geoLocation.utils'
 
 const CLIENT_JOB_STATUS_ORDER = {
-  ongoing: 0,
-  open: 1,
-  completed: 2,
+  awaiting_review: 0,
+  ongoing: 1,
+  open: 2,
+  completed: 3,
 }
 
 const sortClientJobsByStatus = jobs => {
@@ -19,7 +20,12 @@ const sortClientJobsByStatus = jobs => {
       return aOrder - bOrder
     }
 
-    return new Date(b?.createdAt || 0) - new Date(a?.createdAt || 0)
+    const createdAtDiff = new Date(b?.createdAt || 0) - new Date(a?.createdAt || 0)
+    if (createdAtDiff !== 0) {
+      return createdAtDiff
+    }
+
+    return (a?._id || '').localeCompare(b?._id || '')
   })
 }
 
