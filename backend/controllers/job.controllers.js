@@ -1,6 +1,7 @@
 import Job from '../models/jobs.models.js';
 import Bid from '../models/bids.models.js';
 import { createNotification } from './notification.controllers.js';
+import ProfessionalProfile from '../models/professionalProfiles.models.js';
 import User from '../models/users.models.js';
 import { latLngToHex, getJobCoverage } from '../utils/spatial.utils.js';
 import mongoose from 'mongoose';
@@ -8,8 +9,8 @@ import mongoose from 'mongoose';
 export const createJob = async (req, res) => {
   try {
     const io = req.io;
-    // Ensure user is a client
     const user = req.user;
+
     if (!user || user.role !== 'client') {
       return res.status(401).json({
         message: 'Unauthorized: Please login as a client to post a job',
@@ -18,7 +19,6 @@ export const createJob = async (req, res) => {
       });
     }
 
-    //  Ensure required fields are present
     const {
       title,
       description,
@@ -50,14 +50,10 @@ export const createJob = async (req, res) => {
       });
     }
 
-    // collecting job images
     const images = req.files ? req.files.map((file) => file.path) : [];
-
-    // determine the hex id
     const hexId = latLngToHex(latitude, longitude);
     const jobCoverage = getJobCoverage(hexId);
 
-    // Create the job
     const job = await Job.create({
       client: user._id,
       title,
@@ -70,7 +66,6 @@ export const createJob = async (req, res) => {
       images,
     });
 
-    // Emit real-time job to coverage room
     io.to(jobCoverage).emit('newJob', job);
 
     return res.status(201).json({
@@ -79,7 +74,7 @@ export const createJob = async (req, res) => {
       data: job,
     });
   } catch (error) {
-    console.log('This is the error ⚠️ : ', error.message);
+    console.log('Create job error ⚠️:', error.message);
     return res.status(500).json({
       message: 'Server error',
       success: false,
@@ -90,15 +85,12 @@ export const createJob = async (req, res) => {
 
 export const listJobs = async (req, res) => {
   try {
-    // Retrieve Longitude and latitude from request
     const { latitude, longitude } = req.query;
     const user = req.user;
 
-    // Determine Hex_id and coverage
     const hexId = latLngToHex(latitude, longitude);
     const searchArea = getJobCoverage(hexId);
 
-    // first check for all the professionals open bids
     const openBids = await Bid.find({
       professional: req.user._id,
       status: { $in: ['pending', 'accepted'] },
@@ -106,7 +98,6 @@ export const listJobs = async (req, res) => {
 
     const jobIds = openBids.map((bid) => bid.job);
 
-    // filter for only open jobs within the search area and not yet bid on
     const filter = {
       status: 'open',
       hexId: { $in: searchArea },
@@ -114,7 +105,6 @@ export const listJobs = async (req, res) => {
       blockedProfessionals: { $nin: [user._id] },
     };
 
-    // retrieve matching jobs from db
     const jobs = await Job.find(filter)
       .select(
         'title _id budget category hexId status description createdAt scheduledAt address images'
@@ -122,7 +112,6 @@ export const listJobs = async (req, res) => {
       .populate('client', 'firstname lastname')
       .sort({ createdAt: -1 });
 
-    // send response
     return res.status(200).json({
       message: 'Open jobs fetched successfully',
       success: true,
@@ -141,18 +130,16 @@ export const listJobs = async (req, res) => {
 export const getJob = async (req, res) => {
   try {
     const { jobId } = req.params;
-    const pro = req.user; // professional trying to access the job
+    const user = req.user;
 
-    // Validate professional
-    if (!pro || pro.role !== 'professional') {
+    if (!user) {
       return res.status(401).json({
-        message: 'Unauthorized: Please login as a professional',
+        message: 'Unauthorized: Please login',
         success: false,
         data: null,
       });
     }
 
-    // Validate jobId
     if (!jobId || !mongoose.Types.ObjectId.isValid(jobId)) {
       return res.status(400).json({
         message: 'Invalid job ID',
@@ -161,34 +148,68 @@ export const getJob = async (req, res) => {
       });
     }
 
-    // Find job and select fields
-    const job = await Job.findById(jobId)
-      .select(
-        'title images client description budget status createdAt updatedAt scheduledAt address'
-      )
-      .populate('client', 'firstname lastname');
+    let job;
+
+    if (user.role === 'professional') {
+      job = await Job.findById(jobId)
+        .select(
+          'title images client description budget status createdAt updatedAt scheduledAt address submission redoRequest chosenProfessional blockedProfessionals'
+        )
+        .populate('client', 'firstname lastname');
+
+      if (
+        job &&
+        job.status === 'open' &&
+        job.blockedProfessionals?.includes(user._id)
+      ) {
+        return res.status(403).json({
+          message: 'You are blocked from viewing this job',
+          success: false,
+          data: null,
+        });
+      }
+
+      if (
+        job &&
+        ['ongoing', 'awaiting_review', 'completed'].includes(job.status)
+      ) {
+        if (job.chosenProfessional?.toString() !== user._id.toString()) {
+          return res.status(403).json({
+            message: 'You do not have access to this job',
+            success: false,
+            data: null,
+          });
+        }
+      }
+    } else if (user.role === 'client') {
+      job = await Job.findById(jobId)
+        .select(
+          'title images description budget status createdAt updatedAt scheduledAt address submission redoRequest chosenProfessional client'
+        )
+        .populate('chosenProfessional', 'firstname lastname');
+
+      // Also populate professional profile for client view
+      if (job && job.chosenProfessional) {
+        const professionalProfile = await ProfessionalProfile.findOne({
+          user: job.chosenProfessional._id,
+        }).select('photo tagline reviews');
+
+        job = job.toObject();
+        job.professionalProfile = professionalProfile;
+      }
+
+      if (job && job.client.toString() !== user._id.toString()) {
+        return res.status(403).json({
+          message: 'You do not have access to this job',
+          success: false,
+          data: null,
+        });
+      }
+    }
 
     if (!job) {
       return res.status(404).json({
         message: 'Job not found',
-        success: false,
-        data: null,
-      });
-    }
-
-    // Ensure job is open
-    if (job.status !== 'open') {
-      return res.status(400).json({
-        message: 'This job is no longer open',
-        success: false,
-        data: null,
-      });
-    }
-
-    // Check if pro is blocked
-    if (job.blockedProfessionals?.includes(pro._id)) {
-      return res.status(403).json({
-        message: 'You are blocked from viewing this job',
         success: false,
         data: null,
       });
@@ -223,7 +244,6 @@ export const getOngoingJobs = async (req, res) => {
     let query;
     let populateField;
 
-    // Determine query and populate based on role
     if (user.role === 'professional') {
       query = {
         chosenProfessional: user._id,
@@ -261,6 +281,320 @@ export const getOngoingJobs = async (req, res) => {
     });
   } catch (error) {
     console.error('Get ongoing jobs error:', error.message);
+    return res.status(500).json({
+      message: 'Server error',
+      success: false,
+      data: null,
+    });
+  }
+};
+
+// Submit work (Professional)
+export const submitWork = async (req, res) => {
+  try {
+    const { jobId, message } = req.body;
+    const professional = req.user;
+    const io = req.io;
+
+    if (!professional || professional.role !== 'professional') {
+      return res.status(401).json({
+        message: 'Only professionals can submit work',
+        success: false,
+        data: null,
+      });
+    }
+
+    const job = await Job.findById(jobId);
+
+    if (!job) {
+      return res.status(404).json({
+        message: 'Job not found',
+        success: false,
+        data: null,
+      });
+    }
+
+    if (job.chosenProfessional?.toString() !== professional._id.toString()) {
+      return res.status(403).json({
+        message: 'You are not assigned to this job',
+        success: false,
+        data: null,
+      });
+    }
+
+    if (job.status !== 'ongoing') {
+      return res.status(400).json({
+        message: 'Job must be ongoing to submit work',
+        success: false,
+        data: null,
+      });
+    }
+
+    const images = req.files ? req.files.map((file) => file.path) : [];
+
+    if (images.length === 0) {
+      return res.status(400).json({
+        message: 'At least one image is required',
+        success: false,
+        data: null,
+      });
+    }
+
+    job.submission = {
+      images,
+      message: message || '',
+      submittedAt: new Date(),
+    };
+    job.status = 'awaiting_review';
+    job.redoRequest = undefined;
+    await job.save();
+
+    io.to(`client:${job.client}`).emit('workSubmitted', {
+      jobId: job._id,
+      jobTitle: job.title,
+    });
+
+    return res.status(200).json({
+      message: 'Work submitted successfully',
+      success: true,
+      data: job,
+    });
+  } catch (error) {
+    console.error('Submit work error:', error.message);
+    return res.status(500).json({
+      message: 'Server error',
+      success: false,
+      data: null,
+    });
+  }
+};
+
+// Accept work and leave review (Client)
+export const acceptWork = async (req, res) => {
+  try {
+    const { jobId, rating, review } = req.body;
+    const client = req.user;
+    const io = req.io;
+
+    if (!client || client.role !== 'client') {
+      return res.status(401).json({
+        message: 'Only clients can accept work',
+        success: false,
+        data: null,
+      });
+    }
+
+    if (!rating || rating < 1 || rating > 5) {
+      return res.status(400).json({
+        message: 'Rating must be between 1 and 5',
+        success: false,
+        data: null,
+      });
+    }
+
+    const job = await Job.findById(jobId).populate(
+      'client',
+      'firstname lastname'
+    );
+
+    if (!job) {
+      return res.status(404).json({
+        message: 'Job not found',
+        success: false,
+        data: null,
+      });
+    }
+
+    if (job.client._id.toString() !== client._id.toString()) {
+      return res.status(403).json({
+        message: 'You do not own this job',
+        success: false,
+        data: null,
+      });
+    }
+
+    if (job.status !== 'awaiting_review') {
+      return res.status(400).json({
+        message: 'Job must be awaiting review',
+        success: false,
+        data: null,
+      });
+    }
+
+    job.status = 'completed';
+    await job.save();
+
+    await ProfessionalProfile.findOneAndUpdate(
+      { user: job.chosenProfessional },
+      {
+        $push: {
+          reviews: {
+            client: client._id,
+            clientName: `${job.client.firstname} ${job.client.lastname}`,
+            rating,
+            review: review || '',
+            jobId: job._id,
+            createdAt: new Date(),
+          },
+        },
+      }
+    );
+
+    io.to(`professional:${job.chosenProfessional}`).emit('workAccepted', {
+      jobId: job._id,
+      jobTitle: job.title,
+      rating,
+    });
+
+    return res.status(200).json({
+      message: 'Work accepted successfully',
+      success: true,
+      data: job,
+    });
+  } catch (error) {
+    console.error('Accept work error:', error.message);
+    return res.status(500).json({
+      message: 'Server error',
+      success: false,
+      data: null,
+    });
+  }
+};
+
+// Request redo (Client)
+export const requestRedo = async (req, res) => {
+  try {
+    const { jobId, message } = req.body;
+    const client = req.user;
+    const io = req.io;
+
+    if (!client || client.role !== 'client') {
+      return res.status(401).json({
+        message: 'Only clients can request redo',
+        success: false,
+        data: null,
+      });
+    }
+
+    if (!message || message.trim().length === 0) {
+      return res.status(400).json({
+        message: 'Message is required',
+        success: false,
+        data: null,
+      });
+    }
+
+    const job = await Job.findById(jobId);
+
+    if (!job) {
+      return res.status(404).json({
+        message: 'Job not found',
+        success: false,
+        data: null,
+      });
+    }
+
+    if (job.client.toString() !== client._id.toString()) {
+      return res.status(403).json({
+        message: 'You do not own this job',
+        success: false,
+        data: null,
+      });
+    }
+
+    if (job.status !== 'awaiting_review') {
+      return res.status(400).json({
+        message: 'Job must be awaiting review',
+        success: false,
+        data: null,
+      });
+    }
+
+    job.redoRequest = {
+      message,
+      requestedAt: new Date(),
+    };
+    job.submission = undefined;
+    job.status = 'ongoing';
+    await job.save();
+
+    io.to(`professional:${job.chosenProfessional}`).emit('redoRequested', {
+      jobId: job._id,
+      jobTitle: job.title,
+      message,
+    });
+
+    return res.status(200).json({
+      message: 'Redo requested successfully',
+      success: true,
+      data: job,
+    });
+  } catch (error) {
+    console.error('Request redo error:', error.message);
+    return res.status(500).json({
+      message: 'Server error',
+      success: false,
+      data: null,
+    });
+  }
+};
+
+// Cancel job (Professional)
+export const cancelJob = async (req, res) => {
+  try {
+    const { jobId } = req.body;
+    const professional = req.user;
+    const io = req.io;
+
+    if (!professional || professional.role !== 'professional') {
+      return res.status(401).json({
+        message: 'Only professionals can cancel jobs',
+        success: false,
+        data: null,
+      });
+    }
+
+    const job = await Job.findById(jobId);
+
+    if (!job) {
+      return res.status(404).json({
+        message: 'Job not found',
+        success: false,
+        data: null,
+      });
+    }
+
+    if (job.chosenProfessional?.toString() !== professional._id.toString()) {
+      return res.status(403).json({
+        message: 'You are not assigned to this job',
+        success: false,
+        data: null,
+      });
+    }
+
+    if (job.status !== 'ongoing') {
+      return res.status(400).json({
+        message: 'Can only cancel ongoing jobs',
+        success: false,
+        data: null,
+      });
+    }
+
+    job.status = 'cancelled';
+    await job.save();
+
+    io.to(`client:${job.client}`).emit('jobCancelled', {
+      jobId: job._id,
+      jobTitle: job.title,
+    });
+
+    return res.status(200).json({
+      message: 'Job cancelled successfully',
+      success: true,
+      data: job,
+    });
+  } catch (error) {
+    console.error('Cancel job error:', error.message);
     return res.status(500).json({
       message: 'Server error',
       success: false,

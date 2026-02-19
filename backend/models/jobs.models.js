@@ -35,7 +35,7 @@ const jobSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['open', 'awarded', 'in-progress', 'completed', 'cancelled'],
+      enum: ['open', 'ongoing', 'awaiting_review', 'completed', 'cancelled'],
       default: 'open',
     },
     chosenProfessional: {
@@ -48,6 +48,28 @@ const jobSchema = new mongoose.Schema(
         ref: 'User',
       },
     ],
+    submission: {
+      images: {
+        type: [String],
+        default: [],
+      },
+      message: {
+        type: String,
+        default: '',
+      },
+      submittedAt: {
+        type: Date,
+      },
+    },
+    redoRequest: {
+      message: {
+        type: String,
+        default: '',
+      },
+      requestedAt: {
+        type: Date,
+      },
+    },
   },
   { timestamps: true }
 );

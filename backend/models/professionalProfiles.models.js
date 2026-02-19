@@ -21,13 +21,13 @@ const professionalProfileSchema = new mongoose.Schema(
     },
     location: {
       type: {
-        type: String, // must be "Point"
+        type: String,
         enum: ['Point'],
         required: true,
-        default: 'Point', // optional
+        default: 'Point',
       },
       coordinates: {
-        type: [Number], // [longitude, latitude]
+        type: [Number],
         required: true,
       },
     },
@@ -43,7 +43,35 @@ const professionalProfileSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-   
+    reviews: [
+      {
+        client: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+        },
+        clientName: {
+          type: String,
+        },
+        rating: {
+          type: Number,
+          required: true,
+          min: 1,
+          max: 5,
+        },
+        review: {
+          type: String,
+          default: '',
+        },
+        jobId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Job',
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
   },
   { timestamps: true }
 );
