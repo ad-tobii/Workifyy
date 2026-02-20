@@ -1,14 +1,8 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import useSocketStore from '../../../store/useSocketStore'
 import { getBrowserLocation, watchLocation } from '../../../utils/geoLocation.utils'
-
-const OVERLAY_MESSAGES = {
-  initial: 'Getting your location… Please wait',
-  prompt: 'Location access needed – please allow',
-  denied: 'Location permission denied. Please enable it in browser settings to continue.',
-  failed: 'Unable to detect location. Please turn on GPS/location services.',
-}
+import LocationAccessOverlay from '../../../Components/LocationAccessOverlay'
 
 // This is a wrapper component for the professional dashboard.
 // step 1 set up the socket connection
@@ -92,28 +86,9 @@ const ProfessionalDasboardWrapper = () => {
 
   const locationReady = isConnected && hasCoordinates
   const isBlocked = !locationReady && !isLocating
-  const loaderMessage = useMemo(
-    () => OVERLAY_MESSAGES[messageKey] || OVERLAY_MESSAGES.initial,
-    [messageKey]
-  )
 
   if (!locationReady) {
-    return (
-      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-4 bg-[rgb(15,15,16)] px-6 text-center text-white">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#32cd32] border-t-transparent" />
-        <p className="max-w-md text-base font-medium">{loaderMessage}</p>
-        {isBlocked && messageKey === 'denied' ? (
-          <a
-            href="https://support.google.com/chrome/answer/142065"
-            target="_blank"
-            rel="noreferrer"
-            className="text-sm text-blue-300 underline"
-          >
-            How to enable location access
-          </a>
-        ) : null}
-      </div>
-    )
+    return <LocationAccessOverlay messageKey={messageKey} isBlocked={isBlocked} />
   }
 
   return <Outlet />

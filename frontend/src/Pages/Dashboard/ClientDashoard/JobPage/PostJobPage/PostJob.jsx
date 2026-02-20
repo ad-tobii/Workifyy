@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Step1 from './Step1'
 import Step2 from './Step2'
 import Step3 from './Step3'
@@ -8,15 +8,9 @@ import Step6 from './Step6'
 import Step7 from './Step7'
 import useJobStore from '../../../../../store/useJobStore'
 import { getBrowserLocation } from '../../../../../utils/geoLocation.utils'
+import LocationAccessOverlay from '../../../../../Components/LocationAccessOverlay'
 
-const LOCATION_OVERLAY_MESSAGES = {
-  initial: 'Getting your location… Please wait',
-  prompt: 'Location access needed – please allow',
-  denied: 'Location permission denied. Please enable it in your browser settings to continue.',
-  failed: 'Unable to detect location. Please turn on GPS/location services.',
-}
-
-export default function PostJobPage() {
+export default function PostJobPage({ trigger }) {
   const loading = useJobStore(state => state.loading)
   const [step, setStep] = useState(1)
   const [formData, setFormData] = useState({
@@ -31,13 +25,22 @@ export default function PostJobPage() {
   })
 
   const [locationReady, setLocationReady] = useState(false)
-  const [isLocating, setIsLocating] = useState(true)
+  const [isLocating, setIsLocating] = useState(false)
   const [messageKey, setMessageKey] = useState('initial')
+  const [locationRequested, setLocationRequested] = useState(false)
 
   useEffect(() => {
+    if (!trigger) {
+      return
+    }
+
     let isMounted = true
 
     const initializeLocation = async () => {
+      setLocationRequested(true)
+      setLocationReady(false)
+      setIsLocating(true)
+
       if (!('geolocation' in navigator)) {
         setMessageKey('failed')
         setIsLocating(false)
@@ -86,28 +89,15 @@ export default function PostJobPage() {
     return () => {
       isMounted = false
     }
-  }, [])
-
-  const locationMessage = useMemo(
-    () => LOCATION_OVERLAY_MESSAGES[messageKey] || LOCATION_OVERLAY_MESSAGES.initial,
-    [messageKey]
-  )
+  }, [trigger])
 
   const blockedState = !locationReady && !isLocating
 
   return (
     <div className="relative w-[90%]">
-      {!locationReady && (
-        <div className="fixed inset-0 z-[110] flex flex-col items-center justify-center gap-4 bg-[rgb(15,15,16)] px-6 text-center text-white">
-          <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#32cd32] border-t-transparent" />
-          <p className="max-w-md text-base font-medium">{locationMessage}</p>
-          {blockedState ? (
-            <p className="max-w-md text-sm text-zinc-300">
-              Refresh after enabling location access to continue posting your job.
-            </p>
-          ) : null}
-        </div>
-      )}
+      {locationRequested && !locationReady ? (
+        <LocationAccessOverlay messageKey={messageKey} isBlocked={blockedState} />
+      ) : null}
 
       {loading && (
         <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/60 backdrop-blur-md transition-all">

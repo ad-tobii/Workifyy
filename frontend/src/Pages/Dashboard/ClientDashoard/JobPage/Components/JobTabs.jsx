@@ -9,6 +9,7 @@ const tabs = [
 
 const JobTabs = () => {
   const setJobTab = useClientStore(state => state.setJobTab)
+  const triggerPostJobFlow = useClientStore(state => state.triggerPostJobFlow)
   const jobTab = useClientStore(state => state.jobTab)
   return (
     <div className="w-[90%]">
@@ -18,7 +19,14 @@ const JobTabs = () => {
           return (
             <div
               key={idx}
-              onClick={() => setJobTab(tab.name)}
+              onClick={() => {
+                if (tab.name === 'Post Jobs') {
+                  triggerPostJobFlow()
+                  return
+                }
+
+                setJobTab(tab.name)
+              }}
               className={`flex h-16 w-16 cursor-pointer items-center justify-center rounded-xl transition-all duration-200 ${
                 isActive ? 'bg-white/10 text-[#32cd32]' : 'hover:bg-white/10 hover:text-[#32cd32]'
               } `}
