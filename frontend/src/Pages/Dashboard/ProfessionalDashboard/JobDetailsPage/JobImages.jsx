@@ -19,7 +19,7 @@ const JobImages = ({ images }) => {
   )
 }
 
-const JobImagesSmall = ({ images = [] }) => {
+const JobImagesSmall = ({ images }) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true })
   const [selectedIndex, setSelectedIndex] = useState(0)
 
@@ -76,7 +76,7 @@ const JobImagesSmall = ({ images = [] }) => {
   )
 }
 
-const JobImagesLarge = ({ images = [] }) => {
+const JobImagesLarge = ({ images }) => {
   const count = images.length
   if (count === 0) return null
 
