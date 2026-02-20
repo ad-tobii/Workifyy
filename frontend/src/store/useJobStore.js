@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import api from '../api/axios.api'
-import { getBrowserLocation } from '../utils/geoLocation.utils'
+import { GEOLOCATION_ERROR_CODES, getBrowserLocation } from '../utils/geoLocation.utils'
 
 const CLIENT_JOB_STATUS_ORDER = {
   awaiting_review: 0,
@@ -89,7 +89,13 @@ const useJobStore = create((set, get) => ({
 
     try {
       const formData = new FormData()
-      const location = await getBrowserLocation()
+      console.info('[client-post-job] Starting location lookup...')
+      const location = await getBrowserLocation({
+        enableHighAccuracy: true,
+        timeout: 45000,
+        maximumAge: 10000,
+      })
+      console.info('[client-post-job] Location lookup succeeded.', location)
       formData.append('latitude', location.latitude)
       formData.append('longitude', location.longitude)
 
@@ -111,10 +117,24 @@ const useJobStore = create((set, get) => ({
 
       return res.data
     } catch (error) {
-      const errorMsg = error.response?.data?.message || 'Failed to post job'
+      const geoErrorCode = error?.code
+      const geoErrorMessage =
+        geoErrorCode === GEOLOCATION_ERROR_CODES.PERMISSION_DENIED
+          ? 'Location permission was denied. Please allow access and try again.'
+          : geoErrorCode === GEOLOCATION_ERROR_CODES.POSITION_UNAVAILABLE
+            ? 'Unable to determine your location. Please verify location services and retry.'
+            : geoErrorCode === GEOLOCATION_ERROR_CODES.TIMEOUT
+              ? 'Location lookup timed out. Please retry in an open area or switch to Wi-Fi.'
+              : null
+
+      const errorMsg = geoErrorMessage || error.response?.data?.message || 'Failed to post job'
       set({ error: errorMsg, loading: false })
 
-      console.error('Store Error:', errorMsg)
+      console.error('[client-post-job] Post job failed.', {
+        errorCode: error?.code,
+        errorMessage: error?.message,
+        responseMessage: error?.response?.data?.message,
+      })
       throw error
     }
   },

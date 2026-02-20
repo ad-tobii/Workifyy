@@ -29,8 +29,6 @@ const Step7 = ({ setFormData, formData }) => {
     }
 
     const updatedFormData = { ...formData, scheduledAt: baseDate.toISOString() }
-    console.log(updatedFormData)
-
     try {
       const result = await postJob(updatedFormData)
 
@@ -42,7 +40,19 @@ const Step7 = ({ setFormData, formData }) => {
         setMainTab('home')
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Something went wrong')
+      const fallbackMessage =
+        error?.message ||
+        error?.response?.data?.message ||
+        useJobStore.getState().error ||
+        'Something went wrong'
+
+      console.error('[client-post-job] Submit handler error', {
+        code: error?.code,
+        message: error?.message,
+        responseMessage: error?.response?.data?.message,
+      })
+
+      toast.error(fallbackMessage)
     }
   }
   // Tailwind classes for the Zinc theme
