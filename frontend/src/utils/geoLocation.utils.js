@@ -5,6 +5,8 @@ export const getBrowserLocation = () => {
     if (!navigator.geolocation) {
       return reject(new Error('Geolocation is not supported by your browser.'))
     }
+
+    // Try high accuracy first
     navigator.geolocation.getCurrentPosition(
       position => {
         resolve({
@@ -12,10 +14,22 @@ export const getBrowserLocation = () => {
           longitude: position.coords.longitude,
         })
       },
-      error => {
-        reject(new Error(`Failed to get location. Error: ${error.message}`))
+      // If high accuracy fails, fall back to low accuracy
+      () => {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            resolve({
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+            })
+          },
+          error => {
+            reject(new Error(`Failed to get location. Error: ${error.message}`))
+          },
+          { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
+        )
       },
-      { enableHighAccuracy: true, timeout: 8000 }
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
     )
   })
 }
