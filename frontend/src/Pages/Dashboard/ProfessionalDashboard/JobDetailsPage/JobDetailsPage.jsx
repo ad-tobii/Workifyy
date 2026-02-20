@@ -23,18 +23,19 @@ const JobDetailsPage = () => {
     if (jobId) {
       fetchJob(jobId)
     }
-  }, [])
+  }, [jobId])
 
-  // 🔒 Block page render until job is fetched
   if (loading || !job) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#0f0f10] text-zinc-400">
-        Loading job…
+        <div className="text-center">
+          <div className="mb-4 inline-block h-10 w-10 animate-spin rounded-full border-4 border-zinc-700 border-t-[#32cd32]"></div>
+          <p>Loading job…</p>
+        </div>
       </div>
     )
   }
 
-  // 🇳🇬 Proper currency formatting
   const formattedBudget = new Intl.NumberFormat('en-NG').format(job.budget)
 
   return (
@@ -46,41 +47,42 @@ const JobDetailsPage = () => {
         <TopBar />
       </div>
 
-      <div className="mx-auto w-[90%] px-2 py-4 text-zinc-400">
+      {/* Main Container with max-width */}
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         {/* Back button */}
         <button
           onClick={() => navigate(-1)}
-          className="mb-4 flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800/50 text-zinc-300 shadow-sm transition-colors duration-200 hover:bg-zinc-700/70 hover:text-white hover:shadow-md active:scale-95"
+          className="mb-6 flex h-9 w-9 items-center justify-center rounded-full bg-zinc-800/50 text-zinc-300 transition-colors hover:bg-zinc-700 hover:text-white"
         >
           <ArrowLeftIcon className="h-5 w-5" />
         </button>
 
         {/* Job title */}
-        <h1 className="mb-6 text-xl font-medium tracking-wide text-zinc-400 sm:text-3xl">
-          {job.title}
-        </h1>
+        <h1 className="mb-6 text-2xl font-bold text-white sm:text-3xl lg:text-4xl">{job.title}</h1>
 
         {/* Job images */}
-        <div className="w-full">
+        <div className="mb-8 w-full">
           <JobImages images={job.images} />
         </div>
 
-        {/* ✅ Client Budget (centered between images & description) */}
-        <div className="my-10 flex w-full flex-col items-center justify-center gap-1 rounded-xl bg-zinc-800/40 py-4 backdrop-blur sm:hidden sm:flex-row sm:gap-2">
-          <span className="text-xs uppercase tracking-widest text-zinc-400">Client Budget</span>
-          <span className="text-xl font-semibold text-[#32cd32]">₦ {formattedBudget}</span>
+        {/* Budget Badge (mobile only) */}
+        <div className="mb-8 flex items-center justify-center gap-2 rounded-2xl border border-zinc-800 bg-zinc-900/30 p-4 backdrop-blur-sm sm:hidden">
+          <span className="text-xs font-medium uppercase tracking-wider text-zinc-400">
+            Client Budget
+          </span>
+          <span className="text-2xl font-bold text-[#32cd32]">₦ {formattedBudget}</span>
         </div>
 
-        {/* Description + Bid panel */}
-        <div className="mt-8 flex flex-col gap-10 xl:flex-row xl:items-start">
-          {/* Left */}
-          <div className="w-full xl:flex-[1.5]">
+        {/* Two Column Layout */}
+        <div className="grid gap-8 lg:grid-cols-3">
+          {/* Left Column - Description */}
+          <div className="lg:col-span-2">
             <JobDescription />
           </div>
 
-          {/* Right */}
-          <div className="w-full xl:w-auto">
-            <div className="w-full xl:ml-auto xl:w-[380px]">
+          {/* Right Column - Bid Panel */}
+          <div className="lg:col-span-1">
+            <div className="lg:sticky lg:top-6">
               <BidPanel setIsOpen={setIsOpen} />
             </div>
           </div>

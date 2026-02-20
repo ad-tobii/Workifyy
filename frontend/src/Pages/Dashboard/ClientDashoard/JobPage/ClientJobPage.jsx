@@ -151,7 +151,9 @@ const ClientJobPage = () => {
             {/* Description */}
             <div>
               <h3 className="mb-3 text-lg font-bold text-white">Description</h3>
-              <p className="text-sm leading-relaxed text-zinc-400">{job.description}</p>
+              <p className="text-justify text-sm leading-relaxed text-zinc-400">
+                {job.description}
+              </p>
             </div>
 
             {/* Job Details Grid */}
