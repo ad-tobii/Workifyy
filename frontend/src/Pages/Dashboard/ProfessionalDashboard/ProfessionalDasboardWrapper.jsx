@@ -99,8 +99,8 @@ const ProfessionalDasboardWrapper = () => {
 
   if (!locationReady) {
     return (
-      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-4 bg-[#060b22] px-6 text-center text-white">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-white/25 border-t-white" />
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-4 bg-[rgb(15,15,16)] px-6 text-center text-white">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#32cd32] border-t-transparent" />
         <p className="max-w-md text-base font-medium">{loaderMessage}</p>
         {isBlocked && messageKey === 'denied' ? (
           <a
