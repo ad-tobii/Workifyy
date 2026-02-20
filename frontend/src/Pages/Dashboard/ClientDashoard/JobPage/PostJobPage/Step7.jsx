@@ -42,7 +42,7 @@ const Step7 = ({ setFormData, formData }) => {
         setMainTab('home')
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Something went wrong')
+      toast.error(error.response?.data?.message || error.message || 'Something went wrong')
     }
   }
   // Tailwind classes for the Zinc theme
