@@ -1,18 +1,19 @@
-import React, { useState } from 'react'
+import { CheckCircle2 } from 'lucide-react'
 
 const Step2 = ({ setStep, setFormData, formData }) => {
-  const [title, setTitle] = useState('')
-  const [charLeft, setCharLeft] = useState(120)
+  const title = formData.title || ''
+  const maxLength = 60
+  const trimmedTitle = title.trim()
+  const charLeft = maxLength - title.length
+  const isValid = trimmedTitle.length > 0
+
   const handleChange = e => {
     const value = e.target.value
-    const left = 60 - value.length
-
-    // Use the local 'left' variable so the logic is instant
-    if (left >= 0) {
-      setCharLeft(left)
-      setTitle(value)
+    if (value.length <= maxLength) {
+      setFormData({ ...formData, title: value })
     }
   }
+
   return (
     <div>
       <span className="mb-4 text-2xl font-semibold">Job Title — Keep it short and specific.</span>
@@ -25,14 +26,21 @@ const Step2 = ({ setStep, setFormData, formData }) => {
         />
       </div>
 
-      <div className="mt-6 flex justify-end space-y-12">
-        <span className="">Characters left : {charLeft}</span>
+      <div className="mt-3 flex items-center justify-between text-sm">
+        <span className={isValid ? 'flex items-center gap-2 text-[#32cd32]' : 'text-red-400'}>
+          {isValid ? <CheckCircle2 size={16} /> : null}
+          {isValid ? 'Title looks good' : 'Title is required'}
+        </span>
+        <span className="text-gray-400">Characters left: {charLeft}</span>
+      </div>
+
+      <div className="mt-6 flex justify-end">
         <button
-          onClick={() => {
-            setStep(3)
-            setFormData({ ...formData, title: title })
-          }}
-          className="rounded-xl bg-[#32cd32] px-6 py-3 font-medium text-black"
+          disabled={!isValid}
+          onClick={() => setStep(3)}
+          className={`rounded-xl px-6 py-3 font-medium ${
+            isValid ? 'bg-[#32cd32] text-black' : 'pointer-events-none bg-gray-700 text-gray-400'
+          }`}
         >
           Next
         </button>

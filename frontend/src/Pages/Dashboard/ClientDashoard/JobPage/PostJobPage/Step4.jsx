@@ -1,17 +1,27 @@
-import React from 'react'
+import { useState } from 'react'
 import { PhotoIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
+const MAX_IMAGES = 5
+
 const Step4 = ({ setStep, formData, setFormData }) => {
+  const [imageError, setImageError] = useState('')
+
   const handleFileChange = e => {
-    // Basic check to ensure files were actually selected
     if (!e.target.files) return
 
     const files = Array.from(e.target.files)
+    const currentCount = formData.images?.length || 0
+    const total = currentCount + files.length
 
-    // Create preview URLs
+    if (total > MAX_IMAGES) {
+      setImageError('Maximum 5 images allowed')
+      e.target.value = ''
+      return
+    }
+
+    setImageError('')
     const newPreviews = files.map(file => URL.createObjectURL(file))
 
-    // Update state
     setFormData({
       ...formData,
       images: [...(formData.images || []), ...files],
@@ -23,23 +33,24 @@ const Step4 = ({ setStep, formData, setFormData }) => {
     const updatedImages = formData.images.filter((_, i) => i !== index)
     const updatedPreviews = formData.previews.filter((_, i) => i !== index)
     setFormData({ ...formData, images: updatedImages, previews: updatedPreviews })
+    setImageError('')
   }
+
+  const imageCount = formData.images?.length || 0
 
   return (
     <div>
       <h2 className="mb-2 text-2xl font-semibold">Show us what’s going on</h2>
-      <p className="mb-6 text-gray-400">Pictures help workers understand the job faster</p>
+      <p className="mb-3 text-gray-400">Pictures help workers understand the job faster</p>
+      <p className="mb-6 text-sm text-zinc-400">Images are optional. You can upload up to 5 photos.</p>
 
-      {/* The 'htmlFor' links this label to the input ID. 
-          Clicking anywhere inside this label opens the file picker.
-      */}
-      {(!formData.images || formData.images.length === 0) && (
+      {imageCount < MAX_IMAGES && (
         <label
           htmlFor="file-upload"
           className="block cursor-pointer rounded-2xl border-2 border-dashed border-gray-700 p-10 text-center transition hover:border-[#32cd32] hover:bg-gray-800"
         >
           <PhotoIcon className="mx-auto mb-4 h-12 w-12 text-gray-400" />
-          <p className="font-medium text-gray-400">Click to upload photos</p>
+          <p className="font-medium text-gray-400">Click to upload photos ({imageCount}/5)</p>
 
           <input
             id="file-upload"
@@ -52,7 +63,8 @@ const Step4 = ({ setStep, formData, setFormData }) => {
         </label>
       )}
 
-      {/* Preview Grid */}
+      {imageError ? <p className="mt-3 text-sm text-red-400">{imageError}</p> : null}
+
       <div className="mt-6 grid grid-cols-3 gap-4">
         {formData.previews?.map((url, index) => (
           <div key={index} className="relative h-24 w-full">
