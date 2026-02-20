@@ -7,7 +7,8 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 const sendEmail = async (receiverEmail, subject, text) => {
   try {
     const { data, error } = await resend.emails.send({
-      from: 'Workifyy <noreply@workifyy.com>',
+      // 🔹 Swap to resend.dev for instant sending
+      from: 'Workifyy <team@resend.dev>',
       to: receiverEmail,
       subject,
       text,
