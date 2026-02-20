@@ -1,18 +1,15 @@
-import React, { useState } from 'react'
+import { CheckCircle2 } from 'lucide-react'
 
 const Step6 = ({ setStep, setFormData, formData }) => {
-  // Initializing with existing data if the user goes "Back" and "Forward"
-  const [address, setAddress] = useState(formData.address || '')
-  const [charLeft, setCharLeft] = useState(100 - (formData.address?.length || 0))
+  const address = formData.address || ''
+  const limit = 100
+  const charLeft = limit - address.length
+  const isValid = address.trim().length > 0
 
   const handleChange = e => {
     const value = e.target.value
-    const limit = 100
-    const left = limit - value.length
-
-    if (left >= 0) {
-      setCharLeft(left)
-      setAddress(value)
+    if (value.length <= limit) {
+      setFormData({ ...formData, address: value })
     }
   }
 
@@ -31,28 +28,28 @@ const Step6 = ({ setStep, setFormData, formData }) => {
         />
       </div>
 
-      <div className="mt-6 flex flex-col items-end space-y-4">
-        <span className="text-sm text-gray-500">Characters left: {charLeft}</span>
+      <div className="mt-3 flex items-center justify-between text-sm">
+        <span className={isValid ? 'flex items-center gap-2 text-[#32cd32]' : 'text-red-400'}>
+          {isValid ? <CheckCircle2 size={16} /> : null}
+          {isValid ? 'Address looks good' : 'Address is required'}
+        </span>
+        <span className="text-gray-500">Characters left: {charLeft}</span>
+      </div>
 
-        <div className="flex w-full justify-between">
-          {/* Back button is usually helpful in multi-step */}
-          <button onClick={() => setStep(5)} className="text-gray-400 transition hover:text-white">
-            Back
-          </button>
+      <div className="mt-6 flex w-full justify-between">
+        <button onClick={() => setStep(5)} className="text-gray-400 transition hover:text-white">
+          Back
+        </button>
 
-          <button
-            onClick={() => {
-              if (address.trim().length < 5) {
-                return alert('Please enter a more specific address.')
-              }
-              setFormData({ ...formData, address: address })
-              setStep(7)
-            }}
-            className="rounded-xl bg-[#32cd32] px-10 py-3 font-medium text-black transition hover:bg-[#2dbd2d]"
-          >
-            Next
-          </button>
-        </div>
+        <button
+          disabled={!isValid}
+          onClick={() => setStep(7)}
+          className={`rounded-xl px-10 py-3 font-medium transition ${
+            isValid ? 'bg-[#32cd32] text-black hover:bg-[#2dbd2d]' : 'pointer-events-none bg-gray-700 text-gray-400'
+          }`}
+        >
+          Next
+        </button>
       </div>
     </div>
   )
