@@ -9,12 +9,13 @@ const useSocketStore = create((set, get) => ({
   hasInitialized: false,
 
   // Professional socket initialization
-  initializeSocket: async () => {
+  initializeSocket: async initialLocation => {
     if (get().hasInitialized) {
       return
     }
 
-    const { longitude, latitude } = await getBrowserLocation()
+    const location = initialLocation ?? (await getBrowserLocation())
+    const { longitude, latitude } = location
 
     socket.on('connect', () => {
       console.log('✓ Socket connected (Professional)')
