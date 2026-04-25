@@ -1,10 +1,14 @@
 import useSocketStore from '../../../store/useSocketStore'
+import useUserStore from '../../../store/useUserStore'
 import { useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 
-// This is a wrapper component for the client dashboard.
-// Sets up socket connection for real-time bid notifications
 const ClientDashboardWrapper = () => {
+  const user = useUserStore(state => state.user)
+
+  // Let ProtectRoute handle the redirect — don't init socket for unauthenticated users
+  if (!user || user.role !== 'client') return <Outlet />
+
   useEffect(() => {
     const initializeClientSocket = useSocketStore.getState().initializeClientSocket
     const cleanup = useSocketStore.getState().cleanup

@@ -4,7 +4,9 @@ import {
   ListBulletIcon,
   CreditCardIcon,
 } from '@heroicons/react/24/outline'
+import toast from 'react-hot-toast'
 import useClientStore from '../../../../../store/useClientStore'
+
 const QuickActions = () => {
   const setMainTab = useClientStore(state => state.setMainTab)
   const setJobTab = useClientStore(state => state.setJobTab)
@@ -39,14 +41,20 @@ const QuickActions = () => {
           <span className="text-center text-xs font-medium">Open jobs</span>
         </button>
 
-        {/* Saved Jobs */}
-        <button className="flex h-20 w-full flex-col items-center justify-center rounded-xl bg-[#242427]/80 text-white  transition-all duration-200 active:scale-95 sm:w-24">
+        {/* History */}
+        <button
+          onClick={() => { setMainTab('jobs'); setJobTab('History') }}
+          className="flex h-20 w-full flex-col items-center justify-center rounded-xl bg-[#242427]/80 text-white transition-all duration-200 active:scale-95 sm:w-24"
+        >
           <ClockIcon className="mb-2 h-7 w-7 text-[#32cd32]" />
           <span className="text-center text-xs font-medium">History</span>
         </button>
 
-        {/* Post Job */}
-        <button className="flex h-20 w-full flex-col items-center justify-center rounded-xl bg-[#32cd32]/15 text-white  transition-all duration-200 active:scale-95 sm:w-24">
+        {/* Fund wallet */}
+        <button
+          onClick={() => toast('Coming soon!', { icon: '🚧' })}
+          className="flex h-20 w-full flex-col items-center justify-center rounded-xl bg-[#32cd32]/15 text-white transition-all duration-200 active:scale-95 sm:w-24"
+        >
           <CreditCardIcon className="mb-2 h-7 w-7 text-[#32cd32]" />
           <span className="text-center text-xs font-medium">Fund wallet</span>
         </button>

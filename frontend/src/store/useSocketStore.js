@@ -3,6 +3,7 @@ import { socket } from '../utils/socket.utils'
 import useJobStore from './useJobStore'
 import { getBrowserLocation } from '../utils/geoLocation.utils'
 import useBidStore from './useBidStore'
+import useNotificationStore from './useNotificationStore'
 
 const useSocketStore = create((set, get) => ({
   isConnected: false,
@@ -72,6 +73,10 @@ const useSocketStore = create((set, get) => ({
       })
     })
 
+    socket.on('newNotification', notification => {
+      useNotificationStore.getState().addNotification(notification)
+    })
+
     set({ hasInitialized: true })
     socket.connect()
   },
@@ -128,6 +133,10 @@ const useSocketStore = create((set, get) => ({
       useJobStore.getState().removeJob(data.jobId)
     })
 
+    socket.on('newNotification', notification => {
+      useNotificationStore.getState().addNotification(notification)
+    })
+
     set({ hasInitialized: true })
     socket.connect()
   },
@@ -145,6 +154,7 @@ const useSocketStore = create((set, get) => ({
     socket.off('workAccepted')
     socket.off('redoRequested')
     socket.off('jobCancelled')
+    socket.off('newNotification')
     socket.disconnect()
     set({ isConnected: false, hasInitialized: false })
   },

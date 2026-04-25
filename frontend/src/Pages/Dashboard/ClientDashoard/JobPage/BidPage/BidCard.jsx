@@ -34,9 +34,11 @@ const BidCard = ({ bid }) => {
 
   // Turn-based logic
   const isMyTurn = awaitingResponseFrom === 'client'
-  console.log(bid)
-  // TODO: replace with real rating once built
-  const DUMMY_RATING = 4
+
+  const reviews = professionalProfile?.reviews ?? []
+  const avgRating = reviews.length > 0
+    ? Math.round(reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length)
+    : 0
 
   const latestMessage = negotiationHistory?.at(-1)?.message || ''
 
@@ -109,8 +111,6 @@ const BidCard = ({ bid }) => {
     setCounterError(null)
     setShowCounterModal(false)
   }
-  console.log('this is profile', professionalProfile)
-
   return (
     <>
       <div className="group relative mx-auto my-4 overflow-hidden rounded-2xl border border-zinc-800/50 bg-[#151518] p-5 text-white shadow-xl transition-all hover:border-zinc-700/50">
@@ -136,7 +136,7 @@ const BidCard = ({ bid }) => {
                 {Array.from({ length: 5 }).map((_, i) => (
                   <span
                     key={i}
-                    className={`text-sm ${i < DUMMY_RATING ? 'text-yellow-400' : 'text-zinc-700'}`}
+                    className={`text-sm ${i < avgRating ? 'text-yellow-400' : 'text-zinc-700'}`}
                   >
                     ★
                   </span>

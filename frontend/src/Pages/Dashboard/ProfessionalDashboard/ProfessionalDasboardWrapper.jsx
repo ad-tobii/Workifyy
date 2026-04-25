@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import useSocketStore from '../../../store/useSocketStore'
+import useUserStore from '../../../store/useUserStore'
 import { getBrowserLocation, watchLocation } from '../../../utils/geoLocation.utils'
 
 const OVERLAY_MESSAGES = {
@@ -14,6 +15,11 @@ const OVERLAY_MESSAGES = {
 // step 1 set up the socket connection
 // step 2 watch the user's location
 const ProfessionalDasboardWrapper = () => {
+  const user = useUserStore(state => state.user)
+
+  // Let ProtectRoute handle the redirect — don't fire geolocation for unauthenticated users
+  if (!user || user.role !== 'professional') return <Outlet />
+
   const isConnected = useSocketStore(state => state.isConnected)
   const [isLocating, setIsLocating] = useState(true)
   const [hasCoordinates, setHasCoordinates] = useState(false)

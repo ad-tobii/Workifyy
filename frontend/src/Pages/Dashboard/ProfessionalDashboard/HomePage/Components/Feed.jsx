@@ -6,7 +6,6 @@ import { parseISO, isToday, isTomorrow, format } from 'date-fns'
 const Feed = () => {
   const jobs = useJobStore(state => state.jobs)
   const navigate = useNavigate()
-  console.log(jobs)
 
   function formatScheduledDate(isoDate) {
     const date = parseISO(isoDate)

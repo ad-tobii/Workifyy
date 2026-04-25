@@ -7,6 +7,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { MapPinIcon } from '@heroicons/react/24/solid'
 import useProStore from '../../../store/useProStore'
+import useNotificationStore from '../../../store/useNotificationStore'
 
 const TopBar = () => {
   const setMainTab = useProStore(state => state.setMainTab)
@@ -14,7 +15,7 @@ const TopBar = () => {
     <div className="z-50 h-20 w-full sm:h-16">
       {/* TopBar on Mobile screens */}
       <div className="flex sm:hidden">
-        <MobileTopBar />
+        <MobileTopBar setMainTab={setMainTab} />
       </div>
 
       {/* TopBar on large screens */}
@@ -26,6 +27,7 @@ const TopBar = () => {
 }
 
 const LargeTopBar = ({ setMainTab }) => {
+  const unreadCount = useNotificationStore(state => state.unreadCount)
   return (
     <div className="fixed z-50 flex w-full justify-between bg-[#0f0f10] px-6 py-4">
       {/* Logo */}
@@ -35,20 +37,15 @@ const LargeTopBar = ({ setMainTab }) => {
 
       {/* Desktop Nav Right Side */}
       <div className="flex items-center space-x-10 text-white">
-        {/* Help Icon */}
         <button onClick={() => setMainTab('home')}>
           <HomeIcon className="h-6 w-6 transition-colors duration-200 hover:text-[#32cd32]" />
         </button>
-        {/* Help Icon */}
         <button onClick={() => setMainTab('help')}>
           <QuestionMarkCircleIcon className="h-6 w-6 transition-colors duration-200 hover:text-[#32cd32]" />
         </button>
-
-        {/* Wallet Icon */}
         <button onClick={() => setMainTab('wallet')}>
           <CreditCardIcon className="h-6 w-6 transition-colors duration-200 hover:text-[#32cd32]" />
         </button>
-        {/* Jobs Icon */}
         <button onClick={() => setMainTab('jobs')}>
           <BriefcaseIcon className="h-6 w-6 transition-colors duration-200 hover:text-[#32cd32]" />
         </button>
@@ -56,9 +53,11 @@ const LargeTopBar = ({ setMainTab }) => {
         {/* Notification Icon */}
         <button onClick={() => setMainTab('notifications')} className="group relative">
           <BellIcon className="h-6 w-6 transition-colors duration-200 group-hover:text-[#32cd32]" />
-          <p className="absolute right-0 top-0 h-4 w-4 rounded-full bg-[#32cd32] text-center text-xs font-semibold">
-            3
-          </p>
+          {unreadCount > 0 && (
+            <p className="absolute right-0 top-0 h-4 w-4 rounded-full bg-[#32cd32] text-center text-xs font-semibold text-white">
+              {unreadCount > 9 ? '9+' : unreadCount}
+            </p>
+          )}
         </button>
 
         {/* Profile Icon */}
@@ -75,10 +74,11 @@ const LargeTopBar = ({ setMainTab }) => {
   )
 }
 
-const MobileTopBar = () => {
+const MobileTopBar = ({ setMainTab }) => {
+  const unreadCount = useNotificationStore(state => state.unreadCount)
   return (
     <div className="fixed z-50 flex w-full justify-between bg-[#0f0f10] px-6 py-4">
-      {/* Right side */}
+      {/* Left side */}
       <div className="flex space-x-2">
         <img
           src="/assets/black-worker.jpg"
@@ -93,12 +93,17 @@ const MobileTopBar = () => {
         </div>
       </div>
 
-      <div className="relative flex h-10 w-10 items-center justify-center rounded-full border-2 border-zinc-500">
+      <button
+        onClick={() => setMainTab('notifications')}
+        className="relative flex h-10 w-10 items-center justify-center rounded-full border-2 border-zinc-500"
+      >
         <BellIcon className="h-8 w-8 text-white" />
-        <p className="absolute bottom-3 right-0 h-4 w-4 rounded-full bg-[#32cd32] text-center text-xs text-white">
-          3
-        </p>
-      </div>
+        {unreadCount > 0 && (
+          <p className="absolute bottom-3 right-0 h-4 w-4 rounded-full bg-[#32cd32] text-center text-xs text-white">
+            {unreadCount > 9 ? '9+' : unreadCount}
+          </p>
+        )}
+      </button>
     </div>
   )
 }

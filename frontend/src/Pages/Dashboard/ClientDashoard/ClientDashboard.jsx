@@ -3,14 +3,18 @@ import BottomBar from './BottomBar'
 import HomePage from './HomePage/HomePage'
 import { useEffect } from 'react'
 import JobPage from './JobPage/JobPage'
+import NotificationsPage from '../../../Components/NotificationsPage'
 import useClientStore from '../../../store/useClientStore'
 import useDashboardStore from '../../../store/useDashboardStore'
+import useNotificationStore from '../../../store/useNotificationStore'
+
 const ClientDashboard = () => {
   const mainTab = useClientStore(state => state.mainTab)
   const getDashboardData = useDashboardStore(state => state.getDashboardData)
 
   useEffect(() => {
     getDashboardData()
+    useNotificationStore.getState().fetchNotifications()
   }, [getDashboardData])
 
   return (
@@ -19,6 +23,7 @@ const ClientDashboard = () => {
       <div>
         {mainTab === 'home' && <HomePage />}
         {mainTab === 'jobs' && <JobPage />}
+        {mainTab === 'notifications' && <NotificationsPage />}
       </div>
 
       <BottomBar />

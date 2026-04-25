@@ -4,6 +4,7 @@ import useJobStore from '../../../../store/useJobStore'
 import useBidStore from '../../../../store/useBidStore'
 import BidPage from './Components/BidPage/BidPage'
 import OngoingJobsPage from './Components/OngoingPage/OngoingJobsPage'
+import SavedJobsPage from './Components/SavedJobsPage'
 import { useEffect } from 'react'
 
 import JobCard from '../JobCard'
@@ -28,7 +29,7 @@ const JobPage = () => {
 
       {jobTab === 'Bids' && <BidPage />}
       {jobTab === 'Ongoing Jobs' && <OngoingJobsPage />}
-      {/* {jobTab === 'Saved Jobs' && <SavedJobs />} */}
+      {jobTab === 'Saved Jobs' && <SavedJobsPage />}
     </div>
   )
 }

@@ -1,10 +1,11 @@
-import { PlusCircleIcon, BriefcaseIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline'
+import { PlusCircleIcon, BriefcaseIcon, CurrencyDollarIcon, ClockIcon } from '@heroicons/react/24/outline'
 import useClientStore from '../../../../../store/useClientStore'
 
 const tabs = [
   { name: 'Post Jobs', icon: PlusCircleIcon },
   { name: 'Ongoing Jobs', icon: BriefcaseIcon },
   { name: 'Bids', icon: CurrencyDollarIcon },
+  { name: 'History', icon: ClockIcon },
 ]
 
 const JobTabs = () => {

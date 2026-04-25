@@ -2,8 +2,8 @@ import JobTabs from './Components/JobTabs'
 import PostJobPage from './PostJobPage/PostJob'
 import useClientStore from '../../../../store/useClientStore'
 import BidPage from './BidPage/BidPage'
-
 import OngoingPage from './OngoingPage'
+import HistoryPage from './HistoryPage'
 
 const JobPage = () => {
   const jobTab = useClientStore(state => state.jobTab)
@@ -14,6 +14,7 @@ const JobPage = () => {
       {jobTab === 'Post Jobs' && <PostJobPage />}
       {jobTab === 'Bids' && <BidPage />}
       {jobTab === 'Ongoing Jobs' && <OngoingPage />}
+      {jobTab === 'History' && <HistoryPage />}
     </div>
   )
 }
