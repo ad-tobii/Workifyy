@@ -12,7 +12,8 @@ export const createNotification = async ({ userId, type, message, meta = {} }, i
     });
 
     // 2️⃣ Emit real-time via socket.io if user online
-    io.to(`user:${userId}`).emit('newNotification', notification);
+    // Sockets join "${role}:${userId}" rooms, so emit to both — only one will match
+    io.to(`professional:${userId}`).to(`client:${userId}`).emit('newNotification', notification);
 
     return notification;
   } catch (error) {

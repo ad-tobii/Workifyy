@@ -78,7 +78,7 @@ export const placeBid = async (req, res) => {
       })
       .populate({
         path: 'professionalProfile',
-        select: 'tagline photo experience expertise languages bio',
+        select: 'tagline photo experience expertise languages bio reviews',
       })
       .select(
         'job professional professionalProfile status awaitingResponseFrom currentAmount negotiationHistory'
@@ -180,7 +180,7 @@ export const acceptBid = async (req, res) => {
       })
       .populate({
         path: 'professionalProfile',
-        select: 'tagline photo experience expertise languages bio',
+        select: 'tagline photo experience expertise languages bio reviews',
       })
       .select(
         'job professional professionalProfile status awaitingResponseFrom currentAmount negotiationHistory'
@@ -278,7 +278,7 @@ export const counterBid = async (req, res) => {
       })
       .populate({
         path: 'professionalProfile',
-        select: 'tagline photo experience expertise languages bio',
+        select: 'tagline photo experience expertise languages bio reviews',
       })
       .select(
         'job professional professionalProfile status awaitingResponseFrom currentAmount negotiationHistory'
@@ -461,7 +461,7 @@ export const getClientBids = async (req, res) => {
       })
       .populate({
         path: 'professionalProfile',
-        select: 'tagline photo experience expertise languages bio',
+        select: 'tagline photo experience expertise languages bio reviews',
       })
       .select(
         'job professional professionalProfile status awaitingResponseFrom currentAmount negotiationHistory'
