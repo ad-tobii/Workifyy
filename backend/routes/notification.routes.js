@@ -4,17 +4,14 @@ import {
   getNotifications,
   markAsRead,
   markAllAsRead,
+  deleteNotification,
 } from '../controllers/notification.controllers.js';
 
 const router = express.Router();
 
-// Get all notifications for logged-in user
 router.get('/', protectRoutes, getNotifications);
-
-// Mark a single notification as read
-router.patch('/:notificationId/read', protectRoutes, markAsRead);
-
-// Mark all notifications as read
 router.patch('/mark-all-read', protectRoutes, markAllAsRead);
+router.patch('/:notificationId/read', protectRoutes, markAsRead);
+router.delete('/:notificationId', protectRoutes, deleteNotification);
 
 export default router;

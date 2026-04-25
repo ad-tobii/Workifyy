@@ -102,6 +102,34 @@ export const createJob = async (req, res) => {
 
     io.to(jobCoverage).emit('newJob', job);
 
+    // Persist a notification for every professional currently connected in the coverage area
+    const allSocketIds = new Set();
+    for (const hexRoom of jobCoverage) {
+      const socketsInRoom = await io.in(hexRoom).allSockets();
+      socketsInRoom.forEach(id => allSocketIds.add(id));
+    }
+
+    const professionalUserIds = new Set();
+    for (const socketId of allSocketIds) {
+      const s = io.sockets.sockets.get(socketId);
+      if (s?.data?.userId && s?.data?.role === 'professional') {
+        professionalUserIds.add(s.data.userId.toString());
+      }
+    }
+
+    if (professionalUserIds.size > 0) {
+      await Promise.all(
+        [...professionalUserIds].map(userId =>
+          createNotification({
+            userId,
+            type: 'newJob',
+            message: `New ${job.category} job posted near you: "${job.title}"`,
+            meta: { jobId: job._id },
+          }, io)
+        )
+      );
+    }
+
     return res.status(201).json({
       message: 'Job successfully posted',
       success: true,
