@@ -186,11 +186,23 @@ export const acceptBid = async (req, res) => {
         'job professional professionalProfile status awaitingResponseFrom currentAmount negotiationHistory'
       );
 
-    user.role === 'professional'
-      ? io.to(`client:${bid.job.client}`).emit('bidAccepted', populatedBid)
-      : io
-          .to(`professional:${bid.professional}`)
-          .emit('bidAccepted', populatedBid);
+    if (user.role === 'professional') {
+      io.to(`client:${bid.job.client}`).emit('bidAccepted', populatedBid);
+      await createNotification({
+        userId: bid.job.client,
+        type: 'bidAccepted',
+        message: `A professional agreed to your offer for "${bid.job.title}"`,
+        meta: { jobId: bid.job._id },
+      }, io);
+    } else {
+      io.to(`professional:${bid.professional}`).emit('bidAccepted', populatedBid);
+      await createNotification({
+        userId: bid.professional,
+        type: 'bidAccepted',
+        message: `Your bid on "${bid.job.title}" was accepted! Get to work.`,
+        meta: { jobId: bid.job._id },
+      }, io);
+    }
 
     return res.status(200).json({
       message: 'Bid accepted succesfully',
@@ -284,13 +296,21 @@ export const counterBid = async (req, res) => {
         'job professional professionalProfile status awaitingResponseFrom currentAmount negotiationHistory'
       );
 
-    // Real time notification
-    const targetRoom =
-      user.role === 'professional'
-        ? `client:${bid.job.client}`
-        : `professional:${bid.professional}`;
+    const recipientId = user.role === 'professional' ? bid.job.client : bid.professional;
+    const targetRoom = user.role === 'professional'
+      ? `client:${bid.job.client}`
+      : `professional:${bid.professional}`;
+    const counterMessage = user.role === 'professional'
+      ? `New counter-offer of ₦${Number(offer).toLocaleString()} received for "${bid.job.title}"`
+      : `Client sent a counter-offer of ₦${Number(offer).toLocaleString()} on "${bid.job.title}"`;
 
     io.to(targetRoom).emit('counterOffer', populatedBid);
+    await createNotification({
+      userId: recipientId,
+      type: 'counterOffer',
+      message: counterMessage,
+      meta: { jobId: bid.job._id, bidId: bid._id },
+    }, io);
 
     return res.status(200).json({
       message: 'counter offer made !',
@@ -347,13 +367,18 @@ export const rejectBid = async (req, res) => {
 
       await bid.save();
 
-      // Notify Professional
+      const rejectionReason = reason === 'fit' ? 'Not a match for this project' : 'Price mismatch';
       io.to(`professional:${bid.professional}`).emit('bidRejected', {
         bidId: bid._id,
         jobId: bid.job._id,
-        reason:
-          reason === 'fit' ? 'Not a match for this project' : 'Price mismatch',
+        reason: rejectionReason,
       });
+      await createNotification({
+        userId: bid.professional,
+        type: 'bidRejected',
+        message: `Your bid on "${bid.job.title}" was rejected (${rejectionReason})`,
+        meta: { jobId: bid.job._id, bidId: bid._id },
+      }, io);
     }
 
     // PROFESSIONAL
@@ -361,12 +386,17 @@ export const rejectBid = async (req, res) => {
       bid.status = 'withdrawn';
       await bid.save();
 
-      // Notify Client
       io.to(`client:${bid.job.client}`).emit('bidWithdrawn', {
         bidId: bid._id,
         jobId: bid.job._id,
         message: 'The professional has withdrawn their bid.',
       });
+      await createNotification({
+        userId: bid.job.client,
+        type: 'bidWithdrawn',
+        message: `A professional withdrew their bid on "${bid.job.title}"`,
+        meta: { jobId: bid.job._id, bidId: bid._id },
+      }, io);
     } else {
       return res.status(401).json({ message: 'Unauthorized action' });
     }

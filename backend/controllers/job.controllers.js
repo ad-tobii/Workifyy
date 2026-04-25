@@ -387,6 +387,12 @@ export const submitWork = async (req, res) => {
       jobId: job._id,
       jobTitle: job.title,
     });
+    await createNotification({
+      userId: job.client,
+      type: 'workSubmitted',
+      message: `Work has been submitted for "${job.title}". Please review.`,
+      meta: { jobId: job._id },
+    }, io);
 
     return res.status(200).json({
       message: 'Work submitted successfully',
@@ -500,6 +506,12 @@ export const acceptWork = async (req, res) => {
       jobTitle: job.title,
       rating,
     });
+    await createNotification({
+      userId: job.chosenProfessional,
+      type: 'workAccepted',
+      message: `Your work on "${job.title}" was accepted! You received a ${rating}-star rating.`,
+      meta: { jobId: job._id },
+    }, io);
 
     return res.status(200).json({
       message: 'Work accepted successfully',
@@ -583,6 +595,12 @@ export const requestRedo = async (req, res) => {
       jobTitle: job.title,
       message: normalizedMessage,
     });
+    await createNotification({
+      userId: job.chosenProfessional,
+      type: 'redoRequested',
+      message: `Client requested revisions for "${job.title}"`,
+      meta: { jobId: job._id },
+    }, io);
 
     return res.status(200).json({
       message: 'Redo requested successfully',
@@ -655,6 +673,12 @@ export const cancelJob = async (req, res) => {
       jobId: job._id,
       jobTitle: job.title,
     });
+    await createNotification({
+      userId: job.client,
+      type: 'jobCancelled',
+      message: `A professional cancelled "${job.title}"`,
+      meta: { jobId: job._id },
+    }, io);
 
     return res.status(200).json({
       message: 'Job cancelled successfully',
