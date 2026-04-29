@@ -100,7 +100,7 @@ const PasswordInput = forwardRef(({ strength, error, onChange, ...registerProps 
           type={showPassword ? 'text' : 'password'}
           id="password"
           placeholder="Create a strong password"
-          className={`w-full rounded-lg border-2 bg-zinc-900 px-3 py-2 pr-10 text-sm text-white placeholder-gray-500 transition-all duration-300 focus:outline-none ${
+          className={`w-full rounded-full border-2 bg-white/[0.04] px-4 py-2.5 pr-10 text-sm text-white placeholder-white/20 transition-all duration-300 focus:outline-none ${
             error
               ? 'border-red-500 focus:border-red-600'
               : strength === 'strong' && value
@@ -122,7 +122,7 @@ const PasswordInput = forwardRef(({ strength, error, onChange, ...registerProps 
         </button>
       </div>
 
-      <div className="space-y-1 rounded-lg bg-zinc-900 p-2.5">
+      <div className="space-y-1 rounded-2xl bg-white/[0.03] p-3 border border-white/[0.06]">
         <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">Requirements</p>
 
         {requirementsList.map(({ key, label }) => (

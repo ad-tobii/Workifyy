@@ -4,9 +4,10 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Link, useLocation } from 'react-router-dom'
 
 const defaultNavigation = [
-  { name: 'Sign Up', to: '/auth/signup' },
-  { name: 'Log In', to: '/auth/signin' },
-  { name: 'Explore', to: '' },
+  { name: 'Home', to: '/' },
+  { name: 'How It Works', to: '/' },
+  { name: 'For Pros', to: '/auth/ProfessionalSignup' },
+  { name: 'Blog', to: '' },
 ]
 
 export default function Nav({ children, showNavItems = true, customNavigation }) {
@@ -14,98 +15,112 @@ export default function Nav({ children, showNavItems = true, customNavigation })
   const [scrolled, setScrolled] = useState(false)
   const location = useLocation()
   const navigation = customNavigation || defaultNavigation
+  const isSignupPage = location.pathname === '/signup'
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 0)
-    }
+    const handleScroll = () => setScrolled(window.scrollY > 0)
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const isSignupPage = location.pathname === '/signup'
-
   return (
     <div className="relative">
       <header
-        className={`container fixed inset-x-0 top-0 z-30 border-b border-gray-500 p-3 ${
-          scrolled ? 'backdrop-blur' : ''
+        className={`fixed inset-x-0 top-0 z-30 transition-colors duration-300 ${
+          scrolled ? 'bg-black/90 backdrop-blur-md' : 'bg-transparent'
         }`}
       >
-        <nav className="container flex items-center justify-between pt-1" aria-label="Global">
-          <div className="ml-6 flex lg:flex-1">
-            <Link to="/" className="-m-1.5 text-white">
-              <span className="font-logoFonts text-3xl text-[#32CD32]">WORKIFYY</span>
-            </Link>
-          </div>
+        <nav className="flex items-center justify-between px-8 py-4 md:px-14 lg:px-20 xl:px-24">
+          {/* Logo */}
+          <Link to="/" className="shrink-0">
+            <img src="/assets/workifyy-logo.png" alt="Workifyy" className="h-7 w-auto" />
+          </Link>
 
-          {!isSignupPage && (
-            <div className="flex lg:hidden">
-              <button
-                type="button"
-                className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-white"
-                onClick={() => setMobileMenuOpen(true)}
-              >
-                <span className="sr-only">Open main menu</span>
-                <Bars3Icon className="h-6 w-6 text-white" aria-hidden="true" />
-              </button>
-            </div>
-          )}
-
+          {/* Center nav — desktop */}
           {!isSignupPage && showNavItems && (
-            <div className="hidden text-white lg:flex lg:gap-x-12">
-              {navigation.map((item, index) => (
+            <div className="hidden items-center gap-8 lg:flex">
+              {navigation.map((item, i) => (
                 <Link
-                  key={index}
+                  key={i}
                   to={item.to}
-                  className="relative text-xl font-semibold leading-6 text-white duration-500 ease-in-out after:absolute after:bottom-[-1rem] after:left-0 after:h-[3px] after:w-0 after:bg-[#32cd32] after:transition-all after:duration-300 hover:text-[#32cd32] hover:transition-all hover:after:w-full"
+                  className="text-sm font-medium text-white/70 transition-colors hover:text-white"
                 >
                   {item.name}
                 </Link>
               ))}
             </div>
           )}
+
+          {/* Right — CTA + mobile hamburger */}
+          <div className="flex items-center gap-3">
+            {!isSignupPage && showNavItems && (
+              <div className="hidden items-center gap-3 lg:flex">
+                <Link
+                  to="/auth/signin"
+                  className="text-xs font-bold uppercase tracking-widest text-white/60 transition-colors hover:text-white"
+                >
+                  Log In
+                </Link>
+                <Link to="/auth/ClientSignup">
+                  <button className="rounded-full bg-[#32CD32] px-5 py-2 text-xs font-black uppercase tracking-widest text-black transition-opacity hover:opacity-90">
+                    Post a Job
+                  </button>
+                </Link>
+              </div>
+            )}
+
+            {!isSignupPage && (
+              <button
+                type="button"
+                className="flex items-center justify-center rounded-sm p-2 text-white lg:hidden"
+                onClick={() => setMobileMenuOpen(true)}
+              >
+                <span className="sr-only">Open menu</span>
+                <Bars3Icon className="h-5 w-5" aria-hidden="true" />
+              </button>
+            )}
+          </div>
         </nav>
 
-        <Dialog
-          open={mobileMenuOpen}
-          onClose={() => setMobileMenuOpen(false)}
-          className="fixed inset-0 z-50 bg-white"
-        >
-          <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300 ease-out" />
-
-          <Dialog.Panel
-            className={`fixed inset-y-0 right-0 w-full transform overflow-y-auto bg-black px-6 py-6 transition-transform duration-300 ease-out miniLaptop:max-w-sm miniLaptop:ring-1 miniLaptop:ring-gray-900/10 ${
-              mobileMenuOpen ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
-            }`}
-          >
+        {/* Mobile menu */}
+        <Dialog open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)}>
+          <div className="fixed inset-0 bg-black/60" />
+          <Dialog.Panel className="fixed inset-y-0 right-0 w-full overflow-y-auto bg-black px-6 py-6 sm:max-w-sm">
             <div className="flex items-center justify-between">
-              <Link to="/" className="-m-1.5 p-1.5 text-white">
-                <span className="font-logoFonts text-3xl text-[#32CD32]">WORKIFYY</span>
+              <Link to="/">
+                <img src="/assets/workifyy-logo.png" alt="Workifyy" className="h-7 w-auto" />
               </Link>
               <button
                 type="button"
                 className="-m-2.5 rounded-md p-2.5 text-white"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                <span className="sr-only">Close menu</span>
-                <XMarkIcon className="h-6 w-6 text-white" aria-hidden="true" />
+                <XMarkIcon className="h-5 w-5" aria-hidden="true" />
               </button>
             </div>
 
-            <div className="mt-6 flow-root">
-              <div className="-my-6 divide-y divide-white">
-                <div className="space-y-2 py-6">
-                  {navigation.map((item, index) => (
-                    <Link
-                      key={index}
-                      to={item.to}
-                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-white hover:bg-gray-900"
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
-                </div>
+            <div className="mt-8 flow-root">
+              <div className="flex flex-col gap-1">
+                {navigation.map((item, i) => (
+                  <Link
+                    key={i}
+                    to={item.to}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="rounded px-3 py-3 text-base font-medium text-white/70 hover:bg-white/5 hover:text-white"
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+                <Link to="/auth/signin" onClick={() => setMobileMenuOpen(false)}
+                  className="mt-4 block rounded px-3 py-3 text-base font-medium text-white/70 hover:bg-white/5 hover:text-white"
+                >
+                  Log In
+                </Link>
+                <Link to="/auth/ClientSignup" onClick={() => setMobileMenuOpen(false)}>
+                  <button className="mt-2 w-full rounded-full bg-[#32CD32] px-4 py-3 text-xs font-black uppercase tracking-widest text-black">
+                    Post a Job
+                  </button>
+                </Link>
               </div>
             </div>
           </Dialog.Panel>

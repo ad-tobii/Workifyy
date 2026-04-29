@@ -6,6 +6,15 @@ import ConfirmModal from '@/Pages/Dashboard/ProfessionalDashboard/JobPage/Compon
 import CounterOfferModal from '@/Pages/Dashboard/ProfessionalDashboard/JobPage/Components/BidPage/CounterOfferModal'
 import RejectModal from './RejectModal'
 
+const getDisplayName = pro => {
+  const first = pro?.firstname?.trim()
+  const last = pro?.lastname?.trim()
+  const full = pro?.fullname?.trim()
+
+  if (first && last) return `${first} ${last}`
+  return full || first || 'Professional'
+}
+
 const BidCard = ({ bid }) => {
   const navigate = useNavigate()
   const acceptBid = useBidStore(state => state.acceptBid)
@@ -120,16 +129,16 @@ const BidCard = ({ bid }) => {
         )}
 
         {/* Top row: avatar + name/rating + profile button */}
-        <div className="mb-6 flex items-start justify-between">
-          <div className="flex items-center gap-3">
+        <div className="mb-6 flex items-start justify-between gap-3">
+          <div className="flex min-w-0 flex-1 items-center gap-3">
             <img
               src={professionalProfile?.photo || ''}
-              alt={`${professional.firstname} ${professional.lastname}`}
-              className="h-12 w-12 rounded-full object-cover ring-2 ring-zinc-800"
+              alt={getDisplayName(professional)}
+              className="h-12 w-12 shrink-0 rounded-full object-cover ring-2 ring-zinc-800"
             />
-            <div>
-              <div className="text-base font-semibold">
-                {professional.firstname} {professional.lastname}
+            <div className="min-w-0">
+              <div className="text-sm font-semibold leading-snug line-clamp-2 sm:text-base sm:leading-normal sm:line-clamp-none sm:truncate">
+                {getDisplayName(professional)}
               </div>
               {/* TODO: replace DUMMY_RATING with real rating once built */}
               <div className="flex items-center gap-1.5">
@@ -146,7 +155,7 @@ const BidCard = ({ bid }) => {
           </div>
           <button
             onClick={() => navigate(`/Dashboard/clientdashboard/bids/${bid._id}`)}
-            className="flex items-center gap-1 rounded-full bg-zinc-800 px-3 py-2 text-xs font-medium text-zinc-300 transition-all hover:bg-zinc-700/60 hover:text-white"
+            className="flex shrink-0 items-center gap-1 rounded-full bg-zinc-800 px-3 py-2 text-xs font-medium text-zinc-300 transition-all hover:bg-zinc-700/60 hover:text-white"
           >
             Details
             <ArrowUpRightIcon className="h-3.5 w-3.5" />
@@ -165,21 +174,26 @@ const BidCard = ({ bid }) => {
         {/* Footer: Turn Status + Action buttons */}
         <div className="flex items-center justify-between gap-3">
           {/* Turn Status */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center">
             {status === 'pending' && (
-              <>
-                <div
-                  className={`h-2 w-2 rounded-full ${isMyTurn ? 'bg-[#32cd32]' : 'bg-yellow-500'}`}
+              <div
+                className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold ${
+                  isMyTurn
+                    ? 'bg-[#32cd32]/15 text-[#32cd32]'
+                    : 'bg-zinc-800/80 text-zinc-400'
+                }`}
+              >
+                <span
+                  className={`h-1.5 w-1.5 rounded-full ${isMyTurn ? 'bg-[#32cd32]' : 'bg-yellow-500'}`}
                 />
-                {isMyTurn ? (
-                  <p className="hidden text-sm font-medium text-gray-400 sm:block">Your turn</p>
-                ) : (
-                  <p className=" text-sm font-medium text-gray-400 ">Waiting for professional</p>
-                )}
-              </>
+                {isMyTurn ? 'Your turn' : 'Awaiting'}
+              </div>
             )}
             {status !== 'pending' && (
-              <p className="text-sm font-medium capitalize text-gray-500">{status}</p>
+              <div className="flex items-center gap-1.5 rounded-xl bg-zinc-800/80 px-3 py-1.5 text-xs font-semibold text-zinc-400">
+                <span className="h-1.5 w-1.5 rounded-full bg-zinc-500" />
+                <span className="capitalize">{status}</span>
+              </div>
             )}
           </div>
 

@@ -1,35 +1,39 @@
 import { Link } from 'react-router-dom'
+
 const GradientNoise = () => {
+  const year = new Date().getFullYear()
+
   return (
-    <section className="relative mt-28 flex min-h-screen items-center justify-center px-4 sm:px-8 md:px-16 lg:px-24">
-      {/* Gradient Layer */}
-      <div className="absolute left-0 top-0 h-full w-full bg-hero-gradient"></div>
+    <section className="border-t border-white/10">
+      <div className="flex flex-col items-start justify-between gap-16 px-8 py-24 md:flex-row md:items-end md:px-14 lg:px-20 xl:px-24">
+        {/* Left — large stacked headline + copyright */}
+        <div>
+          <h2 className="text-5xl font-black leading-[0.93] tracking-tight text-white md:text-6xl lg:text-7xl xl:text-8xl">
+            It&rsquo;s your project.
+          </h2>
+          <h2 className="text-5xl font-black leading-[0.93] tracking-tight text-[#32CD32] md:text-6xl lg:text-7xl xl:text-8xl">
+            Get it done.
+          </h2>
+          <p className="mt-5 text-xs text-white/20">&copy; {year} Workifyy.</p>
+        </div>
 
-      {/* Texture Layer */}
-      <div className="absolute left-0 top-0 h-full w-full bg-hero-texture opacity-20 mix-blend-overlay"></div>
-
-      {/* Content */}
-      <div className="relative z-10 max-w-4xl text-center text-white">
-        <h1 className="text-3xl font-extrabold leading-snug md:text-5xl">
-          Connect with Skilled Professionals, Anytime, Anywhere
-        </h1>
-        <p className="mt-4 text-sm leading-relaxed md:text-lg">
-          Workifyy helps you find top-rated professionals for your projects. Post your job, review
-          bids, and hire the best fit with ease.
-        </p>
-        <div className="mt-6 flex flex-col justify-center gap-4 sm:flex-row">
-          <Link
-            to="/auth/signup"
-            className="rounded-full bg-[#32cd32] px-6 py-3 text-white transition hover:bg-green-600"
-          >
-            Post a Job
-          </Link>
-          <Link
-            to="/auth/ClientSignup"
-            className="rounded-full bg-black px-6 py-3 text-green-500 transition hover:bg-black hover:text-white"
-          >
-            Find Professionals
-          </Link>
+        {/* Right — email capture */}
+        <div className="w-full md:max-w-sm">
+          <p className="mb-3 text-sm text-white/40">
+            Join thousands already on Workifyy.
+          </p>
+          <div className="flex overflow-hidden rounded-full border border-white/20 focus-within:border-white/40">
+            <input
+              type="email"
+              placeholder="yourname@email.com"
+              className="flex-1 bg-transparent px-5 py-3 text-sm text-white outline-none placeholder:text-white/25"
+            />
+            <Link to="/auth/ClientSignup">
+              <button className="rounded-full bg-[#32CD32] px-6 py-3 text-xs font-black uppercase tracking-widest text-black transition-opacity hover:opacity-90">
+                Get Started
+              </button>
+            </Link>
+          </div>
         </div>
       </div>
     </section>

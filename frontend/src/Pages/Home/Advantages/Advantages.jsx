@@ -1,82 +1,60 @@
+const features = [
+  {
+    num: '01',
+    title: 'Location-Based Matching',
+    desc: 'Jobs and professionals are matched by GPS. Only pros in your area see your listing — fast, relevant results.',
+  },
+  {
+    num: '02',
+    title: 'Competitive Bidding',
+    desc: 'Multiple professionals compete for your job. Compare bids and negotiate directly to get the right price.',
+  },
+  {
+    num: '03',
+    title: 'Verified Professionals',
+    desc: 'Every professional on Workifyy is vetted and backed by real client reviews before you ever see their profile.',
+  },
+  {
+    num: '04',
+    title: 'Real-Time Updates',
+    desc: 'Live notifications keep you in the loop at every stage — from bid placed to work submitted.',
+  },
+  {
+    num: '05',
+    title: 'Secure Payments',
+    desc: 'Pay only when the work is done to your satisfaction. No hidden fees, no nasty surprises.',
+  },
+  {
+    num: '06',
+    title: 'Transparent Reviews',
+    desc: 'Read honest feedback from real clients before you hire. Leave your own review when the job is done.',
+  },
+]
+
 const AdvantagesSection = () => {
   return (
-    <div className="px-10 mt-28">
-      <div className="flex flex-col items-center">
-        <h2 className="text-3xl font-bold leading-relaxed text-white">
-          Why Workifyy ?
+    <section className="border-t border-white/10">
+      <div className="border-b border-white/10 px-8 py-16 md:px-16 lg:px-24">
+        <p className="mb-4 text-xs uppercase tracking-[0.3em] text-white/30">Why Workifyy</p>
+        <h2 className="max-w-xl text-4xl font-black leading-tight tracking-tight text-white md:text-5xl">
+          Get things done right, every time.
         </h2>
-        <p className="mt-6 text-center text-xl font-light text-[#d1d5db]">
-          Get Things Done Right, Every Time, Effortlessly with Workifyy.
-        </p>
       </div>
-      <div className="mt-12   flex justify-center">
-        <div className="grid w-[56rem] md:w-auto justify-items-center grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          <div className="h-44 w-72 rounded-xl bg-[#1a1a1a] p-4">
-            <h2 className="text- text-xl font-bold text-[#a0a0a0]">Speed</h2>
-            <p className="pt-2 text-sm text-white">
-              Post a job in seconds, hire in minutes
-            </p>
-            <div className="mt-2 flex justify-end">
-              <img src="./assets/speed.svg" className="w-16" />
-            </div>
-          </div>
-          <div className="h-44 w-72 rounded-xl bg-[#1a1a1a] p-4">
-            <h2 className="text- text-xl font-bold text-[#a0a0a0]">
-              Efficiency
-            </h2>
-            <p className="pt-2 text-sm text-white">
-              Streamlined hiring process, saving you valuable time.
-            </p>
-            <div className="mt-2 flex justify-end">
-              <img src="./assets/efficiency.svg" className="w-16" />
-            </div>
-          </div>
-          <div className="h-44 w-72 rounded-xl bg-[#1a1a1a] p-4">
-            <h2 className="text- text-xl font-bold text-[#a0a0a0]">
-              Affordability
-            </h2>
-            <p className="pt-2 text-sm text-white">
-              Affordable hiring solutions without hidden fees
-            </p>
-            <div className="mt-2 flex justify-end">
-              <img src="./assets/affordability.svg" className="w-16" />
-            </div>
-          </div>
-          <div className="h-44 w-72 rounded-xl bg-[#1a1a1a] p-4">
-            <h2 className="text- text-xl font-bold text-[#a0a0a0]">Security</h2>
-            <p className="pt-2 text-sm text-white">
-              Your transactions are safe with our escrow-like protection.
-            </p>
-            <div className="mt-2 flex justify-end">
-              <img src="./assets/security.svg" className="w-16" />
-            </div>
-          </div>
-          <div className="h-44 w-72 rounded-xl bg-[#1a1a1a] p-4">
-            <h2 className="text- text-xl font-bold text-[#a0a0a0]">
-              Accessibility
-            </h2>
-            <p className="pt-2 text-sm text-white">
-              Easily connect with skilled professionals from anywhere.
-            </p>
-            <div className="mt-2 flex justify-end">
-              <img src="./assets/accessibility.svg" className="w-16" />
-            </div>
-          </div>
-          <div className="h-44 w-72 rounded-xl bg-[#1a1a1a] p-4">
-            <h2 className="text- text-xl font-bold text-[#a0a0a0]">
-              Trustworthy Reviews
-            </h2>
-            <p className="pt-2 text-sm text-white">
-              Read authentic feedback from previous employers before hiring.
-            </p>
-            <div className="mt-2 flex justify-end">
-              <img src="./assets/reviews.svg" className="w-16" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
 
-export default AdvantagesSection;
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        {features.map((f, i) => (
+          <div
+            key={i}
+            className="group border-b border-r border-white/10 px-8 py-10 transition-colors duration-300 hover:bg-white/[0.025] sm:[&:nth-child(2n)]:border-r-0 lg:[&:nth-child(2n)]:border-r lg:[&:nth-child(3n)]:border-r-0"
+          >
+            <span className="font-mono text-xs text-white/20">{f.num}</span>
+            <h3 className="mt-4 text-lg font-bold text-white">{f.title}</h3>
+            <p className="mt-3 text-sm leading-relaxed text-white/40">{f.desc}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+export default AdvantagesSection

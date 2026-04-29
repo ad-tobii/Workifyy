@@ -1,80 +1,71 @@
-import React from 'react'
+const reviews = [
+  {
+    name: 'Amaka Okonkwo',
+    role: 'Client · Lagos',
+    text: 'Got 4 bids within 30 minutes of posting. Workifyy is a game-changer.',
+  },
+  {
+    name: 'Emeka Adeyemi',
+    role: 'Electrician · Professional',
+    text: "I've doubled my monthly income since joining Workifyy. Highly recommend.",
+  },
+  {
+    name: 'Tobi Lawson',
+    role: 'Client · Abuja',
+    text: 'The bidding system is brilliant. Real competition means better prices for me.',
+  },
+  {
+    name: 'Chidi Nwachukwu',
+    role: 'Plumber · Professional',
+    text: "Jobs come to me now. I don't have to chase clients anymore.",
+  },
+  {
+    name: 'Fatima Bello',
+    role: 'Client · Kano',
+    text: 'Transparent ratings made it easy to trust my hire. Excellent experience.',
+  },
+  {
+    name: 'Seun Adeyinka',
+    role: 'Painter · Professional',
+    text: "The platform is clean, straightforward, and the clients are serious. Love it.",
+  },
+]
 
 const ReviewCarousel = () => {
-  const reviews = [
-    {
-      name: 'John Doe',
-      text: 'Workifyy made hiring so easy and seamless!',
-      rating: 5,
-    },
-    {
-      name: 'Jane Smith',
-      text: 'Highly recommend this platform for professionals.',
-      rating: 4,
-    },
-    {
-      name: 'Mike Johnson',
-      text: 'A game-changer for finding gigs in Nigeria.',
-      rating: 5,
-    },
-    {
-      name: 'Sarah Brown',
-      text: 'The bidding system is truly unique and effective!',
-      rating: 4,
-    },
-    {
-      name: 'Emily Davis',
-      text: 'I found the perfect job thanks to Workifyy!',
-      rating: 5,
-    },
-  ]
-
-  const renderStars = rating => {
-    const fullStars = rating
-    const emptyStars = 5 - rating
-
-    return (
-      <div className="mb-2 flex justify-center text-xl text-yellow-500">
-        {Array.from({ length: fullStars }, (_, index) => (
-          <span key={`full-${index}`}>&#9733;</span>
-        ))}
-        {Array.from({ length: emptyStars }, (_, index) => (
-          <span key={`empty-${index}`} className="text-gray-300">
-            &#9733;
-          </span>
-        ))}
-      </div>
-    )
-  }
-
   return (
-    <div className="relative mt-28 overflow-hidden py-6">
+    <div className="border-t border-white/10 py-12">
+      <div className="mb-8 px-8 md:px-16 lg:px-24">
+        <p className="text-xs uppercase tracking-[0.3em] text-white/30">What People Say</p>
+      </div>
       <div className="inline-flex w-full flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]">
-        <div className="flex animate-infinite-scroll">
-          {reviews.map((review, index) => (
-            <div
-              key={`first-${index}`}
-              className="mx-4 flex h-32 w-64 flex-shrink-0 flex-col items-center justify-between rounded-lg bg-[#1a1a1a] p-4 shadow-lg"
+        <ul className="flex animate-infinite-scroll items-stretch gap-4 pr-4">
+          {reviews.map((r, i) => (
+            <li
+              key={`a-${i}`}
+              className="flex w-72 flex-shrink-0 flex-col justify-between border border-white/10 p-6"
             >
-              {renderStars(review.rating)}
-              <p className="mb-2 text-center text-sm text-white">{review.text}</p>
-              <p className="text-center text-xs font-semibold text-[#32cd32]">- {review.name}</p>
-            </div>
+              <p className="text-sm leading-relaxed text-white/70">&ldquo;{r.text}&rdquo;</p>
+              <div className="mt-6 border-t border-white/10 pt-4">
+                <p className="text-xs font-bold text-white">{r.name}</p>
+                <p className="mt-0.5 text-xs uppercase tracking-widest text-white/30">{r.role}</p>
+              </div>
+            </li>
           ))}
-        </div>
-
-        <div className="flex animate-infinite-scroll" aria-hidden="true">
-          {reviews.map((review, index) => (
-            <div
-              key={`second-${index}`}
-              className="mx-4 flex h-32 w-64 flex-shrink-0 flex-col items-center justify-between rounded-lg bg-[#1a1a1a] p-4 shadow-lg"
+        </ul>
+        <ul className="flex animate-infinite-scroll items-stretch gap-4 pr-4" aria-hidden="true">
+          {reviews.map((r, i) => (
+            <li
+              key={`b-${i}`}
+              className="flex w-72 flex-shrink-0 flex-col justify-between border border-white/10 p-6"
             >
-              {renderStars(review.rating)}
-              <p className="mb-2 text-center text-sm text-white">{review.text}</p>
-              <p className="text-center text-xs font-semibold text-[#32cd32]">- {review.name}</p>
-            </div>
+              <p className="text-sm leading-relaxed text-white/70">&ldquo;{r.text}&rdquo;</p>
+              <div className="mt-6 border-t border-white/10 pt-4">
+                <p className="text-xs font-bold text-white">{r.name}</p>
+                <p className="mt-0.5 text-xs uppercase tracking-widest text-white/30">{r.role}</p>
+              </div>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </div>
   )

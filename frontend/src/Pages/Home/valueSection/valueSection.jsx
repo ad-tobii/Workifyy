@@ -1,80 +1,83 @@
 import { Link } from 'react-router-dom'
+
+const steps = [
+  {
+    num: '01',
+    title: 'Post a Job',
+    desc: 'Describe your task, set a budget, and let nearby professionals find you based on your location.',
+    cta: 'Post your first job',
+    img: '/assets/valuepic.jpg',
+  },
+  {
+    num: '02',
+    title: 'Review Bids',
+    desc: 'Receive competitive bids from verified pros. Compare profiles, ratings, and negotiate directly.',
+    cta: 'See how bidding works',
+    img: '/assets/value2.jpg',
+  },
+  {
+    num: '03',
+    title: 'Get It Done',
+    desc: 'Hire your professional, track progress in real-time, and release payment only when satisfied.',
+    cta: 'Start hiring today',
+    img: '/assets/ClientSection2.jpg',
+  },
+]
+
 const ValueSection = () => {
   return (
-    <div className="mt-28 flex justify-center px-6">
-      <div className="w-full max-w-5xl px-4">
+    <section className="border-t border-white/10">
+      {/* Large spanning headline */}
+      <div className="flex flex-col gap-4 border-b border-white/10 px-8 py-16 md:flex-row md:items-end md:justify-between md:px-14 lg:px-20 xl:px-24">
         <div>
-          <h2 className="pb-5 text-center text-3xl font-bold leading-relaxed text-[#32cd32] sm:text-left">
-            Connecting Professionals to Opportunities
+          <p className="mb-4 text-xs font-bold uppercase tracking-[0.3em] text-white/30">
+            What Is Workifyy?
+          </p>
+          <h2 className="max-w-4xl text-4xl font-black leading-[1.0] tracking-tight text-white md:text-5xl lg:text-6xl xl:text-[4rem]">
+            Workifyy connects clients with skilled professionals near them.
           </h2>
         </div>
-        <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-20 lg:space-y-0">
-          <div className="flex flex-col space-y-8 lg:flex-1 lg:space-y-0">
-            <p className="pb-5 text-center text-xl font-light text-[#d1d5db] lg:text-left">
-              Empowering clients and professionals with seamless job connections and efficient
-              solutions.
-            </p>
-            <img
-              src="./assets/valuepic.jpg"
-              alt="Value Section"
-              className="h-[20rem] w-full rounded-lg object-cover lg:hidden"
-            />
-            <div className="space-y-8 text-[#d1d5db]">
-              <div className="flex items-center gap-x-4">
-                <div className="h-5 min-h-5 w-5 min-w-5 rounded-full bg-[#32cd32] text-center text-sm text-white">
-                  1
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold">Find the Right Professional</h2>
-                  <p className="text-sm text-[#32cd32]">
-                    Post a job and receive bids from qualified experts.
-                  </p>
-                </div>
-              </div>
+        <p className="max-w-[14rem] text-sm leading-relaxed text-white/40 md:text-right">
+          A location-based marketplace where every job finds the right professional.
+        </p>
+      </div>
 
-              <div className="flex items-center gap-x-4">
-                <div className="h-5 min-h-5 w-5 min-w-5 rounded-full bg-[#32cd32] text-center text-sm text-white">
-                  2
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold"> Secure Payments</h2>
-                  <p className="text-sm text-[#32cd32]">
-                    Ensure trust and safety with our on-platform payment system.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-x-4">
-                <div className="h-5 min-h-5 w-5 min-w-5 rounded-full bg-[#32cd32] text-center text-sm text-white">
-                  3
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold">Track Progress</h2>
-                  <p className="text-sm text-[#32cd32]">
-                    Monitor your ongoing projects easily in one place.
-                  </p>
-                </div>
+      {/* Alternating numbered rows */}
+      {steps.map((step, i) => (
+        <div
+          key={i}
+          className={`group flex flex-col border-b border-white/10 ${
+            i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
+          }`}
+        >
+          <div className="flex flex-1 flex-col justify-between gap-6 px-8 py-12 md:px-14 lg:px-20 xl:px-24">
+            <div className="flex items-start gap-8">
+              <span className="mt-1 font-mono text-xs text-white/20">{step.num}</span>
+              <div>
+                <h3 className="text-xl font-bold text-white md:text-2xl">{step.title}</h3>
+                <p className="mt-2 max-w-sm text-sm leading-relaxed text-white/40">{step.desc}</p>
               </div>
             </div>
-            <div className="text-center lg:text-left">
+            <div className="pl-14">
               <Link
-                to="/auth/signup"
-                className="mt-12 rounded border-2 border-[#32cd32] p-2 font-medium text-[#32cd32] transition-colors hover:bg-[#32cd32] hover:text-white"
+                to="/auth/ClientSignup"
+                className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#32CD32] transition-all duration-200 hover:gap-4"
               >
-                Get Started
+                {step.cta} <span>→</span>
               </Link>
             </div>
           </div>
-          <div className="hidden lg:block">
+
+          <div className="h-52 w-full overflow-hidden md:h-auto md:w-64 lg:w-80">
             <img
-              src="./assets/valuepic.jpg"
-              alt="Value Section"
-              className="h-[25rem] w-[30rem] rounded-lg object-cover"
+              src={step.img}
+              alt={step.title}
+              className="h-full w-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0"
             />
           </div>
         </div>
-      </div>
-    </div>
+      ))}
+    </section>
   )
 }
 

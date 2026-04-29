@@ -74,11 +74,10 @@ const OngoingPage = () => {
 
   // Main content
   return (
-    <div className="space-y-4 pb-8">
-      {/* Job Cards */}
-      <div className="grid gap-4">
-        {ongoingJobs.map((job, index) => (
-          <JobCard key={job._id} job={job} index={index} />
+    <div className="w-[90%] pb-8">
+      <div className="flex flex-col gap-2">
+        {ongoingJobs.map(job => (
+          <JobCard key={job._id} job={job} />
         ))}
       </div>
     </div>

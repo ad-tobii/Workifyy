@@ -142,6 +142,22 @@ const useJobStore = create((set, get) => ({
     }
   },
 
+  fetchJobHistory: async () => {
+    set({ loading: true, error: null })
+    try {
+      const res = await api.get('/job/history')
+      if (!res.data?.success) throw new Error(res.data?.message || 'Failed to fetch job history')
+      const historyJobs = res.data.data || []
+      historyJobs.forEach(job => get().upsertJob(job))
+      set({ loading: false })
+      return res.data.data
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || error.message || 'Failed to fetch job history'
+      set({ error: errorMsg, loading: false })
+      throw error
+    }
+  },
+
   fetchOngoingJobs: async () => {
     set({ loading: true, error: null })
 

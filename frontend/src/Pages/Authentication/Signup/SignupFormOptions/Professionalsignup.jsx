@@ -1,16 +1,12 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import SignupPage from '../SignupPage'
 
 function Professionalsignup() {
   useEffect(() => {
-    document.title = 'Sign In | Workifyy'
+    document.title = 'Join as a Pro | Workifyy'
   }, [])
 
-  return (
-    <div>
-      <SignupPage role="professional" />
-    </div>
-  )
+  return <SignupPage role="professional" />
 }
 
 export default Professionalsignup

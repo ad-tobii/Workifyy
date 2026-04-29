@@ -1,54 +1,56 @@
-import Nav from "../../Components/Nav";
-import HomeHeroSection from "./HeroSection/HomeHeroSection";
-import Section from "./OverviewSection/Section";
-import ClientSection from "./ClientSection/ClientSection";
-import AdvantagesSection from "./Advantages/Advantages";
-import ValueSection from "./valueSection/valueSection";
-import ValueSection2 from "./valueSection2/valueSection2";
-import StepsSection from "./WorkifyyStep/StepsSection";
-import Footer from "../Home/Footers/Footer";
-import { useEffect } from "react";
-import ReviewCarousel from "../../Components/reviewCarousel";
-import GradientNoise from "./gradientNoise/GradientNoise";
+import { useEffect } from 'react'
+import Nav from '../../Components/Nav'
+import HomeHeroSection from './HeroSection/HomeHeroSection'
+import StepsSection from './WorkifyyStep/StepsSection'
+import Section from './OverviewSection/Section'
+import ValueSection from './valueSection/valueSection'
+import ValueSection2 from './valueSection2/valueSection2'
+import AdvantagesSection from './Advantages/Advantages'
+import ClientSection from './ClientSection/ClientSection'
+import ReviewCarousel from '../../Components/reviewCarousel'
+import GradientNoise from './gradientNoise/GradientNoise'
+import Footer from './Footers/Footer'
+
 function Home() {
   useEffect(() => {
-    document.title = "Home | Workifyy";
-  }, []);
+    document.title = 'Home | Workifyy'
+  }, [])
 
   return (
-    <div>
-      <div>
-        <Nav>
-          <HomeHeroSection />
-        </Nav>
-      </div>
-      <div>
-        <ValueSection/>
-</div>
-      <div>
-        <Section />
-      </div>
-      <div><ValueSection2/></div>
-      <div>
-        <AdvantagesSection/>
-      </div>
+    <div className="bg-black">
+      {/* 1. Hero split layout */}
+      <Nav>
+        <HomeHeroSection />
+      </Nav>
 
-      <div>
-        <StepsSection />
-      </div>
+      {/* 2. Services ticker */}
+      <StepsSection />
 
-      <div>
-        <ClientSection />
-      </div>
-      <div>
-        <ReviewCarousel/>
-</div>
-      <div>
-        <GradientNoise/>
-        <Footer />
-      </div>
+      {/* 3. "Browse Professionals" — featured editorial card (ref: "Selected Project") */}
+      <Section />
+
+      {/* 4. "What Is Workifyy?" — large headline + numbered how-it-works rows (ref: "What Is Lokotré?") */}
+      <ValueSection />
+
+      {/* 5. "Top Professionals" — 2-col image grid (ref: "Primary Homes") */}
+      <ValueSection2 />
+
+      {/* 6. "Why Workifyy" — 6-feature grid */}
+      <AdvantagesSection />
+
+      {/* 7. Testimonial — single large quote */}
+      <ClientSection />
+
+      {/* 8. Reviews carousel */}
+      <ReviewCarousel />
+
+      {/* 9. Final CTA with email capture */}
+      <GradientNoise />
+
+      {/* 10. Footer */}
+      <Footer />
     </div>
-  );
+  )
 }
 
-export default Home;
+export default Home
