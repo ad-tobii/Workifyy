@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import Nav from '../../Components/Nav'
 import HomeHeroSection from './HeroSection/HomeHeroSection'
 import StepsSection from './WorkifyyStep/StepsSection'
@@ -12,15 +13,28 @@ import GradientNoise from './gradientNoise/GradientNoise'
 import Footer from './Footers/Footer'
 
 function Home() {
+  const location = useLocation()
+
   useEffect(() => {
     document.title = 'Home | Workifyy'
   }, [])
+
+  useEffect(() => {
+    const targetId = location.state?.scrollTo
+    if (!targetId) return
+
+    window.requestAnimationFrame(() => {
+      document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+  }, [location.state])
 
   return (
     <div className="bg-black">
       {/* 1. Hero split layout */}
       <Nav>
-        <HomeHeroSection />
+        <div id="home-hero">
+          <HomeHeroSection />
+        </div>
       </Nav>
 
       {/* 2. Services ticker */}
@@ -36,7 +50,9 @@ function Home() {
       <ValueSection2 />
 
       {/* 6. "Why Workifyy" — 6-feature grid */}
-      <AdvantagesSection />
+      <div id="why-workifyy">
+        <AdvantagesSection />
+      </div>
 
       {/* 7. Testimonial — single large quote */}
       <ClientSection />

@@ -1,19 +1,19 @@
 import { useState, useEffect } from 'react'
 import { Dialog } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 const defaultNavigation = [
-  { name: 'Home', to: '/' },
-  { name: 'How It Works', to: '/' },
+  { name: 'Home', to: '/', targetId: 'home-hero' },
+  { name: 'How It Works', to: '/', targetId: 'why-workifyy' },
   { name: 'For Pros', to: '/auth/ProfessionalSignup' },
-  { name: 'Blog', to: '' },
 ]
 
 export default function Nav({ children, showNavItems = true, customNavigation }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const location = useLocation()
+  const navigate = useNavigate()
   const navigation = customNavigation || defaultNavigation
   const isSignupPage = location.pathname === '/signup'
 
@@ -22,6 +22,22 @@ export default function Nav({ children, showNavItems = true, customNavigation })
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  const scrollToSection = targetId => {
+    const section = document.getElementById(targetId)
+    section?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  const handleNavClick = item => {
+    if (!item.targetId) return
+
+    if (location.pathname === '/') {
+      scrollToSection(item.targetId)
+      return
+    }
+
+    navigate('/', { state: { scrollTo: item.targetId } })
+  }
 
   return (
     <div className="relative">
@@ -40,13 +56,24 @@ export default function Nav({ children, showNavItems = true, customNavigation })
           {!isSignupPage && showNavItems && (
             <div className="hidden items-center gap-8 lg:flex">
               {navigation.map((item, i) => (
-                <Link
-                  key={i}
-                  to={item.to}
-                  className="text-sm font-medium text-white/70 transition-colors hover:text-white"
-                >
-                  {item.name}
-                </Link>
+                item.targetId ? (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => handleNavClick(item)}
+                    className="text-sm font-medium text-white/70 transition-colors hover:text-white"
+                  >
+                    {item.name}
+                  </button>
+                ) : (
+                  <Link
+                    key={i}
+                    to={item.to}
+                    className="text-sm font-medium text-white/70 transition-colors hover:text-white"
+                  >
+                    {item.name}
+                  </Link>
+                )
               ))}
             </div>
           )}
@@ -102,14 +129,28 @@ export default function Nav({ children, showNavItems = true, customNavigation })
             <div className="mt-8 flow-root">
               <div className="flex flex-col gap-1">
                 {navigation.map((item, i) => (
-                  <Link
-                    key={i}
-                    to={item.to}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="rounded px-3 py-3 text-base font-medium text-white/70 hover:bg-white/5 hover:text-white"
-                  >
-                    {item.name}
-                  </Link>
+                  item.targetId ? (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => {
+                        handleNavClick(item)
+                        setMobileMenuOpen(false)
+                      }}
+                      className="rounded px-3 py-3 text-left text-base font-medium text-white/70 hover:bg-white/5 hover:text-white"
+                    >
+                      {item.name}
+                    </button>
+                  ) : (
+                    <Link
+                      key={i}
+                      to={item.to}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="rounded px-3 py-3 text-base font-medium text-white/70 hover:bg-white/5 hover:text-white"
+                    >
+                      {item.name}
+                    </Link>
+                  )
                 ))}
                 <Link to="/auth/signin" onClick={() => setMobileMenuOpen(false)}
                   className="mt-4 block rounded px-3 py-3 text-base font-medium text-white/70 hover:bg-white/5 hover:text-white"
