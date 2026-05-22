@@ -4,6 +4,7 @@ import HomePage from './HomePage/HomePage'
 import { useEffect } from 'react'
 import JobPage from './JobPage/JobPage'
 import NotificationsPage from '../../../Components/NotificationsPage'
+import ComingSoon from '../Components/ComingSoon'
 import ProfilePage from '../Components/ProfilePage'
 import useClientStore from '../../../store/useClientStore'
 import useDashboardStore from '../../../store/useDashboardStore'
@@ -26,6 +27,7 @@ const ClientDashboard = () => {
         {mainTab === 'jobs' && <JobPage />}
         {mainTab === 'notifications' && <NotificationsPage />}
         {mainTab === 'profile' && <ProfilePage role="client" />}
+        {(mainTab === 'wallet' || mainTab === 'help') && <ComingSoon />}
       </div>
 
       <BottomBar />

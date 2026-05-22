@@ -169,7 +169,7 @@ export default function Signin() {
                 <input
                   type={showPassword ? 'text' : 'password'}
                   placeholder="••••••••"
-                  className={`w-full rounded-lg border bg-white/[0.04] px-4 py-3 pr-10 text-sm text-white placeholder-white/20 outline-none transition-colors ${
+                  className={`w-full rounded-full border bg-white/[0.04] px-5 py-3 pr-10 text-sm text-white placeholder-white/20 outline-none transition-colors ${
                     errors.password
                       ? 'border-red-500/60 focus:border-red-500'
                       : 'border-white/10 focus:border-[#32CD32]/50'

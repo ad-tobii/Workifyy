@@ -180,7 +180,7 @@ const BidCard = ({ bid }) => {
         {/* Footer: Turn Status + Action buttons */}
         <div className="flex items-center justify-between gap-3">
           {/* Turn Status */}
-          <div className="flex items-center">
+          <div className="hidden items-center sm:flex">
             {status === 'pending' && (
               <div
                 className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold ${

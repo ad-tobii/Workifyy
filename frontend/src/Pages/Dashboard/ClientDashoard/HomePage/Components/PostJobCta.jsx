@@ -1,6 +1,15 @@
 import React from 'react'
+import useClientStore from '../../../../../store/useClientStore'
 
 const PostJobCta = () => {
+  const setMainTab = useClientStore(state => state.setMainTab)
+  const setJobTab = useClientStore(state => state.setJobTab)
+
+  const handlePostJobClick = () => {
+    setMainTab('jobs')
+    setJobTab('Post Jobs')
+  }
+
   return (
     <div className="flex h-40 w-[90%] items-center justify-between rounded-2xl bg-[#171718] px-4">
       <div className="flex flex-col space-y-2 text-gray-300">
@@ -8,7 +17,10 @@ const PostJobCta = () => {
         <span className="max-w-[11rem] text-[0.65rem] sm:max-w-[18rem] sm:text-sm">
           Connect with a pro near you and get the job done effortlessly! 🎉
         </span>
-        <button className="w-16 rounded-2xl bg-[#32cd32]  p-2 text-xs sm:w-24 sm:text-sm">
+        <button
+          onClick={handlePostJobClick}
+          className="w-16 rounded-2xl bg-[#32cd32] p-2 text-xs sm:w-24 sm:text-sm"
+        >
           Post job{' '}
         </button>
       </div>
