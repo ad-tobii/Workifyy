@@ -33,16 +33,18 @@ const reviews = [
 
 const ReviewCarousel = () => {
   return (
-    <div className="border-t border-white/10 py-12">
-      <div className="mb-8 px-8 md:px-16 lg:px-24">
-        <p className="text-xs uppercase tracking-[0.3em] text-white/30">What People Say</p>
+    <div className="border-t border-white/10 py-8 md:py-12">
+      <div className="mb-5 px-5 sm:px-8 md:mb-8 md:px-16 lg:px-24">
+        <p className="text-[0.65rem] uppercase tracking-[0.25em] text-white/30 md:text-xs md:tracking-[0.3em]">
+          What People Say
+        </p>
       </div>
-      <div className="inline-flex w-full flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]">
-        <ul className="flex animate-infinite-scroll items-stretch gap-4 pr-4">
+      <div className="inline-flex w-full flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_32px,_black_calc(100%-32px),transparent_100%)] md:[mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]">
+        <ul className="flex animate-infinite-scroll items-stretch gap-3 pr-3 md:gap-4 md:pr-4">
           {reviews.map((r, i) => (
             <li
               key={`a-${i}`}
-              className="flex w-72 flex-shrink-0 flex-col justify-between border border-white/10 p-6"
+              className="flex w-64 flex-shrink-0 flex-col justify-between rounded-2xl border border-white/10 p-5 md:w-72 md:rounded-none md:p-6"
             >
               <p className="text-sm leading-relaxed text-white/70">&ldquo;{r.text}&rdquo;</p>
               <div className="mt-6 border-t border-white/10 pt-4">
@@ -52,11 +54,11 @@ const ReviewCarousel = () => {
             </li>
           ))}
         </ul>
-        <ul className="flex animate-infinite-scroll items-stretch gap-4 pr-4" aria-hidden="true">
+        <ul className="flex animate-infinite-scroll items-stretch gap-3 pr-3 md:gap-4 md:pr-4" aria-hidden="true">
           {reviews.map((r, i) => (
             <li
               key={`b-${i}`}
-              className="flex w-72 flex-shrink-0 flex-col justify-between border border-white/10 p-6"
+              className="flex w-64 flex-shrink-0 flex-col justify-between rounded-2xl border border-white/10 p-5 md:w-72 md:rounded-none md:p-6"
             >
               <p className="text-sm leading-relaxed text-white/70">&ldquo;{r.text}&rdquo;</p>
               <div className="mt-6 border-t border-white/10 pt-4">

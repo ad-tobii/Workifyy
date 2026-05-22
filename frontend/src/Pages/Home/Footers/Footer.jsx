@@ -4,9 +4,9 @@ import { FaXTwitter } from 'react-icons/fa6'
 function Footer() {
   return (
     <footer className="border-t border-white/10">
-      <div className="flex flex-col items-center justify-between gap-6 px-8 py-7 md:flex-row md:px-14 lg:px-20 xl:px-24">
-        <nav className="flex flex-wrap justify-center gap-6 md:justify-start">
-          {['Home', 'Features', 'Pricing', 'Blog', 'Terms & Conditions'].map(item => (
+      <div className="flex flex-col items-center justify-between gap-6 px-5 py-7 sm:px-8 md:flex-row md:px-14 lg:px-20 xl:px-24">
+        <nav className="flex flex-wrap justify-center gap-x-5 gap-y-3 md:justify-start md:gap-6">
+          {['Home', 'Features', 'Pricing', 'Terms & Conditions'].map(item => (
             <a
               key={item}
               href="#"

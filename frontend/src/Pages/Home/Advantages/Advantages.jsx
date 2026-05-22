@@ -34,9 +34,11 @@ const features = [
 const AdvantagesSection = () => {
   return (
     <section className="border-t border-white/10">
-      <div className="border-b border-white/10 px-8 py-16 md:px-16 lg:px-24">
-        <p className="mb-4 text-xs uppercase tracking-[0.3em] text-white/30">Why Workifyy</p>
-        <h2 className="max-w-xl text-4xl font-black leading-tight tracking-tight text-white md:text-5xl">
+      <div className="border-b border-white/10 px-5 py-10 sm:px-8 md:px-16 md:py-16 lg:px-24">
+        <p className="mb-3 text-[0.65rem] uppercase tracking-[0.25em] text-white/30 md:mb-4 md:text-xs md:tracking-[0.3em]">
+          Why Workifyy
+        </p>
+        <h2 className="max-w-xl text-[2rem] font-black leading-[1.08] tracking-tight text-white sm:text-4xl md:text-5xl">
           Get things done right, every time.
         </h2>
       </div>
@@ -45,11 +47,17 @@ const AdvantagesSection = () => {
         {features.map((f, i) => (
           <div
             key={i}
-            className="group border-b border-r border-white/10 px-8 py-10 transition-colors duration-300 hover:bg-white/[0.025] sm:[&:nth-child(2n)]:border-r-0 lg:[&:nth-child(2n)]:border-r lg:[&:nth-child(3n)]:border-r-0"
+            className="group border-b border-white/10 px-5 py-6 transition-colors duration-300 hover:bg-white/[0.025] sm:border-r sm:px-8 sm:py-10 sm:[&:nth-child(2n)]:border-r-0 lg:[&:nth-child(2n)]:border-r lg:[&:nth-child(3n)]:border-r-0"
           >
-            <span className="font-mono text-xs text-white/20">{f.num}</span>
-            <h3 className="mt-4 text-lg font-bold text-white">{f.title}</h3>
-            <p className="mt-3 text-sm leading-relaxed text-white/40">{f.desc}</p>
+            <div className="flex gap-4 sm:block">
+              <span className="shrink-0 font-mono text-xs text-white/20">{f.num}</span>
+              <div>
+                <h3 className="text-base font-bold text-white sm:mt-4 sm:text-lg">{f.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-white/45 sm:mt-3 sm:text-white/40">
+                  {f.desc}
+                </p>
+              </div>
+            </div>
           </div>
         ))}
       </div>
