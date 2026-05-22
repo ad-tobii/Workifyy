@@ -40,11 +40,6 @@ function HomeHeroSection() {
           </div>
         </div>
 
-        <p className="mt-5 md:hidden max-w-xs text-sm leading-relaxed text-white/65 md:mt-6 md:max-w-sm md:text-white/40">
-          Workifyy is a location-based marketplace connecting clients with skilled local
-          professionals, from plumbers and electricians to painters and more.
-        </p>
-
         <Link
           to="/auth/ProfessionalSignup"
           className="mt-5 inline-flex w-fit rounded-full border border-white/40 bg-black/30 px-5 py-2.5 text-xs font-bold uppercase tracking-widest text-white backdrop-blur-sm transition-colors hover:border-[#32CD32] hover:text-[#32CD32] md:hidden"

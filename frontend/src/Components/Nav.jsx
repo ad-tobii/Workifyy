@@ -110,9 +110,13 @@ export default function Nav({ children, showNavItems = true, customNavigation })
         </nav>
 
         {/* Mobile menu */}
-        <Dialog open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)}>
-          <div className="fixed inset-0 bg-black/60" />
-          <Dialog.Panel className="fixed inset-y-0 right-0 w-full overflow-y-auto bg-black px-6 py-6 sm:max-w-sm">
+        <Dialog
+          open={mobileMenuOpen}
+          onClose={() => setMobileMenuOpen(false)}
+          className="fixed inset-0 z-50 lg:hidden"
+        >
+          <div className="fixed inset-0 z-40 bg-black/60" />
+          <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-black px-6 py-6 sm:max-w-sm">
             <div className="flex items-center justify-between">
               <Link to="/">
                 <img src="/assets/workifyy-logo.png" alt="Workifyy" className="h-7 w-auto" />
