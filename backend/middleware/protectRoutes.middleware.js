@@ -17,7 +17,7 @@ const protectRoutes = async (req, res, next) => {
     // Verify the token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.userId).select(
-      '_id firstname lastname email role isVerified isOnboarded'
+      '_id firstname lastname email role isVerified isOnboarded lastOtpSentAt'
     );
     if (!user) {
       return res.status(401).json({

@@ -29,7 +29,7 @@
     "nodemailer": "^7.0.10",
     "nodemon": "^3.1.10",
     "redis": "^5.10.0",
-    "resend": "^6.4.2",
+    "@getbrevo/brevo": "^6.0.0",
     "socket.io": "^4.8.1",
     "uuid": "^13.0.0"
   }
