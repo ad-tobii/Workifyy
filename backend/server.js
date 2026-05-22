@@ -11,6 +11,7 @@ import dashboardRoutes from './routes/dashboard.routes.js';
 import bidRoutes from './routes/bid.routes.js';
 import jobRoutes from './routes/job.routes.js';
 import notificationRoutes from './routes/notification.routes.js';
+import profileRoutes from './routes/profile.routes.js';
 dotenv.config();
 
 const app = express();
@@ -37,6 +38,7 @@ app.use('/api/v1/bid', bidRoutes);
 app.use('/api/v1/job', jobRoutes);
 app.use('/api/v1/dashboard', dashboardRoutes);
 app.use('/api/v1/notification', notificationRoutes);
+app.use('/api/v1/profile', profileRoutes);
 app.use((req, res) => {
   res.status(404).json({
     message:

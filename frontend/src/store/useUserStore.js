@@ -92,6 +92,11 @@ const useUserStore = create((set, get) => ({
         return { success: false, error: res.data.message }
       }
 
+      if (action === 'logout') {
+        set({ user: null, successMessage: 'Logged out successfully' })
+        return { success: true, user: null, data: null }
+      }
+
       // set the user and success message
       const newUser = res.data.data?.user
       if (newUser) {

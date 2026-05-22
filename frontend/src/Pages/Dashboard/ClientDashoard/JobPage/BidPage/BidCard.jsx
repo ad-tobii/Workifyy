@@ -41,6 +41,12 @@ const BidCard = ({ bid }) => {
     status,
   } = bid || {}
 
+  const professionalName = getDisplayName(professional)
+  const professionalFirstName = professional?.firstname?.trim() || professionalName
+  const bidAmount = Number(currentAmount || 0)
+  const history = negotiationHistory ?? []
+  const jobBudget = Number(job?.budget || 0)
+
   // Turn-based logic
   const isMyTurn = awaitingResponseFrom === 'client'
 
@@ -49,11 +55,11 @@ const BidCard = ({ bid }) => {
     ? Math.round(reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length)
     : 0
 
-  const latestMessage = negotiationHistory?.at(-1)?.message || ''
+  const latestMessage = history.at(-1)?.message || ''
 
   const previousAmount =
-    bid.negotiationHistory.length > 1 ? bid.negotiationHistory.at(-2).amount : job.budget
-  const budgetDiff = currentAmount - previousAmount
+    history.length > 1 ? Number(history.at(-2)?.amount || 0) : jobBudget
+  const budgetDiff = bidAmount - previousAmount
   const budgetText =
     budgetDiff === 0
       ? 'Matches your budget'
@@ -133,12 +139,12 @@ const BidCard = ({ bid }) => {
           <div className="flex min-w-0 flex-1 items-center gap-3">
             <img
               src={professionalProfile?.photo || ''}
-              alt={getDisplayName(professional)}
+              alt={professionalName}
               className="h-12 w-12 shrink-0 rounded-full object-cover ring-2 ring-zinc-800"
             />
             <div className="min-w-0">
               <div className="text-sm font-semibold leading-snug line-clamp-2 sm:text-base sm:leading-normal sm:line-clamp-none sm:truncate">
-                {getDisplayName(professional)}
+                {professionalName}
               </div>
               {/* TODO: replace DUMMY_RATING with real rating once built */}
               <div className="flex items-center gap-1.5">
@@ -164,7 +170,7 @@ const BidCard = ({ bid }) => {
 
         {/* Price section */}
         <div className="mb-4">
-          <div className="text-3xl font-bold text-gray-200">₦ {currentAmount.toLocaleString()}</div>
+          <div className="text-3xl font-bold text-gray-200">₦ {bidAmount.toLocaleString()}</div>
           <div className={`text-xs font-medium ${budgetColor}`}>{budgetText}</div>
         </div>
 
@@ -231,7 +237,7 @@ const BidCard = ({ bid }) => {
         onClose={handleCloseAccept}
         onConfirm={handleAccept}
         title="Accept Bid"
-        message={`Accept ${professional.firstname}'s bid of ₦${currentAmount.toLocaleString()}? This will notify the professional to proceed.`}
+        message={`Accept ${professionalFirstName}'s bid of ₦${bidAmount.toLocaleString()}? This will notify the professional to proceed.`}
         confirmText="Accept Bid"
         confirmVariant="success"
         loading={loading}
@@ -242,7 +248,7 @@ const BidCard = ({ bid }) => {
         isOpen={showRejectModal}
         onClose={handleCloseReject}
         onConfirm={handleReject}
-        professionalName={professional.firstname}
+        professionalName={professionalFirstName}
         loading={loading}
         error={rejectError}
       />
@@ -251,7 +257,7 @@ const BidCard = ({ bid }) => {
         isOpen={showCounterModal}
         onClose={handleCloseCounter}
         onConfirm={handleCounter}
-        currentAmount={currentAmount}
+        currentAmount={bidAmount}
         currentMessage={latestMessage}
         loading={loading}
         error={counterError}

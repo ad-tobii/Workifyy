@@ -3,6 +3,7 @@ import {
   HomeIcon,
   QuestionMarkCircleIcon,
   BriefcaseIcon,
+  UserCircleIcon,
 } from '@heroicons/react/24/outline'
 import useClientStore from '../../../store/useClientStore'
 
@@ -24,6 +25,10 @@ const BottomBar = () => {
       />
       <QuestionMarkCircleIcon
         onClick={() => setMainTab('help')}
+        className="h-10 w-10 transition-colors duration-200 hover:text-[#32cd32]"
+      />
+      <UserCircleIcon
+        onClick={() => setMainTab('profile')}
         className="h-10 w-10 transition-colors duration-200 hover:text-[#32cd32]"
       />
     </div>

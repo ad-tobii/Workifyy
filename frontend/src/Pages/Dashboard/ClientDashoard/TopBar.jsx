@@ -64,14 +64,14 @@ const LargeTopBar = () => {
         </button>
 
         {/* Profile Icon */}
-        <div className="group relative">
+        <button onClick={() => setMainTab('profile')} className="group relative">
           <img
             src="/assets/black-worker.jpg"
             alt="profile"
             className="h-9 w-9 rounded-full object-cover"
           />
           <div className="absolute inset-0 top-0 hidden w-full rounded-full bg-black opacity-55 group-hover:inline"></div>
-        </div>
+        </button>
       </div>
     </div>
   )
@@ -84,11 +84,13 @@ const MobileTopBar = () => {
     <div className="fixed z-50 flex w-full justify-between bg-[#0f0f10] px-6 py-4">
       {/* Left side */}
       <div className="flex space-x-2">
-        <img
+        <button onClick={() => setMainTab('profile')}>
+          <img
           src="/assets/black-worker.jpg"
           alt="profile"
           className="h-10 w-10 rounded-full object-cover"
-        />
+          />
+        </button>
         <div>
           <span className="text-sm text-zinc-400">Good evening!</span>
           <span className="flex text-white">

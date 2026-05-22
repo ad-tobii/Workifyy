@@ -3,6 +3,7 @@ import BottomBar from './BottomBar'
 import HomePage from './HomePage/HomePage'
 import JobPage from './JobPage/JobPage'
 import NotificationsPage from '../../../Components/NotificationsPage'
+import ProfilePage from '../Components/ProfilePage'
 import { useEffect } from 'react'
 
 import useProStore from '../../../store/useProStore'
@@ -29,6 +30,7 @@ const ProfessionalDashboard = () => {
         {mainTab === 'home' && <HomePage />}
         {mainTab === 'jobs' && <JobPage />}
         {mainTab === 'notifications' && <NotificationsPage />}
+        {mainTab === 'profile' && <ProfilePage role="professional" />}
       </div>
 
       <BottomBar />
