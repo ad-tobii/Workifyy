@@ -1,6 +1,9 @@
-import * as brevo from '@getbrevo/brevo';
+import { createRequire } from 'module';
 import dotenv from 'dotenv';
 dotenv.config();
+
+const require = createRequire(import.meta.url);
+const brevo = require('@getbrevo/brevo');
 
 const apiInstance = new brevo.TransactionalEmailsApi();
 apiInstance.setApiKey(
@@ -18,9 +21,7 @@ const sendEmail = async (receiverEmail, subject, text) => {
     };
     sendSmtpEmail.to = [{ email: receiverEmail }];
     sendSmtpEmail.textContent = text;
-
     await apiInstance.sendTransacEmail(sendSmtpEmail);
-
     console.log('✅ Email sent successfully to:', receiverEmail);
   } catch (error) {
     console.error('❌ Email failed for:', receiverEmail);
