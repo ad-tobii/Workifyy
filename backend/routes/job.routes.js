@@ -4,6 +4,7 @@ import {
   listJobs,
   getJob,
   getOngoingJobs,
+  getJobHistory,
   submitWork,
   acceptWork,
   requestRedo,
@@ -22,6 +23,9 @@ router.get('/get-jobs', protectRoutes, listJobs);
 
 // Get ongoing jobs
 router.get('/ongoing', protectRoutes, getOngoingJobs);
+
+// Get completed job history
+router.get('/history', protectRoutes, getJobHistory);
 
 // Get single job (both professional and client can access)
 router.get('/:jobId', protectRoutes, getJob);

@@ -351,6 +351,37 @@ export const getOngoingJobs = async (req, res) => {
   }
 };
 
+export const getJobHistory = async (req, res) => {
+  try {
+    const user = req.user;
+    if (!user) {
+      return res.status(401).json({ message: 'Unauthorized', success: false, data: null });
+    }
+
+    const query =
+      user.role === 'client'
+        ? { client: user._id, status: 'completed' }
+        : { chosenProfessional: user._id, status: 'completed' };
+
+    const populateField =
+      user.role === 'client'
+        ? { path: 'chosenProfessional', select: 'firstname lastname' }
+        : { path: 'client', select: 'firstname lastname' };
+
+    const jobs = await Job.find(query)
+      .select(
+        'title description budget category status createdAt scheduledAt address images client chosenProfessional'
+      )
+      .populate(populateField)
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({ message: 'Job history fetched', success: true, data: jobs });
+  } catch (error) {
+    console.error('Get job history error:', error.message);
+    return res.status(500).json({ message: 'Server error', success: false, data: null });
+  }
+};
+
 // Submit work (Professional)
 export const submitWork = async (req, res) => {
   try {
